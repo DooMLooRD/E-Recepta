@@ -1,6 +1,6 @@
 using System;
 
-namespace EPrescription
+namespace BlockChain
 {
     class Prescription
     {

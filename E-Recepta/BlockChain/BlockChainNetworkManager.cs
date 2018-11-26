@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
+namespace BlockChain
+{
 public class BlockChainNetworkManager : WebSocketBehavior
 {
     IDictionary<string, WebSocket> wsDict = new Dictionary<string, WebSocket>();
@@ -74,4 +76,5 @@ public class BlockChainNetworkManager : WebSocketBehavior
             item.Value.Close();
         }
     }
-}  
+}
+}
