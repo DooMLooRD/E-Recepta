@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.28307.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserDatabaseAPI", "UserDatabaseAPI\UserDatabaseAPI.csproj", "{5A81FD1F-2672-4E60-9696-E7CA013DC9F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserInterface", "UserInterface\UserInterface.csproj", "{4AE293E2-0419-49CE-994C-5587EA2B52FF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlockChain", "BlockChain\BlockChain.csproj", "{6B7579D4-5ACC-4A2B-B60E-3587375143A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{5A81FD1F-2672-4E60-9696-E7CA013DC9F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A81FD1F-2672-4E60-9696-E7CA013DC9F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A81FD1F-2672-4E60-9696-E7CA013DC9F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AE293E2-0419-49CE-994C-5587EA2B52FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AE293E2-0419-49CE-994C-5587EA2B52FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AE293E2-0419-49CE-994C-5587EA2B52FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AE293E2-0419-49CE-994C-5587EA2B52FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B7579D4-5ACC-4A2B-B60E-3587375143A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B7579D4-5ACC-4A2B-B60E-3587375143A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B7579D4-5ACC-4A2B-B60E-3587375143A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B7579D4-5ACC-4A2B-B60E-3587375143A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
