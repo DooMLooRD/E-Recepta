@@ -1,7 +1,6 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+VisualStudioVersion = 15.0.28307.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserDatabaseAPI", "UserDatabaseAPI\UserDatabaseAPI.csproj", "{5A81FD1F-2672-4E60-9696-E7CA013DC9F7}"
 EndProject
@@ -35,3 +34,11 @@ Global
 		SolutionGuid = {08EC3323-42AE-40EF-9F3F-E670720659E2}
 	EndGlobalSection
 EndGlobal
+
+
+
+
+
+
+
+
