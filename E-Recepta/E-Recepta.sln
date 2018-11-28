@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserDatabaseAPI", "UserData
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserInterface", "UserInterface\UserInterface.csproj", "{4AE293E2-0419-49CE-994C-5587EA2B52FF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlockChain", "BlockChain\BlockChain.csproj", "{EBDF72AF-2E77-4CC3-8F7C-736CEFB3F1CA}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedicinesDatabase", "MedicinesDatabase\MedicinesDatabase.csproj", "{9BE338D1-251F-44CF-8A88-7987803B0E23}"
 EndProject
 Global
@@ -25,10 +23,6 @@ Global
 		{4AE293E2-0419-49CE-994C-5587EA2B52FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4AE293E2-0419-49CE-994C-5587EA2B52FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4AE293E2-0419-49CE-994C-5587EA2B52FF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EBDF72AF-2E77-4CC3-8F7C-736CEFB3F1CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EBDF72AF-2E77-4CC3-8F7C-736CEFB3F1CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EBDF72AF-2E77-4CC3-8F7C-736CEFB3F1CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EBDF72AF-2E77-4CC3-8F7C-736CEFB3F1CA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9BE338D1-251F-44CF-8A88-7987803B0E23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9BE338D1-251F-44CF-8A88-7987803B0E23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BE338D1-251F-44CF-8A88-7987803B0E23}.Release|Any CPU.ActiveCfg = Release|Any CPU
