@@ -26,7 +26,7 @@ namespace MedicinesDatabase
                 {
                     conn.Open();
                     SqlCommand command = conn.CreateCommand();
-                    string commandText = "SELECT * FROM medicines WHERE name LIKE '%" + name + "%'";
+                    string commandText = "SELECT * FROM medicines WHERE name collate POLISH_CI_AS LIKE '%" + name + "%'";
                     command.CommandText = commandText;
                     SqlDataReader reader = await command.ExecuteReaderAsync();
 
