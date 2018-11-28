@@ -27,6 +27,10 @@ namespace MedicinesDatabase
             {
                 return this._id;
             }
+            set
+            {
+                this._id = value;
+            }
         }
 
         public string Name
@@ -34,6 +38,10 @@ namespace MedicinesDatabase
             get
             {
                 return this._name;
+            }
+            set
+            {
+                this._name = value;
             }
         }
 
@@ -43,6 +51,10 @@ namespace MedicinesDatabase
             {
                 return this._manufacturer;
             }
+            set
+            {
+                this._manufacturer = value;
+            }
         }
 
         public float RefundRate
@@ -50,6 +62,10 @@ namespace MedicinesDatabase
             get
             {
                 return this._refundRate;
+            }
+            set
+            {
+                this._refundRate = value;
             }
         }
     }
