@@ -16,7 +16,7 @@ namespace MedicinesDatabase
                                                              Password=Erecepta!;";
           
 
-        public async Task<IEnumerable<Medicine>> SearchMedicine(string name)
+        public async Task<IEnumerable<Medicine>> SearchMedicine(string name, string manufacturer)
         {
             List<Medicine> medicines = new List<Medicine>();
 
@@ -26,7 +26,8 @@ namespace MedicinesDatabase
                 {
                     conn.Open();
                     SqlCommand command = conn.CreateCommand();
-                    string commandText = "SELECT * FROM medicines WHERE name collate POLISH_CI_AS LIKE '%" + name + "%'";
+                    string commandText = "SELECT * FROM medicines WHERE name collate POLISH_CI_AS LIKE '%" + name + "%'" +
+                        " AND manufacturer collate POLISH_CI_AS LIKE '%" + manufacturer + "%'"; 
                     command.CommandText = commandText;
                     SqlDataReader reader = await command.ExecuteReaderAsync();
 
