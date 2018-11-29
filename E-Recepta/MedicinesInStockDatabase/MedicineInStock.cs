@@ -6,53 +6,20 @@ using System.Threading.Tasks;
 
 namespace MedicinesInStockDatabase
 {
-    public class MedicineInStock
+    public class MedicineInStock : Medicine
     {
-        private string _id;
-        private string _name;
-        private string _manufacturer;
         private int _amount;
         private float _cost;
         private string _pharmacyId;
 
-        public MedicineInStock(string id, string name, string manufacturer, string amount, string cost, string pharmacyId)
+        public MedicineInStock(string id, string name, string manufacturer, string amount, string cost, string pharmacyId) : base(id, name, manufacturer)
         {
-            _id = id;
-            _name = name;
-            _manufacturer = manufacturer;
             _amount = int.Parse(amount);
             _cost = float.Parse(cost);
             _pharmacyId = pharmacyId;
         }
 
-        public string Id
-        {
-            get
-            {
-                return this._id;
-            }
-
-            set
-            {
-                this._id = value;
-            }
-        }
-
-        public string Name
-        {
-            get
-            {
-                return this._name;
-            }
-        }
-
-        public string Manufacturer
-        {
-            get
-            {
-                return this._manufacturer;
-            }
-        }
+       
 
         public int Amount
         {
