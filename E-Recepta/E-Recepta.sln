@@ -1,4 +1,5 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.102
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -7,6 +8,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserInterface", "UserInterface\UserInterface.csproj", "{4AE293E2-0419-49CE-994C-5587EA2B52FF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedicinesDatabase", "MedicinesDatabase\MedicinesDatabase.csproj", "{9BE338D1-251F-44CF-8A88-7987803B0E23}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorisation", "Authorisation\Authorisation.csproj", "{21573264-05BB-44FA-9258-EA981879B6C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +29,10 @@ Global
 		{9BE338D1-251F-44CF-8A88-7987803B0E23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BE338D1-251F-44CF-8A88-7987803B0E23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BE338D1-251F-44CF-8A88-7987803B0E23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21573264-05BB-44FA-9258-EA981879B6C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21573264-05BB-44FA-9258-EA981879B6C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21573264-05BB-44FA-9258-EA981879B6C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21573264-05BB-44FA-9258-EA981879B6C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -34,11 +41,3 @@ Global
 		SolutionGuid = {08EC3323-42AE-40EF-9F3F-E670720659E2}
 	EndGlobalSection
 EndGlobal
-
-
-
-
-
-
-
-
