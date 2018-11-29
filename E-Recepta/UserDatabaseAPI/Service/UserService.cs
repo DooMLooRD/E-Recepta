@@ -11,19 +11,17 @@ namespace UserDatabaseAPI.Service
 {
     public class UserService
     {
-        public async Task<IEnumerable<User>> GetAllPatients()
+        public async Task<IEnumerable<User>> GetUsers(string name, string lastName, string pesel, string role, string username)
         {
             using (DatabaseUserContext context = new DatabaseUserContext())
             {
-                return await context.Users.Where(u => u.Role == "Patient").ToListAsync();
-            }
-        }
-
-        public async Task<IEnumerable<User>> GetAllPharmacists()
-        {
-            using (DatabaseUserContext context = new DatabaseUserContext())
-            {
-                return await context.Users.Where(u => u.Role == "Pharmacist").ToListAsync();
+                return await context.Users
+                    .Where(u =>
+                        (u.Role == "" || u.Role == role)
+                        && (u.Name == "" || u.Name == name)
+                        && (u.LastName == "" || u.LastName == lastName)
+                        && (u.Pesel == "" || u.Pesel == pesel)
+                        && (u.Username == "" || u.Username == username)).ToListAsync();
             }
         }
     }

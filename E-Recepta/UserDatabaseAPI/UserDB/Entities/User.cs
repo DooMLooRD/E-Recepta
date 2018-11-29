@@ -12,7 +12,13 @@ namespace UserDatabaseAPI.UserDB.Entities
         [Key]
         public int Id { get; set; }
         [MaxLength(50)]
-        public string Username { get;set; }
+        public string Username { get; set; }
+        [MaxLength(50)]
+        public string Name { get; set; }
+        [MaxLength(50)]
+        public string LastName { get; set; }
+        [MinLength(11), MaxLength(11)]
+        public string Pesel { get; set; }
         public string PasswordHash { get; set; }
         public string Role { get; set; }
     }
