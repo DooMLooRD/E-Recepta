@@ -17,11 +17,11 @@ namespace UserDatabaseAPI.Service
             {
                 return await context.Users
                     .Where(u =>
-                        (u.Role == "" || u.Role == role)
-                        && (u.Name == "" || u.Name == name)
-                        && (u.LastName == "" || u.LastName == lastName)
-                        && (u.Pesel == "" || u.Pesel == pesel)
-                        && (u.Username == "" || u.Username == username)).ToListAsync();
+                        (role == "" || u.Role == role)
+                        && (name == "" || u.Name == name)
+                        && (lastName == "" || u.LastName == lastName)
+                        && (pesel == "" || u.Pesel == pesel)
+                        && (username == "" || u.Username == username)).ToListAsync();
             }
         }
     }
