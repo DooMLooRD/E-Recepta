@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BlockChain
 {
-    class Block
+    public class Block
     {
         
         private string hash;

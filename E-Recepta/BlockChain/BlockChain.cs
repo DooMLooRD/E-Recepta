@@ -3,15 +3,17 @@ using System.Collections.Generic;
 
 namespace BlockChain
 {
-    class BlockChain
+    public class BlockChain
     {
 
         private int id;
         private List<Block> blocks;
+        public BlockChainClient blockChainClient { get; private set; }
 
-        public BlockChain(int id)
+        public BlockChain(BlockChainClient blockChainClient)
         {
-            this.id = id;
+            this.blockChainClient = blockChainClient;
+
             blocks = new List<Block>();
 
             //Creating Genesis Block

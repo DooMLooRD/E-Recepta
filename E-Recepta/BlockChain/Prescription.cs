@@ -2,7 +2,7 @@ using System;
 
 namespace BlockChain
 {
-    class Prescription
+    public class Prescription
     {
         private string prescriptionId;
         private string patientId;

@@ -1,9 +1,13 @@
 ﻿using System;
 using BlockChain;
+using BlockChain.utils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net.NetworkInformation;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace BlockChainConsole
 {
@@ -15,10 +19,15 @@ namespace BlockChainConsole
             // 1 - prescriptions
             // 2 - realized prescriptions
 
-            BlockChainNetworkManager blockChainNetworkManager = new BlockChainNetworkManager();
-            blockChainNetworkManager.Start();
-            blockChainNetworkManager.Connect("ws://127.0.0.1:6066/Blockchain");
-            Console.WriteLine("test");
+           
+            Console.WriteLine(NetworkUtils.GetLocalIPAddress());
+            Console.WriteLine(NetworkUtils.GetMask());
+            Console.WriteLine(NetworkUtils.GetBroadcastAddress(NetworkUtils.GetLocalIPAddress(), NetworkUtils.GetMask()));
+            Console.WriteLine(NetworkUtils.GetNetworkAddress(NetworkUtils.GetLocalIPAddress(), NetworkUtils.GetMask()));
+
+            BlockChainHandler blockChainHandler = new BlockChainHandler();
+            blockChainHandler.initializeBlockChains();
+
             Console.Read();
 
             /*   BlockChain prescriptions = new BlockChain(1);
