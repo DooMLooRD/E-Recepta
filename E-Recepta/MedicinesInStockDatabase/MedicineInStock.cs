@@ -15,12 +15,13 @@ namespace MedicinesInStockDatabase
         private float _cost;
         private string _pharmacyId;
 
-        public MedicineInStock(string name, string manufacturer, int amount, float cost, string pharmacyId)
+        public MedicineInStock(string id, string name, string manufacturer, string amount, string cost, string pharmacyId)
         {
+            _id = id;
             _name = name;
             _manufacturer = manufacturer;
-            _amount = amount;
-            _cost = cost;
+            _amount = int.Parse(amount);
+            _cost = float.Parse(cost);
             _pharmacyId = pharmacyId;
         }
 
