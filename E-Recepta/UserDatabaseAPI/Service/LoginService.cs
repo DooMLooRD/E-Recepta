@@ -25,10 +25,9 @@ namespace UserDatabaseAPI.Service
 
         }
 
-        public async Task<bool> AddLoginAttempt(LoginAttemptDTO loginAttempt)
+        public async Task AddLoginAttempt(LoginAttemptDTO loginAttempt)
         {
-            if (!await IsUserInDatabase(loginAttempt.Username))
-                return false;
+
             using (DatabaseUserContext context = new DatabaseUserContext())
             {
                 context.LoginAttempts.Add(new LoginAttempt()
@@ -38,7 +37,6 @@ namespace UserDatabaseAPI.Service
                     LoginTime = loginAttempt.LoginTime
                 });
                 await context.SaveChangesAsync();
-                return true;
             }
         }
 
@@ -70,7 +68,12 @@ namespace UserDatabaseAPI.Service
             using (DatabaseUserContext context = new DatabaseUserContext())
             {
                 var user = await context.Users.FirstAsync(u => u.Username == username);
-                return user.Role == role;
+                if (user.Role == "Doctor")
+                    return role == "Doctor" || role == "Patient";
+                if(user.Role == "Pharmacist")
+                    return role == "Pharmacist" || role == "Patient";
+                return role == "Patient";
+
             }
         }
     }

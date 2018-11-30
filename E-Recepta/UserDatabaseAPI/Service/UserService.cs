@@ -11,7 +11,7 @@ namespace UserDatabaseAPI.Service
 {
     public class UserService
     {
-        public async Task<IEnumerable<User>> GetUsers(string name, string lastName, string pesel, string role, string username)
+        public async Task<IEnumerable<UserDTO>> GetUsers(string name, string lastName, string pesel, string role, string username)
         {
             using (DatabaseUserContext context = new DatabaseUserContext())
             {
@@ -21,7 +21,16 @@ namespace UserDatabaseAPI.Service
                         && (name == "" || u.Name == name)
                         && (lastName == "" || u.LastName == lastName)
                         && (pesel == "" || u.Pesel == pesel)
-                        && (username == "" || u.Username == username)).ToListAsync();
+                        && (username == "" || u.Username == username))
+                    .Select(n=> new UserDTO
+                    {
+                        Id = n.Id,
+                        LastName = n.LastName,
+                        Name = n.LastName,
+                        Pesel = n.Pesel,
+                        Role = n.Role,
+                        Username = n.Username
+                    }).ToListAsync();
             }
         }
     }
