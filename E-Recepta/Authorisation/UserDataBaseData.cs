@@ -9,17 +9,17 @@ namespace Authorisation
 {
     class UserDatabaseData
     {
-        LoginService loginService;
+        LoginService loginService = new LoginService();
 
-        public string getPasswordHash(string login, string role)
+        public string GetPasswordHash(string login, string role)
         {
             return loginService.GetPasswordHash(login, role).Result;
         }
 
-        public void saveLoginAttempt(string username, DateTime loginTime, bool isSuccesful)
+        public void SaveLoginAttempt(string username, DateTime loginTime, bool isSuccesful)
         {
             LoginAttemptDTO laDTO = new LoginAttemptDTO { Username = username, LoginTime = loginTime, IsSuccessful = isSuccesful };
-            bool x = loginService.AddLoginAttempt(laDTO).Result; //po co mnie ten bool
+            bool x = loginService.AddLoginAttempt(laDTO).Result; //po co mnie ten bool???
             return;
         }
     }

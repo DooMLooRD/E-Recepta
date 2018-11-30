@@ -9,7 +9,7 @@ namespace Authorisation
 {
     class HashGenerator
     {
-        static public string getHashFromPassword (string password)
+        static public string GetHashFromPassword (string password)
         {
             byte[] tmpSource;
             byte[] tmpHash;
