@@ -1,0 +1,119 @@
+﻿<Page x:Class="UserInterface.View.DoctorPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:UserInterface.View"
+      xmlns:viewModel="clr-namespace:UserInterface.ViewModel"
+      xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+      xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="DoctorPage">
+    <Page.DataContext>
+        <viewModel:DoctorViewModel/>
+    </Page.DataContext>
+    <Grid>
+        <TabControl>
+            <TabItem>
+                <TabItem.Header>Add prescription</TabItem.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="15*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="15*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="4*"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox mah:TextBoxHelper.Watermark="First name" Text="{Binding UserFilter.Name, Mode=OneWayToSource}"/>
+                            <TextBox mah:TextBoxHelper.Watermark="Last name" Text="{Binding UserFilter.LastName, Mode=OneWayToSource}"/>
+                            <TextBox mah:TextBoxHelper.Watermark="PESEL" Text="{Binding UserFilter.Pesel, Mode=OneWayToSource}"/>
+                            <Button Command="{Binding LoadPatientsCommand}">Search</Button>
+                        </StackPanel>
+                        <DataGrid IsReadOnly="True" AutoGenerateColumns="False" IsTextSearchEnabled="True" SelectionMode="Single" ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedUser, Mode=TwoWay}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn IsReadOnly="True" Header="First name" Binding="{Binding Name}"/>
+                                <DataGridTextColumn IsReadOnly="True" Header="Last name" Binding="{Binding LastName}"/>
+                                <DataGridTextColumn IsReadOnly="True" Header="Pesel" Binding="{Binding Pesel}"/>
+                            </DataGrid.Columns>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <i:InvokeCommandAction Command="{Binding LoadPatientsUnrealisedPrescriptionsCommand}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+
+                        </DataGrid>
+                    </StackPanel>
+                    <StackPanel Grid.Row="0" Grid.Column="2">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox mah:TextBoxHelper.Watermark="Name" Text="{Binding MedicineFilter.Name}"/>
+                            <TextBox mah:TextBoxHelper.Watermark="Manufacturer" Text="{Binding MedicineFilter.Manufacturer}"/>
+                            <Button Command="{Binding LoadMedicinesCommand}">Search</Button>
+                        </StackPanel>
+                        <DataGrid IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding Medicines}" SelectedItem="{Binding SelectedMedicine, Mode=OneWayToSource}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                                <DataGridTextColumn Header="Manufacturer" Binding="{Binding Manufacturer}"/>
+                                <DataGridTextColumn Header="Refund Rate" Binding="{Binding RefundRate}"/>
+                                <DataGridTemplateColumn>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DoctorPage}}, Path=DataContext.AddToPrescriptionCommand}">Add</Button>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding NewPrescription}" SelectedItem="{Binding SelectedPrescriptionMedicine}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn IsReadOnly="True" Header="Name" Binding="{Binding Medicine.Name}"/>
+                                <DataGridTextColumn IsReadOnly="True" Header="Manufacturer" Binding="{Binding Medicine.Manufacturer}"/>
+                                <DataGridTextColumn IsReadOnly="True" Header="Refund Rate" Binding="{Binding Medicine.RefundRate}"/>
+                                <mah:DataGridNumericUpDownColumn Header="Amount"
+                                                                      Binding="{Binding Amount}"
+                                                                      Minimum="1" />
+                                <DataGridTemplateColumn>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DoctorPage}}, Path=DataContext.RemoveFromPrescriptionCommand}">Remove</Button>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <Button Command="{Binding RealizePrescriptionCommand}">Realize</Button>
+                    </StackPanel>
+                    <mah:ProgressRing Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Foreground="{DynamicResource AccentColorBrush}" Visibility="{Binding IsWorking, Converter={StaticResource BoolToVis}}"/>
+                </Grid>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>My Prescriptions</TabItem.Header>
+                <StackPanel>
+                    <Button Command="{Binding LoadDoctorsPrescriptionsCommand}">xd</Button>
+                    <DataGrid AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Prescriptions}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn IsReadOnly="True" Header="Patient" Binding="{Binding Doctor.LastName}"/>
+                            <DataGridTextColumn IsReadOnly="True" Header="Date" Binding="{Binding Date}"/>
+                            <DataGridTextColumn IsReadOnly="True" Header="Valid since" Binding="{Binding ValidSince}"/>
+                        </DataGrid.Columns>
+                        <DataGrid.RowDetailsTemplate>
+                            <DataTemplate>
+                                <DataGrid AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Medicines}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Name" Binding="{Binding Medicine.Name}"/>
+                                        <DataGridTextColumn Header="Manufacturer" Binding="{Binding Medicine.Manufacturer}"/>
+                                        <DataGridTextColumn Header="Amount" Binding="{Binding Amount}"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </DataTemplate>
+                        </DataGrid.RowDetailsTemplate>
+                    </DataGrid>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Page>

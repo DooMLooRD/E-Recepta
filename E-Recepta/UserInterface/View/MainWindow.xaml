@@ -1,0 +1,25 @@
+﻿<Controls:MetroWindow x:Class="UserInterface.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UserInterface.View"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Controls:MetroWindow.Flyouts>
+        <Controls:FlyoutsControl DataContext="{Binding}">
+            <Controls:Flyout Header="Login logs" Position="Right" Width="200" IsOpen="{Binding ShowLogs}">
+                <TextBlock Text="{Binding LoginLogs2}"></TextBlock>
+            </Controls:Flyout>
+        </Controls:FlyoutsControl>
+    </Controls:MetroWindow.Flyouts>
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands DataContext="{Binding}">
+            <Button Content="Show logs" IsEnabled="{Binding IsLoggedIn}" Command="{Binding SwitchShowLogsCommand}"></Button>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+    <Grid>
+        <Frame Source="{Binding CurrentPage}" DataContext="{Binding}" NavigationUIVisibility="Hidden"/>
+    </Grid>
+</Controls:MetroWindow>
