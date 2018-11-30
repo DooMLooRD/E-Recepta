@@ -71,11 +71,17 @@ namespace BlockChain
         public Block Find(string prescriptionId) {
             UpdateBlockChain();
 
-            foreach(Block block in blocks)
+            bool ignoreGenesisBlock = true;
+            foreach (Block block in blocks)
             {
-                if(block.GetPrescription().prescriptionId.Equals(prescriptionId))
+                if (ignoreGenesisBlock)
                 {
-                    return block;
+                    ignoreGenesisBlock = false;
+                } else {
+                    if (block.GetPrescription().prescriptionId.Equals(prescriptionId))
+                    {
+                        return block;
+                    }
                 }
             }
 

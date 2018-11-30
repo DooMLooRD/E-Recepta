@@ -27,7 +27,7 @@ namespace BlockChainConsole
             Console.WriteLine(NetworkUtils.GetNetworkAddress(NetworkUtils.GetLocalIPAddress(), NetworkUtils.GetMask()));
 
             BlockChainHandler blockChainHandler = new BlockChainHandler();
-            blockChainHandler.initializeBlockChains();
+            blockChainHandler.InitializeBlockChains();
 
         //    Console.WriteLine(blockChainHandler.getSizeOfPrescriptions());
 
@@ -43,16 +43,15 @@ namespace BlockChainConsole
             medicines.Add(medicine);
             medicines.Add(medicine2);
 
-            blockChainHandler.addPrescription("patientId_123asd", "doctorId_321asd", medicines);
+            blockChainHandler.AddPrescription("patientId_123asd", "doctorId_321asd", medicines);
 
-            Console.WriteLine(blockChainHandler.getSizeOfPrescriptions());
+            Console.WriteLine(blockChainHandler.GetNumberOfPrescriptions());
 
             Console.ReadKey();
 
             Console.WriteLine("Realize prescription type id:");
             string prescriptionId = Console.ReadLine();
-            Console.WriteLine(prescriptionId);
-            blockChainHandler.realizePrescription("123", "1");
+            blockChainHandler.RealizePrescription(prescriptionId, "1");
 
             Console.ReadKey();
 

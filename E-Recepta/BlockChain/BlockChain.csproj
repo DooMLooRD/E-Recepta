@@ -48,6 +48,7 @@
     <Compile Include="BlockChainServer.cs" />
     <Compile Include="BlockChainClient.cs" />
     <Compile Include="BlockChainValidator.cs" />
+    <Compile Include="IBlockChainHandler.cs" />
     <Compile Include="Medicine.cs" />
     <Compile Include="Prescription.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

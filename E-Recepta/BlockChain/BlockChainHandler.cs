@@ -8,7 +8,7 @@ using BlockChain.utils;
 
 namespace BlockChain
 {
-    public class BlockChainHandler
+    public class BlockChainHandler : IBlockChainHandler
     {
         List<string> availableIpAddresses;
 
@@ -21,15 +21,15 @@ namespace BlockChain
         private BlockChain prescriptions;
         private BlockChain realizedPrescriptions;
 
-        public async void initializeBlockChains()
+        public async void InitializeBlockChains()
         {
-            getOnlineHosts();
+            GetOnlineHosts();
 
-            prescriptionBlockChainInit();
-            realizedPrescriptionBlockChainInit();
+            PrescriptionBlockChainInit();
+            RealizedPrescriptionBlockChainInit();
         }
 
-        public void addPrescription(string patientId, string doctorId, ObservableCollection<Medicine> medicines)
+        public bool AddPrescription(string patientId, string doctorId, ObservableCollection<Medicine> medicines)
         {
 
             if (prescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
@@ -39,21 +39,157 @@ namespace BlockChain
               doctorId, DateTime.Now, DateTime.Now, medicines);
 
             prescriptions.Add(prescription);
+            return true;
 
             } else
             {
                 Console.WriteLine("At least 2 peers connected are required to use this method.");
             }
+
+            return false;
         }
 
-        public bool realizePrescription(string prescriptionId, string pharmacistId)
+        public ObservableCollection<Prescription> GetAllPrescriptionsByPatient(string patientId)
+        {
+            if (prescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
+            {
+                ObservableCollection<Prescription> prescriptionsCollection = new ObservableCollection<Prescription>();
+
+                List<Block> blocks = prescriptions.GetAll();
+
+                foreach (Block block in blocks)
+                {
+                    if (block.GetPrescription().patientId.Equals(patientId))
+                    {
+                        prescriptionsCollection.Add(block.GetPrescription());
+                    }
+                }
+
+                return prescriptionsCollection;
+            }
+
+            return null;
+        }
+
+        public ObservableCollection<Prescription> GetAllPrescriptionsByPharmacist(string pharmacistId)
+        {
+            if (prescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
+            {
+                ObservableCollection<Prescription> prescriptionsCollection = new ObservableCollection<Prescription>();
+
+                List<Block> blocks = prescriptions.GetAll();
+
+                foreach (Block block in blocks)
+                {
+                    if(block.GetPrescription().pharmacistId.Equals(pharmacistId))
+                    {
+                        prescriptionsCollection.Add(block.GetPrescription());
+                    }
+                }
+
+                return prescriptionsCollection;
+            }
+
+            return null;
+        }
+
+        public ObservableCollection<Prescription> GetAllPrescriptionsByDoctor(string doctorId)
+        {
+            if (prescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
+            {
+                ObservableCollection<Prescription> prescriptionsCollection = new ObservableCollection<Prescription>();
+
+                List<Block> blocks = prescriptions.GetAll();
+
+                foreach (Block block in blocks)
+                {
+                    if (block.GetPrescription().doctorId.Equals(doctorId))
+                    {
+                        prescriptionsCollection.Add(block.GetPrescription());
+                    }
+                }
+
+                return prescriptionsCollection;
+            }
+
+            return null;
+        }
+
+        public ObservableCollection<Prescription> GetAllRealizedPrescriptionsByPatient(string patientId)
+        {
+            if (realizedPrescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
+            {
+                ObservableCollection<Prescription> realizedPrescriptionsCollection = new ObservableCollection<Prescription>();
+
+                List<Block> blocks = realizedPrescriptions.GetAll();
+
+                foreach (Block block in blocks)
+                {
+                    if (block.GetPrescription().patientId.Equals(patientId))
+                    {
+                        realizedPrescriptionsCollection.Add(block.GetPrescription());
+                    }
+                }
+
+                return realizedPrescriptionsCollection;
+
+            }
+
+            return null;
+        }
+
+        public ObservableCollection<Prescription> GetAllRealizedPrescriptionsByPharmacist(string pharmacistId)
+        {
+            if (realizedPrescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
+            {
+                ObservableCollection<Prescription> realizedPrescriptionsCollection = new ObservableCollection<Prescription>();
+
+                List<Block> blocks = realizedPrescriptions.GetAll();
+
+                foreach (Block block in blocks)
+                {
+                    if (block.GetPrescription().pharmacistId.Equals(pharmacistId))
+                    {
+                        realizedPrescriptionsCollection.Add(block.GetPrescription());
+                    }
+                }
+
+                return realizedPrescriptionsCollection;
+            }
+
+            return null;
+        }
+
+        public ObservableCollection<Prescription> GetAllRealizedPrescriptionsByDoctor(string doctorId)
+        {
+            if (realizedPrescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
+            {
+                ObservableCollection<Prescription> realizedPrescriptionsCollection = new ObservableCollection<Prescription>();
+
+                List<Block> blocks = realizedPrescriptions.GetAll();
+
+                foreach (Block block in blocks)
+                {
+                    if (block.GetPrescription().doctorId.Equals(doctorId))
+                    {
+                        realizedPrescriptionsCollection.Add(block.GetPrescription());
+                    }
+                }
+
+                return realizedPrescriptionsCollection;
+            }
+
+            return null;
+        }
+
+        public bool RealizePrescription(string prescriptionId, string pharmacistId)
         {
             Console.WriteLine("Realization...");
 
             if (realizedPrescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
             {
 
-                if (realizedPrescriptions.Find(prescriptionId) != null)
+                if (realizedPrescriptions.Find(prescriptionId) == null)
                 {
                     Block block = prescriptions.Find(prescriptionId);
 
@@ -68,7 +204,7 @@ namespace BlockChain
 
                 }
 
-                Console.WriteLine("Prescription is already realized.");
+                Console.WriteLine("Prescription is already realized or is not existing.");
                 
                 return false;
 
@@ -81,12 +217,68 @@ namespace BlockChain
             }
         }
 
-        public int getSizeOfPrescriptions()
+        public ObservableCollection<Prescription> GetAllPrescriptions()
         {
-            return prescriptions.GetSize();
+            if (prescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
+            {
+
+                ObservableCollection<Prescription> prescriptionsCollection = new ObservableCollection<Prescription>();
+
+                List<Block> blocks = prescriptions.GetAll();
+
+                foreach (Block block in blocks)
+                {
+                    prescriptionsCollection.Add(block.GetPrescription());
+                }
+
+                return prescriptionsCollection;
+
+            }
+
+            return null;
         }
 
-        private async void getOnlineHosts()
+        public ObservableCollection<Prescription> GetAllRealizedPrescriptions()
+        {
+            if (realizedPrescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
+            {
+
+                ObservableCollection<Prescription> realizedPrescriptionsCollection = new ObservableCollection<Prescription>();
+
+                List<Block> blocks = realizedPrescriptions.GetAll();
+
+                foreach (Block block in blocks)
+                {
+                    realizedPrescriptionsCollection.Add(block.GetPrescription());
+                }
+
+                return realizedPrescriptionsCollection;
+
+            }
+
+            return null;
+        }
+
+
+        public int GetNumberOfPrescriptions()
+        {
+            if (prescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
+            {
+                return prescriptions.GetSize() - 1;
+            }
+            return 0;
+        }
+
+        public int GetNumberOfRealizedPrescriptions()
+        {
+            if (realizedPrescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
+            {
+                return realizedPrescriptions.GetSize() - 1;
+            }
+            return 0;
+        }
+
+        private async void GetOnlineHosts()
         {
             availableIpAddresses = new List<string>();
 
@@ -94,7 +286,7 @@ namespace BlockChain
             availableIpAddresses = await networkPing.RunPingAsync();
         }
 
-        private async void prescriptionBlockChainInit()
+        private async void PrescriptionBlockChainInit()
         {
             blockChainClient_prescriptions = new BlockChainClient(NetworkUtils.GetLocalIPAddress().ToString(), "6066");
 
@@ -123,7 +315,7 @@ namespace BlockChain
 
         }
 
-        private async void realizedPrescriptionBlockChainInit()
+        private async void RealizedPrescriptionBlockChainInit()
         {
             blockChainClient_realized = new BlockChainClient(NetworkUtils.GetLocalIPAddress().ToString(), "6067");
 

@@ -26,7 +26,7 @@ namespace BlockChain
             this.prescription = prescription;
             this.hash = GenerateHash();
 
-            if (prescription != null && previousHash != null)
+            if (prescription != null && previousHash != null && prescription.prescriptionId == null)
             {
                 prescription.prescriptionId = this.hash;
             }
