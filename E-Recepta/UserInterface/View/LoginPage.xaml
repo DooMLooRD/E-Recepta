@@ -1,0 +1,45 @@
+﻿<Page x:Class="UserInterface.View.LoginPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:UserInterface.View"
+      xmlns:vm="clr-namespace:UserInterface.ViewModel"
+      xmlns:cnvs="clr-namespace:UserInterface.Converters"
+      xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+      xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="LoginPage">
+    <Page.DataContext>
+        <vm:LoginViewModel/>
+    </Page.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100*"/>
+            <RowDefinition Height="349*"/>
+        </Grid.RowDefinitions>
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" FontSize="48" Foreground="#FF00B1FF" FontFamily="Impact">E-Recepty</TextBlock>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">
+            <ComboBox Width="100px" SelectedIndex="0" ItemsSource="{Binding Path=Roles}" SelectedItem="{Binding Role, Mode=OneWayToSource}"></ComboBox>
+            <TextBox mah:TextBoxHelper.Watermark="username" Text="{Binding Username, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" >
+                <!--<i:Interaction.Triggers>
+                    <i:EventTrigger EventName="KeyDown">
+                        <i:InvokeCommandAction 
+                            Command="{Binding VerifyDataCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>-->
+            </TextBox>
+            <TextBox mah:TextBoxHelper.Watermark="password" Text="{Binding Password, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}">
+                <!--<i:Interaction.Triggers>
+                    <i:EventTrigger EventName="KeyDown">
+                        <i:InvokeCommandAction 
+                            Command="{Binding VerifyDataCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>-->
+            </TextBox>
+            <Button Style="{StaticResource AccentedSquareButtonStyle}" Content="Login" Command="{Binding LoginCommand}"></Button>
+            <mah:ProgressRing Foreground="{DynamicResource AccentColorBrush}" Visibility="{Binding IsWorking, Converter={StaticResource BoolToVis}}"/>
+        </StackPanel>
+    </Grid>
+</Page>
