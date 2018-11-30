@@ -46,6 +46,41 @@ namespace BlockChain
             }
         }
 
+        public bool realizePrescription(string prescriptionId, string pharmacistId)
+        {
+            Console.WriteLine("Realization...");
+
+            if (realizedPrescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
+            {
+
+                if (realizedPrescriptions.Find(prescriptionId) != null)
+                {
+                    Block block = prescriptions.Find(prescriptionId);
+
+                    if(block != null)
+                    {
+                        block.GetPrescription().pharmacistId = pharmacistId;
+
+                        realizedPrescriptions.Add(block.GetPrescription());
+
+                        return true;
+                    }
+
+                }
+
+                Console.WriteLine("Prescription is already realized.");
+                
+                return false;
+
+            }
+            else
+            {
+                Console.WriteLine("At least 2 peers connected are required to use this method.");
+
+                return false;
+            }
+        }
+
         public int getSizeOfPrescriptions()
         {
             return prescriptions.GetSize();

@@ -111,9 +111,9 @@ namespace BlockChain
         private void SaveTheAddBlockVerificationAnswer(string boolStr)
         {
             addedBlocksAnswers.Add(StringToBool(boolStr));
-            if (addedBlocksAnswers.Count >= numberOfExpectedAnsers)
+            if (addedBlocksAnswers.Count >= numberOfAddedExpectedAnswers)
             {
-                AnswersGotMethod(verificationAnswers);
+                AddBlockVerificationAnswersMethod(addedBlocksAnswers);
             }
         }
 

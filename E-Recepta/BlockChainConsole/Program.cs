@@ -47,8 +47,16 @@ namespace BlockChainConsole
 
             Console.WriteLine(blockChainHandler.getSizeOfPrescriptions());
 
-            Console.WriteLine("Click to exit.");
             Console.ReadKey();
+
+            Console.WriteLine("Realize prescription type id:");
+            string prescriptionId = Console.ReadLine();
+            Console.WriteLine(prescriptionId);
+            blockChainHandler.realizePrescription("123", "1");
+
+            Console.ReadKey();
+
+
 
             /*   BlockChain prescriptions = new BlockChain(1);
               Prescription prescription = new Prescription("patientId_123asd",

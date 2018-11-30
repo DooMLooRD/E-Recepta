@@ -48,9 +48,12 @@ namespace BlockChain
 
                 Console.WriteLine(JsonConvert.SerializeObject(block));
 
-            } while (CheckAddedBlock(block));
+            } while (!CheckAddedBlock(block));
+
+            Console.WriteLine("Ended adding block");
 
             blocks.Add(block);
+
             BlockChainSerializer.serialize(blocks, blockChainName);
         }
 
@@ -65,10 +68,18 @@ namespace BlockChain
             return false;
         }
 
-        public Block Find(string query) {
+        public Block Find(string prescriptionId) {
             UpdateBlockChain();
 
-            return blocks[0];
+            foreach(Block block in blocks)
+            {
+                if(block.GetPrescription().prescriptionId.Equals(prescriptionId))
+                {
+                    return block;
+                }
+            }
+
+            return null;
         }
 
         public List<Block> GetAll() {
