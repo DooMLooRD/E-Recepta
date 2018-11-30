@@ -7,8 +7,8 @@ namespace BlockChain
     public delegate void SendNewChain(List<Block> newChain);
     public class BlockChain
     {
-        [JsonProperty]
 
+        [JsonProperty]
         private List<Block> blocks;
 
         public BlockChainClient blockChainClient { get; private set; }
@@ -29,13 +29,17 @@ namespace BlockChain
         }
 
         public void Add(Prescription prescription) {
-            UpdateBlockChain();
 
-            Block lastBlock = blocks[blocks.Count-1];
-            Block block = new Block(lastBlock.GetHash(), prescription);
-            Console.WriteLine(JsonConvert.SerializeObject(block));
+            Block block = null;
 
-            blockChainClient.SendBlock(block);
+            do
+            {
+                UpdateBlockChain();
+
+                Block lastBlock = blocks[blocks.Count - 1];
+                block = new Block(lastBlock.GetHash(), prescription);
+
+            } while (CheckAddedBlock(block));
 
             blocks.Add(block);
         }
@@ -106,10 +110,11 @@ namespace BlockChain
                 }
             }
         }
+
         private bool CheckCurrentChain()
         {
             Console.WriteLine("StartChecking");
-            blockChainClient.InitializeAnswersCollecting(validator.giveVerificationAnswers);
+            blockChainClient.InitializeVerificationAnswersCollecting(validator.giveVerificationAnswers);
             Console.WriteLine("initialized answers collecting");
             blockChainClient.askForVerification(blocks);
             int validatorAnswer;
@@ -128,7 +133,32 @@ namespace BlockChain
                 return false;
             }
         }
-        public void GiveNewChain(List<Block> newChain)
+
+
+        private bool CheckAddedBlock(Block block)
+        {
+            Console.WriteLine("StartCheckingAddedBlock");
+            blockChainClient.InitializeAddBlockAnswersCollecting(validator.giveAddBlockVerificationAnswers);
+            Console.WriteLine("initialized answers collecting");
+            blockChainClient.SendBlock(block);
+            int validatorAnswer;
+            do
+            {
+                validatorAnswer = validator.getAddBlockVerificationAnswer();
+            }
+            while (validatorAnswer == 0); //waiting for answers
+
+            if (validatorAnswer == 1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private void GiveNewChain(List<Block> newChain)
         {
             if (ChainRequestSent)
             {

@@ -10,12 +10,15 @@ namespace BlockChain
     {
 
         private static int MAX_NUMBER_OF_COMPARED_BLOCKS = 50;
-        private int BlockChainVerification;
+        private int BlockChainVerificationDone;
+        private int BlockChainAddBlockVerificationDone;
         public IDictionary<string, bool> verificationAnswers { get;  private set; }
+        public List<bool> addBlockVerificationAnswers { get; private set; }
 
         public BlockChainValidator()
         {
-            BlockChainVerification = 0;         
+            BlockChainVerificationDone = 0;
+            BlockChainAddBlockVerificationDone = 0;
         }
 
         public static bool Compare(List<Block> firstBlocks, List<Block> secondsBlocks)
@@ -52,6 +55,58 @@ namespace BlockChain
             Console.WriteLine("RETURN TRUE???");
             return true;
         }
+
+
+        #region BlockChain_BlockChainAddBlock
+
+        public void giveAddBlockVerificationAnswers(List<bool> answers)
+        {
+            int numberOfTrue = 0;
+            int numberOfFalse = 0;
+            foreach (bool answer in answers)
+            {
+                if (answer)
+                {
+                    numberOfTrue++;
+                }
+                else
+                {
+                    numberOfFalse++;
+                }
+            }
+
+            // Equal or more than 50%
+            if (numberOfTrue >= numberOfFalse)
+            {
+                addBlockVerificationAnswers = answers;
+                BlockChainAddBlockVerificationDone = 1; //1 = true
+            }
+            else
+            {
+                addBlockVerificationAnswers = answers;
+                BlockChainAddBlockVerificationDone = -1; //-1 = false
+            }
+        }
+
+        public int getAddBlockVerificationAnswer()
+        {
+            if (BlockChainAddBlockVerificationDone == -1)
+            {
+                BlockChainAddBlockVerificationDone = 0;
+                return -1; //answer == false
+            }
+            if (BlockChainAddBlockVerificationDone == 1)
+            {
+                BlockChainAddBlockVerificationDone = 0;
+                return 1; //answer == true
+            }
+            return 0; //answer not redy code
+        }
+
+        #endregion
+
+        #region BlockChain_BlockChainUpdate
+
         public void giveVerificationAnswers(IDictionary<string,bool> answers)
         {
             int numberOfTrue = 0;
@@ -68,31 +123,35 @@ namespace BlockChain
                 }
             }
 
+            // Equal or more than 50%
             if(numberOfTrue >= numberOfFalse)
             {
                 verificationAnswers = answers;
-                BlockChainVerification = 1; //1 = true
+                BlockChainVerificationDone = 1; //1 = true
             }
             else
             {
                 verificationAnswers = answers;
-                BlockChainVerification = -1; //-1 = false
+                BlockChainVerificationDone = -1; //-1 = false
             }
         }
+
         public int getVerificationAnswer()
         {
-            if(BlockChainVerification == -1)
+            if(BlockChainVerificationDone == -1)
             {
-                BlockChainVerification = 0;
+                BlockChainVerificationDone = 0;
                 return -1; //answer == false
             }
-            if(BlockChainVerification == 1)
+            if(BlockChainVerificationDone == 1)
             {
-                BlockChainVerification = 0;
+                BlockChainVerificationDone = 0;
                 return 1; //answer == true
             }
             return 0; //answer not redy code
         }
+
+        #endregion
 
 
 

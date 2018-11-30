@@ -7,6 +7,7 @@ using WebSocketSharp;
 namespace BlockChain
 {
     public delegate void VerificationAnswersGot(IDictionary<string, bool> answersToSend);
+    public delegate void AddBlockVerificationAnswersGot(List<bool> answersToSend);
     public class BlockChainClient
     {
 
@@ -15,9 +16,11 @@ namespace BlockChain
 
         private int numberOfExpectedAnsers;
         private VerificationAnswersGot AnswersGotMethod;
+        private AddBlockVerificationAnswersGot AddBlockVerificationAnswersMethod;
         public SendNewChain sendNewChainMethod;
 
         private IDictionary<string, bool> verificationAnswers = new Dictionary<string,bool>();
+        private List<bool> addedBlocksAnswers = new List<bool>();
         private IDictionary<string, WebSocket> wsDict = new Dictionary<string, WebSocket>();
 
         public BlockChainClient(string clientIpAddress, string clientPort)
@@ -49,7 +52,7 @@ namespace BlockChain
                         }
                         if (NetworkUtils.SplitPacket(e.Data, 0).Equals("packet_block"))
                         {
-
+                            SaveTheAddBlockVerificationAnswer(NetworkUtils.SplitPacket(e.Data, 1));
                             Console.WriteLine(NetworkUtils.SplitPacket(e.Data, 1));
                             //saveTheWeryficationAnswer(StringToBool(NetworkUtils.SplitPacket(e.Data, 1)));
                         }
@@ -84,29 +87,48 @@ namespace BlockChain
             }
         }
 
+        #region BlockChain_AddBlock
+
         public void SendBlock(Block block)
         {
+            Console.WriteLine("try_to_add_blocks");
             foreach (var item in wsDict)
             {
                 item.Value.Send("packet_block" + NetworkUtils.packetSeparator + JsonConvert.SerializeObject(block));
             }
         }
-        
-        #region ToUpdateBlockChain
 
-        public int askForVerification(List<Block> blocks)
+        public void InitializeAddBlockAnswersCollecting(AddBlockVerificationAnswersGot WhenAnswersGot)
+        {
+            int expectedAnswers = wsDict.Count;
+            numberOfExpectedAnsers = expectedAnswers;
+            addedBlocksAnswers = new List<bool>();
+            AddBlockVerificationAnswersMethod = WhenAnswersGot;
+        }
+
+        private void SaveTheAddBlockVerificationAnswer(string boolStr)
+        {
+            addedBlocksAnswers.Add(StringToBool(boolStr));
+            if (addedBlocksAnswers.Count >= numberOfExpectedAnsers)
+            {
+                AnswersGotMethod(verificationAnswers);
+            }
+        }
+
+        #endregion
+
+        #region BlockChain_UpdateBlockChain
+
+        public void askForVerification(List<Block> blocks)
         {
             Console.WriteLine("ask_for_verification");
-            int counter = 0;
             foreach (var item in wsDict)
             {
                 item.Value.Send("packet_verification" + NetworkUtils.packetSeparator + JsonConvert.SerializeObject(blocks));
-                counter++;
             }
-            return counter;
         }
 
-        public void InitializeAnswersCollecting(VerificationAnswersGot WhenAnswersGot)
+        public void InitializeVerificationAnswersCollecting(VerificationAnswersGot WhenAnswersGot)
         {
             int expectedAnswers = wsDict.Count;
             numberOfExpectedAnsers = expectedAnswers;
