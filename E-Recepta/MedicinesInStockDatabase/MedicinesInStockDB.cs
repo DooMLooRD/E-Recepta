@@ -228,5 +228,45 @@ namespace MedicinesInStockDatabase
 
             return pharmacies;
         }
+
+        public async Task<int> IsMedicineAmountEnough(string medicineId, string desiredAmount) //returns 1 when is enough, 0 when not and -1 when sql exception occurs
+        {
+            int result = -1;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    SqlCommand command = conn.CreateCommand();
+                    string commandText = "SELECT amount FROM medicines_in_stock WHERE medicine_id = " + medicineId +
+                        " AND pharmacy_id = " + pharmacyId;
+
+                    command.CommandText = commandText;
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
+
+                    while (reader.Read())
+                    {
+                        if (int.Parse(reader["amount"].ToString()) >= int.Parse(desiredAmount))
+                        {
+                            result = 1;
+                        }
+                        else
+                        {
+                            result = 0;
+                        }
+                    }
+                    reader.Close();
+
+
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+
+            return result;
+        }
     }
 }
