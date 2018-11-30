@@ -15,6 +15,7 @@ namespace BlockChain
         private string clientPort;
 
         private int numberOfExpectedAnsers;
+        private int numberOfAddedExpectedAnswers;
         private VerificationAnswersGot AnswersGotMethod;
         private AddBlockVerificationAnswersGot AddBlockVerificationAnswersMethod;
         public SendNewChain sendNewChainMethod;
@@ -39,7 +40,7 @@ namespace BlockChain
                     WebSocket ws = new WebSocket($"ws://" + serverAddress + ":" + port + "/Blockchain");
 
                     // Remove StackTrace
-                    ws.Log.Output = (_, __) => { };
+                 //   ws.Log.Output = (_, __) => { };
 
                     // Listen messages from server
                     ws.OnMessage += (sender, e) =>
@@ -94,6 +95,7 @@ namespace BlockChain
             Console.WriteLine("try_to_add_blocks");
             foreach (var item in wsDict)
             {
+                Console.WriteLine(JsonConvert.SerializeObject(block));
                 item.Value.Send("packet_block" + NetworkUtils.packetSeparator + JsonConvert.SerializeObject(block));
             }
         }
@@ -101,7 +103,7 @@ namespace BlockChain
         public void InitializeAddBlockAnswersCollecting(AddBlockVerificationAnswersGot WhenAnswersGot)
         {
             int expectedAnswers = wsDict.Count;
-            numberOfExpectedAnsers = expectedAnswers;
+            numberOfAddedExpectedAnswers = expectedAnswers;
             addedBlocksAnswers = new List<bool>();
             AddBlockVerificationAnswersMethod = WhenAnswersGot;
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,15 +29,14 @@ namespace BlockChain
             realizedPrescriptionBlockChainInit();
         }
 
-        public void addPrescription(string patientId, string doctorId, string prescriptionInfo)
+        public void addPrescription(string patientId, string doctorId, ObservableCollection<Medicine> medicines)
         {
 
             if (prescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
             {
-                          
 
-            Prescription prescription = new Prescription(patientId,
-              doctorId, DateTime.Now, prescriptionInfo);
+                Prescription prescription = new Prescription(patientId,
+              doctorId, DateTime.Now, DateTime.Now, medicines);
 
             prescriptions.Add(prescription);
 

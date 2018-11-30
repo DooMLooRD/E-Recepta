@@ -30,7 +30,7 @@ namespace BlockChain
            
         wss.AddWebSocketService<BlockChainServer>("/Blockchain", () => new BlockChainServer(blockChain, ipAddress, port));
         wss.Start();
-        wss.Log.Output = (_, __) => { };
+      //  wss.Log.Output = (_, __) => { };
         Console.WriteLine($"Started server at ws://" + ipAddress + ":" + port + "");
     }
 
@@ -46,8 +46,10 @@ namespace BlockChain
 
             if (NetworkUtils.SplitPacket(e.Data, 0).Equals("packet_block"))
             {
-
+                Console.WriteLine(NetworkUtils.SplitPacket(e.Data, 1));
+                Console.WriteLine("Starting validation...");
                 bool blockAdded = blockChain.AddForeignBlock(JsonConvert.DeserializeObject<Block>(NetworkUtils.SplitPacket(e.Data, 1)));
+                Console.WriteLine("Ending validation...");
                 Console.WriteLine("Foregin block added ==" + blockAdded);
                 Send("packet_block" + NetworkUtils.packetSeparator + blockAdded + NetworkUtils.packetSeparator + "ws://" + ipAddress + ":" + port + "/Blockchain");
                 Console.WriteLine(NetworkUtils.SplitPacket(e.Data, 1));

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Net.NetworkInformation;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Collections.ObjectModel;
 
 namespace BlockChainConsole
 {
@@ -33,7 +34,16 @@ namespace BlockChainConsole
             Console.WriteLine("Click to send block");
             Console.ReadKey();
             Console.WriteLine("----------------");
-            blockChainHandler.addPrescription("patientId_123asd", "doctorId_321asd", "testJsonData");
+
+            ObservableCollection<Medicine> medicines = new ObservableCollection<Medicine>();
+
+            Medicine medicine = new Medicine(2, 5);
+            Medicine medicine2 = new Medicine(1, 1);
+
+            medicines.Add(medicine);
+            medicines.Add(medicine2);
+
+            blockChainHandler.addPrescription("patientId_123asd", "doctorId_321asd", medicines);
 
             Console.WriteLine(blockChainHandler.getSizeOfPrescriptions());
 

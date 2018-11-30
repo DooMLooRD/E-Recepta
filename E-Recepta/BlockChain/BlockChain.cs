@@ -39,6 +39,8 @@ namespace BlockChain
                 Block lastBlock = blocks[blocks.Count - 1];
                 block = new Block(lastBlock.GetHash(), prescription);
 
+                Console.WriteLine(JsonConvert.SerializeObject(block));
+
             } while (CheckAddedBlock(block));
 
             blocks.Add(block);

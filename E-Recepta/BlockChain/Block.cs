@@ -25,6 +25,11 @@ namespace BlockChain
             this.previousHash = previousHash;
             this.prescription = prescription;
             this.hash = GenerateHash();
+
+            if (prescription != null && previousHash != null)
+            {
+                prescription.prescriptionId = this.hash;
+            }
         }
 
         public string GetHash() {
@@ -54,10 +59,16 @@ namespace BlockChain
                 }
 
                 if (prescription != null) {
-                    prescriptionData = prescription.GetDoctorId() + "::" +
-                    prescription.GetPatientId() + "::" +
-                    prescription.GetPharmacistId() + "::" +
-                    prescription.GetPrescriptionInfo();
+                    prescriptionData = prescription.doctorId + "::" +
+                    prescription.patientId + "::" +
+                    prescription.pharmacistId + "::";
+                    for(int i = 0; i < prescription.medicines.Count; i++)
+                    {
+                        prescriptionData = prescription.medicines[i].id.ToString() + "::" +
+                            prescription.medicines[i].amount.ToString() + "::";
+                    }
+                    
+
                 } else {
                     prescriptionData = "empty";
                 }
