@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BlockChain.utils;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using WebSocketSharp;
 
@@ -9,6 +11,7 @@ namespace BlockChain
 
         private string clientIpAddress;
         private string clientPort;
+        private BlockChainValidator blockChainValidator;
 
         IDictionary<string, WebSocket> wsDict = new Dictionary<string, WebSocket>();
 
@@ -16,15 +19,16 @@ namespace BlockChain
         {
             this.clientIpAddress = clientIpAddress;
             this.clientPort = clientPort;
+            this.blockChainValidator = new BlockChainValidator();
         }
 
         public void Connect(string serverAddress, string port)
         {
             try
             {
-                Console.WriteLine("[" + wsDict.Count + "]Trying... " + serverAddress + ":" + port);
                 if (!wsDict.ContainsKey("ws://" + serverAddress + ":" + port + "/Blockchain"))
                 {
+                    Console.WriteLine("[" + wsDict.Count + "]Trying... " + serverAddress + ":" + port);
                     WebSocket ws = new WebSocket($"ws://" + serverAddress + ":" + port + "/Blockchain");
 
                     // Remove StackTrace
@@ -33,7 +37,10 @@ namespace BlockChain
                     // Listen messages from server
                     ws.OnMessage += (sender, e) =>
                     {
-                        Console.WriteLine(e.Data);
+                        if(NetworkUtils.SplitPacket(e.Data, 0).Equals("packet_verification"))
+                        {
+                            Console.WriteLine(NetworkUtils.SplitPacket(e.Data, 1).Equals("packet_verification"));
+                        }
                     };
 
                     // Listen connection and delete it from dictionary if connection is closed.
@@ -49,15 +56,29 @@ namespace BlockChain
                     };
 
                     ws.Connect();
-                    ws.Send("packet_connect," + clientIpAddress + "," + clientPort);
+                    ws.Send("packet_connect?bc_sep?" + clientIpAddress + "?bc_sep?" + clientPort);
                     wsDict.Add(ws.Url.ToString(), ws);
                 }
             } catch(Exception ex)
             {
                 Console.WriteLine("Connection failed");
             }
-            
+        }
 
+        public void SendBlock(Block block)
+        {
+            foreach (var item in wsDict)
+            {
+                item.Value.Send("packet_block" + "?bc_sep?" + JsonConvert.SerializeObject(block));
+            }
+        }
+
+        public void askForVerification(List<Block> blocks)
+        {
+            foreach (var item in wsDict)
+            {
+                item.Value.Send("packet_verification" + NetworkUtils.packetSeparator + JsonConvert.SerializeObject(blocks));
+            }
         }
 
         public void Send(string url, string data)
@@ -87,6 +108,11 @@ namespace BlockChain
                 servers.Add(item.Key);
             }
             return servers;
+        }
+
+        public int GetNumberOfConnectedPeers()
+        {
+            return wsDict.Count;
         }
 
         public void Close(string url)

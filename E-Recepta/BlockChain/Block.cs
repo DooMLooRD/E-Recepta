@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Security.Cryptography;
 using System.Text;
@@ -6,18 +7,24 @@ namespace BlockChain
 {
     public class Block
     {
-        
+
+        [JsonProperty]
         private string hash;
+
+        [JsonProperty]
         private string previousHash;
+
+        [JsonProperty]
         private DateTime timeStamp;
+
+        [JsonProperty]
         private Prescription prescription;
         
         public Block(string previousHash, Prescription prescription) {
             this.timeStamp = DateTime.Now;
             this.previousHash = previousHash;
             this.prescription = prescription;
-
-            GenerateHash();
+            this.hash = GenerateHash();
         }
 
         public string GetHash() {
@@ -36,10 +43,15 @@ namespace BlockChain
             return prescription;
         }
 
-        private void GenerateHash() {
+        public string GenerateHash() {
         using (SHA256 sha256Hash = SHA256.Create())
             {
                 string prescriptionData;
+
+                if (prescription == null && previousHash == null)
+                {
+                    return "4e7b64b4d5b5a298a1d2b0ce105f9d44510fcd65c8672acec968c84e456c7691";
+                }
 
                 if (prescription != null) {
                     prescriptionData = prescription.GetDoctorId() + "::" +
@@ -62,7 +74,7 @@ namespace BlockChain
                 {
                     builder.Append(bytes[i].ToString("x2"));
                 }
-                this.hash = builder.ToString();
+                return builder.ToString();
             }
         }
 

@@ -13,6 +13,10 @@ namespace BlockChain.utils
 {
     public class NetworkUtils
     {
+
+
+        public static string packetSeparator = "?bc_sep?";
+
         public static IPAddress GetLocalIPAddress()
         {
             return FindNetworkProperty("ipaddress");
@@ -28,6 +32,11 @@ namespace BlockChain.utils
             List<string> availableHosts = new List<string>();
 
             return availableHosts;
+        }
+
+        public static string SplitPacket(string packet, int index)
+        {
+            return packet.Split(new string[] { packetSeparator }, StringSplitOptions.None)[index];
         }
 
         private static IPAddress FindNetworkProperty(string type)
@@ -93,6 +102,55 @@ namespace BlockChain.utils
                 broadcastAddress[i] = (byte)(ipAdressBytes[i] & (subnetMaskBytes[i]));
             }
             return new IPAddress(broadcastAddress);
+        }
+
+        public static List<string> GetAllIPBetween(string firstIP, string lastIP)
+        {
+
+            List<string> ipList = new List<string>();
+
+            ipList.Add(firstIP);
+
+            int[] numbesplitNetworkIP = firstIP.Split('.').Select(Int32.Parse).ToArray();
+
+            StringBuilder createdLastIp = new StringBuilder();
+            while (!lastIP.Equals(createdLastIp.ToString()))
+            {
+                createdLastIp.Clear();
+
+                if (numbesplitNetworkIP[3] < 255)
+                {
+                    numbesplitNetworkIP[3]++;
+                }
+                else if (numbesplitNetworkIP[2] < 255)
+                {
+                    numbesplitNetworkIP[3] = 0;
+                    numbesplitNetworkIP[2]++;
+                }
+                else if (numbesplitNetworkIP[1] < 255)
+                {
+                    numbesplitNetworkIP[2] = 0;
+                    numbesplitNetworkIP[1]++;
+                }
+                else if (numbesplitNetworkIP[0] < 255)
+                {
+                    numbesplitNetworkIP[1] = 0;
+                    numbesplitNetworkIP[0]++;
+                }
+
+                createdLastIp.Append(numbesplitNetworkIP[0]);
+                createdLastIp.Append(".");
+                createdLastIp.Append(numbesplitNetworkIP[1]);
+                createdLastIp.Append(".");
+                createdLastIp.Append(numbesplitNetworkIP[2]);
+                createdLastIp.Append(".");
+                createdLastIp.Append(numbesplitNetworkIP[3]);
+
+                //Console.WriteLine(createdLastIp);
+                ipList.Add(createdLastIp.ToString());
+            }
+
+            return ipList;
         }
 
         public static StreamReader GetArpTable()

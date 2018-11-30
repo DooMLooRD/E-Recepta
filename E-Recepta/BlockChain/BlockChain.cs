@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -5,9 +6,9 @@ namespace BlockChain
 {
     public class BlockChain
     {
-
-        private int id;
+        [JsonProperty]
         private List<Block> blocks;
+
         public BlockChainClient blockChainClient { get; private set; }
 
         public BlockChain(BlockChainClient blockChainClient)
@@ -23,14 +24,25 @@ namespace BlockChain
         }
 
         public void Add(Prescription prescription) {
+            UpdateBlockChain();
+
             Block lastBlock = blocks[blocks.Count-1];
-            
             Block block = new Block(lastBlock.GetHash(), prescription);
+            Console.WriteLine(JsonConvert.SerializeObject(block));
+
+            blockChainClient.SendBlock(block);
+
             blocks.Add(block);
         }
 
-        public void AddForeignBlock(Block block, BlockChain blockChain) {
+        public bool AddForeignBlock(Block block) {
+            if(block.GetPreviousHash().Equals(blocks[blocks.Count-1].GetHash()))
+            {
+                blocks.Add(block);
+                return true;
+            }
 
+            return false;
         }
 
         public Block Find(string query) {
@@ -51,19 +63,28 @@ namespace BlockChain
             }
 
             return allBlocks;
+        }
 
+        public List<Block> GetAllBlocks()
+        {
+
+            List<Block> allBlocks = new List<Block>();
+
+            foreach (Block block in blocks)
+            {
+                allBlocks.Add(block);
+            }
+
+            return allBlocks;
         }
 
         public int GetSize() {
             return blocks.Count;
         }
 
-        public int GetId() {
-            return this.id;
+        public void UpdateBlockChain() {
+            blockChainClient.askForVerification(blocks);
         }
 
-        private void UpdateBlockChain() {
-
-        }
     }
 }

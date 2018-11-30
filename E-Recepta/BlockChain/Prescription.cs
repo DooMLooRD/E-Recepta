@@ -1,13 +1,23 @@
+using Newtonsoft.Json;
 using System;
 
 namespace BlockChain
 {
     public class Prescription
     {
+        [JsonProperty]
         private string prescriptionId;
+
+        [JsonProperty]
         private string patientId;
+  
+        [JsonProperty]
         private string doctorId;
+
+        [JsonProperty]
         private string pharmacistId;
+
+        [JsonProperty]
         private DateTime date;
         /*
             PrescriptionInfo is a string in JSON format.

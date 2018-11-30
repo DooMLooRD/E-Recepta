@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BlockChain.utils;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using WebSocketSharp;
 using WebSocketSharp.Server;
@@ -7,7 +9,6 @@ namespace BlockChain
 {
     public class BlockChainServer : WebSocketBehavior
     {
-
         private WebSocketServer wss = null;
         private BlockChain blockChain;
         private string ipAddress;
@@ -35,13 +36,31 @@ namespace BlockChain
 
     protected override void OnMessage(MessageEventArgs e)
     {
-        if(e.Data.Split(',')[0].Equals("packet_connect"))
+        if(NetworkUtils.SplitPacket(e.Data, 0).Equals("packet_connect"))
             {
-                Console.WriteLine("Server: Trying to connect my client to another server: " + e.Data.Split(',')[1] + ":" + e.Data.Split(',')[2]);
-                    blockChain.blockChainClient.Connect(e.Data.Split(',')[1], e.Data.Split(',')[2]);
+
+                Console.WriteLine("Server: Trying to connect my client to another server: " + NetworkUtils.SplitPacket(e.Data, 1) + ":" + NetworkUtils.SplitPacket(e.Data, 2));
+
+                    blockChain.blockChainClient.Connect(NetworkUtils.SplitPacket(e.Data, 1), NetworkUtils.SplitPacket(e.Data, 2));
+
                 Send("You are successfully connected to " + ipAddress + ":" + port);
             }
-    }
+
+            if (NetworkUtils.SplitPacket(e.Data, 0).Equals("packet_block"))
+            {
+
+                bool blockAdded = blockChain.AddForeignBlock(JsonConvert.DeserializeObject<Block>(NetworkUtils.SplitPacket(e.Data, 1)));
+                Send("packet_block" + NetworkUtils.packetSeparator + blockAdded);
+                Console.WriteLine(NetworkUtils.SplitPacket(e.Data, 1));
+            }
+
+            if (NetworkUtils.SplitPacket(e.Data, 0).Equals("packet_verification"))
+            {
+                bool isBlockChainValid = BlockChainValidator.Compare(blockChain.GetAllBlocks(), JsonConvert.DeserializeObject<List<Block>>(NetworkUtils.SplitPacket(e.Data, 1)));
+                Send("packet_verification" + NetworkUtils.packetSeparator + isBlockChainValid);
+                Console.WriteLine(NetworkUtils.SplitPacket(e.Data, 1));
+            }
+        }
 
 }
 }

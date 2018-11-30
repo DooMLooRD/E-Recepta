@@ -14,41 +14,33 @@ namespace BlockChain.utils
     public class NetworkPing
     {
         private int timeout = 100;
-        private int nFound = 0;
 
         List<string> availableIpAddresses = new List<string>();
 
         static object lockObj = new object();
 
-        public async Task<List<string>> RunPingSweep_Async()
+        public async Task<List<string>> RunPingAsync()
         {
             string localIpAddress = NetworkUtils.GetLocalIPAddress().ToString();
+            string networkAddress = NetworkUtils.GetNetworkAddress(NetworkUtils.GetLocalIPAddress(), NetworkUtils.GetMask()).ToString();
+            string broadcastAddress = NetworkUtils.GetBroadcastAddress(NetworkUtils.GetLocalIPAddress(), NetworkUtils.GetMask()).ToString();
 
             var tasks = new List<Task>();
             var throttler = new SemaphoreSlim(initialCount: 20);
 
-            List<string> ipList = new List<String>();
-
-            StreamReader arpTable = NetworkUtils.GetArpTable();
-            Regex regexIp = new Regex(@"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b");
-            MatchCollection result = regexIp.Matches(arpTable.ReadToEnd());
-           
-            foreach (Match ipAddress in result)
-            {
-                ipList.Add(ipAddress.ToString());
-            }
+            List<string> ipList = NetworkUtils.GetAllIPBetween(networkAddress, broadcastAddress);
 
             foreach (string ip in ipList)
             {
                 System.Net.NetworkInformation.Ping p = new System.Net.NetworkInformation.Ping();
-                var task = PingAndUpdateAsync(p, ip);
+                var task = PingAsync(p, ip);
                 tasks.Add(task);
             }
 
             return availableIpAddresses;
         }
 
-        private async Task PingAndUpdateAsync(System.Net.NetworkInformation.Ping ping, string ip)
+        private async Task PingAsync(System.Net.NetworkInformation.Ping ping, string ip)
         {
             var reply = await ping.SendPingAsync(ip, timeout);
             

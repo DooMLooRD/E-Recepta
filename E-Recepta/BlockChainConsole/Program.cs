@@ -28,7 +28,17 @@ namespace BlockChainConsole
             BlockChainHandler blockChainHandler = new BlockChainHandler();
             blockChainHandler.initializeBlockChains();
 
-            Console.Read();
+            Console.WriteLine(blockChainHandler.getSizeOfPrescriptions());
+
+            Console.WriteLine("Click to send block");
+            Console.ReadKey();
+            Console.WriteLine("----------------");
+            blockChainHandler.addPrescription("patientId_123asd", "doctorId_321asd", "testJsonData");
+
+            Console.WriteLine(blockChainHandler.getSizeOfPrescriptions());
+
+            Console.WriteLine("Click to exit.");
+            Console.ReadKey();
 
             /*   BlockChain prescriptions = new BlockChain(1);
               Prescription prescription = new Prescription("patientId_123asd",
