@@ -63,7 +63,7 @@ namespace BlockChain
         {
             blockChainClient_prescriptions = new BlockChainClient(NetworkUtils.GetLocalIPAddress().ToString(), "6066");
 
-            prescriptions = new BlockChain(blockChainClient_prescriptions);
+            prescriptions = new BlockChain(blockChainClient_prescriptions, "prescriptionsBlockChain");
 
             blockChainServer_prescriptions = new BlockChainServer(prescriptions, NetworkUtils.GetLocalIPAddress().ToString(), "6066");
             blockChainServer_prescriptions.Start();
@@ -92,7 +92,7 @@ namespace BlockChain
         {
             blockChainClient_realized = new BlockChainClient(NetworkUtils.GetLocalIPAddress().ToString(), "6067");
 
-            realizedPrescriptions = new BlockChain(blockChainClient_realized);
+            realizedPrescriptions = new BlockChain(blockChainClient_realized, "realizedPrescriptionsBlockChain");
 
             blockChainServer_realized = new BlockChainServer(realizedPrescriptions, NetworkUtils.GetLocalIPAddress().ToString(), "6067");
             blockChainServer_realized.Start();

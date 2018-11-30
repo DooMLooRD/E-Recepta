@@ -11,20 +11,27 @@ namespace BlockChain
         [JsonProperty]
         private List<Block> blocks;
 
+        private String blockChainName;
+
         public BlockChainClient blockChainClient { get; private set; }
         private BlockChainValidator validator;
         private bool ChainRequestSent = false;
 
-        public BlockChain(BlockChainClient blockChainClient)
+        public BlockChain(BlockChainClient blockChainClient, string blockChainName)
         {
             this.blockChainClient = blockChainClient;
+            this.blockChainName = blockChainName;
 
-            blocks = new List<Block>();
+            blocks = BlockChainSerializer.deserialize(blockChainName);
 
             //Creating Genesis Block
-            if(blocks.Count == 0) {
+            if (blocks == null)
+            {
+                blocks = new List<Block>();
                 blocks.Add(new Block(null, null));
             }
+
+            
             validator = new BlockChainValidator();
         }
 
@@ -44,12 +51,14 @@ namespace BlockChain
             } while (CheckAddedBlock(block));
 
             blocks.Add(block);
+            BlockChainSerializer.serialize(blocks, blockChainName);
         }
 
         public bool AddForeignBlock(Block block) {
             if(block.GetPreviousHash().Equals(blocks[blocks.Count-1].GetHash()))
             {
                 blocks.Add(block);
+                BlockChainSerializer.serialize(blocks, blockChainName);
                 return true;
             }
 
@@ -57,11 +66,14 @@ namespace BlockChain
         }
 
         public Block Find(string query) {
+            UpdateBlockChain();
+
             return blocks[0];
         }
 
         public List<Block> GetAll() {
-            
+            UpdateBlockChain();
+
             List<Block> allBlocks = new List<Block>();
 
             bool ignoreGenesisBlock = true;
@@ -76,6 +88,10 @@ namespace BlockChain
             return allBlocks;
         }
 
+        /*
+         * Update blockchain isn't allowed here because it will create infinite update loop.
+         * This method is used only for comparing blockchains.
+        */
         public List<Block> GetAllBlocks()
         {
             List<Block> allBlocks = new List<Block>();
@@ -111,6 +127,8 @@ namespace BlockChain
                     //wait for answer
                 }
             }
+
+            BlockChainSerializer.serialize(blocks, blockChainName);
         }
 
         private bool CheckCurrentChain()
