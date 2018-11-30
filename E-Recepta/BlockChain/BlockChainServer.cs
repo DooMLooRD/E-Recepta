@@ -40,9 +40,7 @@ namespace BlockChain
             {
 
                 Console.WriteLine("Server: Trying to connect my client to another server: " + NetworkUtils.SplitPacket(e.Data, 1) + ":" + NetworkUtils.SplitPacket(e.Data, 2));
-
-                    blockChain.blockChainClient.Connect(NetworkUtils.SplitPacket(e.Data, 1), NetworkUtils.SplitPacket(e.Data, 2));
-
+                blockChain.blockChainClient.Connect(NetworkUtils.SplitPacket(e.Data, 1), NetworkUtils.SplitPacket(e.Data, 2));
                 Send("You are successfully connected to " + ipAddress + ":" + port);
             }
 
@@ -50,15 +48,23 @@ namespace BlockChain
             {
 
                 bool blockAdded = blockChain.AddForeignBlock(JsonConvert.DeserializeObject<Block>(NetworkUtils.SplitPacket(e.Data, 1)));
-                Send("packet_block" + NetworkUtils.packetSeparator + blockAdded);
+                Console.WriteLine("Foregin block added ==" + blockAdded);
+                Send("packet_block" + NetworkUtils.packetSeparator + blockAdded + NetworkUtils.packetSeparator + "ws://" + ipAddress + ":" + port + "/Blockchain");
                 Console.WriteLine(NetworkUtils.SplitPacket(e.Data, 1));
             }
-
+            
             if (NetworkUtils.SplitPacket(e.Data, 0).Equals("packet_verification"))
             {
                 bool isBlockChainValid = BlockChainValidator.Compare(blockChain.GetAllBlocks(), JsonConvert.DeserializeObject<List<Block>>(NetworkUtils.SplitPacket(e.Data, 1)));
-                Send("packet_verification" + NetworkUtils.packetSeparator + isBlockChainValid);
-                Console.WriteLine(NetworkUtils.SplitPacket(e.Data, 1));
+                Send("packet_verification" + NetworkUtils.packetSeparator + isBlockChainValid + NetworkUtils.packetSeparator + "ws://" + ipAddress + ":" + port + "/Blockchain");
+                Console.WriteLine("Sending isBlockChainValid " + isBlockChainValid);
+                
+            }
+
+            if (NetworkUtils.SplitPacket(e.Data, 0).Equals("packet_chainrequest"))
+            {
+                Console.WriteLine("Request of chain");
+                Send("packet_chain" + NetworkUtils.packetSeparator + JsonConvert.SerializeObject(blockChain.GetAllBlocks()));
             }
         }
 

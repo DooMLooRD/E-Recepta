@@ -28,7 +28,7 @@ namespace BlockChainConsole
             BlockChainHandler blockChainHandler = new BlockChainHandler();
             blockChainHandler.initializeBlockChains();
 
-            Console.WriteLine(blockChainHandler.getSizeOfPrescriptions());
+        //    Console.WriteLine(blockChainHandler.getSizeOfPrescriptions());
 
             Console.WriteLine("Click to send block");
             Console.ReadKey();

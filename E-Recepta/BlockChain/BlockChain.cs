@@ -4,12 +4,16 @@ using System.Collections.Generic;
 
 namespace BlockChain
 {
+    public delegate void SendNewChain(List<Block> newChain);
     public class BlockChain
     {
         [JsonProperty]
+
         private List<Block> blocks;
 
         public BlockChainClient blockChainClient { get; private set; }
+        private BlockChainValidator validator;
+        private bool ChainRequestSent = false;
 
         public BlockChain(BlockChainClient blockChainClient)
         {
@@ -21,6 +25,7 @@ namespace BlockChain
             if(blocks.Count == 0) {
                 blocks.Add(new Block(null, null));
             }
+            validator = new BlockChainValidator();
         }
 
         public void Add(Prescription prescription) {
@@ -67,7 +72,6 @@ namespace BlockChain
 
         public List<Block> GetAllBlocks()
         {
-
             List<Block> allBlocks = new List<Block>();
 
             foreach (Block block in blocks)
@@ -83,7 +87,55 @@ namespace BlockChain
         }
 
         public void UpdateBlockChain() {
+
+            blockChainClient.sendNewChainMethod = GiveNewChain;
+            while (!CheckCurrentChain())
+            {
+                foreach (KeyValuePair<string,bool> keyValue in validator.verificationAnswers)
+                {
+                    if(keyValue.Value == false)
+                    {
+                        ChainRequestSent = true;
+                        blockChainClient.SendRequestOfChain(keyValue.Key);
+                        break;
+                    }
+                }
+                while (!ChainRequestSent)
+                {
+                    //wait for answer
+                }
+            }
+        }
+        private bool CheckCurrentChain()
+        {
+            Console.WriteLine("StartChecking");
+            blockChainClient.InitializeAnswersCollecting(validator.giveVerificationAnswers);
+            Console.WriteLine("initialized answers collecting");
             blockChainClient.askForVerification(blocks);
+            int validatorAnswer;
+            do
+            {
+                validatorAnswer = validator.getVerificationAnswer();
+            }
+            while (validatorAnswer == 0); //waiting for answers
+
+            if(validatorAnswer == 1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public void GiveNewChain(List<Block> newChain)
+        {
+            if (ChainRequestSent)
+            {
+                Console.WriteLine("Blocks = " + blocks.Count + " :: newChain = " + newChain.Count);
+                blocks = newChain;
+                ChainRequestSent = false;
+            }          
         }
 
     }

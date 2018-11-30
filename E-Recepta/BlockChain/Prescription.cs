@@ -22,6 +22,7 @@ namespace BlockChain
         /*
             PrescriptionInfo is a string in JSON format.
         */
+        [JsonProperty]
         private string prescriptionInfo;
 
         public Prescription(string patientId, string doctorId, DateTime date, string prescriptionInfo) {

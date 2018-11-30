@@ -33,8 +33,7 @@ namespace BlockChain
 
             if (prescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
             {
-                prescriptions.UpdateBlockChain();
-            
+                          
 
             Prescription prescription = new Prescription(patientId,
               doctorId, DateTime.Now, prescriptionInfo);
@@ -80,6 +79,7 @@ namespace BlockChain
 
             if (prescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
             {
+                Console.WriteLine("Updating prescriptionBlockChain...");
                 prescriptions.UpdateBlockChain();
             } else
             {
@@ -108,6 +108,7 @@ namespace BlockChain
 
             if(realizedPrescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
             {
+                Console.WriteLine("Updating realizedPrescriptionBlockChain...");
                 realizedPrescriptions.UpdateBlockChain();
             }
             else

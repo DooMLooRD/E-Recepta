@@ -6,20 +6,24 @@ using WebSocketSharp;
 
 namespace BlockChain
 {
+    public delegate void VerificationAnswersGot(IDictionary<string, bool> answersToSend);
     public class BlockChainClient
     {
 
         private string clientIpAddress;
         private string clientPort;
-        private BlockChainValidator blockChainValidator;
 
-        IDictionary<string, WebSocket> wsDict = new Dictionary<string, WebSocket>();
+        private int numberOfExpectedAnsers;
+        private VerificationAnswersGot AnswersGotMethod;
+        public SendNewChain sendNewChainMethod;
+
+        private IDictionary<string, bool> verificationAnswers = new Dictionary<string,bool>();
+        private IDictionary<string, WebSocket> wsDict = new Dictionary<string, WebSocket>();
 
         public BlockChainClient(string clientIpAddress, string clientPort)
         {
             this.clientIpAddress = clientIpAddress;
             this.clientPort = clientPort;
-            this.blockChainValidator = new BlockChainValidator();
         }
 
         public void Connect(string serverAddress, string port)
@@ -39,7 +43,21 @@ namespace BlockChain
                     {
                         if(NetworkUtils.SplitPacket(e.Data, 0).Equals("packet_verification"))
                         {
-                            Console.WriteLine(NetworkUtils.SplitPacket(e.Data, 1).Equals("packet_verification"));
+
+                            Console.WriteLine(NetworkUtils.SplitPacket(e.Data, 1));
+                            SaveTheVerificationAnswer(NetworkUtils.SplitPacket(e.Data, 1), NetworkUtils.SplitPacket(e.Data, 2));
+                        }
+                        if (NetworkUtils.SplitPacket(e.Data, 0).Equals("packet_block"))
+                        {
+
+                            Console.WriteLine(NetworkUtils.SplitPacket(e.Data, 1));
+                            //saveTheWeryficationAnswer(StringToBool(NetworkUtils.SplitPacket(e.Data, 1)));
+                        }
+                        if (NetworkUtils.SplitPacket(e.Data, 0).Equals("packet_chain"))
+                        {
+                            sendNewChainMethod(JsonConvert.DeserializeObject<List<Block>>(NetworkUtils.SplitPacket(e.Data, 1)));
+                            Console.WriteLine(NetworkUtils.SplitPacket(e.Data, 1));
+                            
                         }
                     };
 
@@ -56,7 +74,8 @@ namespace BlockChain
                     };
 
                     ws.Connect();
-                    ws.Send("packet_connect?bc_sep?" + clientIpAddress + "?bc_sep?" + clientPort);
+                    ws.Send("packet_connect" + NetworkUtils.packetSeparator + clientIpAddress + NetworkUtils.packetSeparator + clientPort);
+                    Console.WriteLine(ws.Url.ToString());
                     wsDict.Add(ws.Url.ToString(), ws);
                 }
             } catch(Exception ex)
@@ -69,17 +88,48 @@ namespace BlockChain
         {
             foreach (var item in wsDict)
             {
-                item.Value.Send("packet_block" + "?bc_sep?" + JsonConvert.SerializeObject(block));
+                item.Value.Send("packet_block" + NetworkUtils.packetSeparator + JsonConvert.SerializeObject(block));
             }
         }
+        
+        #region ToUpdateBlockChain
 
-        public void askForVerification(List<Block> blocks)
+        public int askForVerification(List<Block> blocks)
         {
+            Console.WriteLine("ask_for_verification");
+            int counter = 0;
             foreach (var item in wsDict)
             {
                 item.Value.Send("packet_verification" + NetworkUtils.packetSeparator + JsonConvert.SerializeObject(blocks));
+                counter++;
+            }
+            return counter;
+        }
+
+        public void InitializeAnswersCollecting(VerificationAnswersGot WhenAnswersGot)
+        {
+            int expectedAnswers = wsDict.Count;
+            numberOfExpectedAnsers = expectedAnswers;
+            verificationAnswers = new Dictionary<string, bool>();
+            AnswersGotMethod = WhenAnswersGot;
+        }
+
+        private void SaveTheVerificationAnswer(string boolStr, string adressStr)
+        {
+            verificationAnswers.Add(adressStr, StringToBool(boolStr));
+            if(verificationAnswers.Count >= numberOfExpectedAnsers)
+            {
+                AnswersGotMethod(verificationAnswers);
             }
         }
+
+        public void SendRequestOfChain(string peerAddress)
+        {
+            Console.WriteLine("Chain_request");
+            Send(peerAddress, "packet_chainrequest");
+        }
+
+        #endregion
 
         public void Send(string url, string data)
         {
@@ -118,6 +168,18 @@ namespace BlockChain
         public void Close(string url)
         {
             wsDict.Remove(url);
+        }
+
+        private bool StringToBool(string str)
+        {
+            if(str.Equals("true") || str.Equals("True"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
     }

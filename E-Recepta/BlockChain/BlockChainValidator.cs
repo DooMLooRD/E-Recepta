@@ -10,11 +10,12 @@ namespace BlockChain
     {
 
         private static int MAX_NUMBER_OF_COMPARED_BLOCKS = 50;
-        private List<bool> verificationCounter;
+        private int BlockChainVerification;
+        public IDictionary<string, bool> verificationAnswers { get;  private set; }
 
         public BlockChainValidator()
         {
-            verificationCounter = new List<bool>();
+            BlockChainVerification = 0;         
         }
 
         public static bool Compare(List<Block> firstBlocks, List<Block> secondsBlocks)
@@ -37,32 +38,60 @@ namespace BlockChain
                     return false;
                 }
                 if (!firstBlocks[i].GetHash().Equals(firstBlocks[i].GenerateHash())) {
+                    Console.WriteLine("Hash1 = " + firstBlocks[i].GetHash());
+                    Console.WriteLine("Hash2 = " + firstBlocks[i].GenerateHash());
                     Console.WriteLine("Different data first!!!");
                     return false;
                 }
-                if (!secondsBlocks[i].GetHash().Equals(firstBlocks[i].GenerateHash())) {
+                if (!secondsBlocks[i].GetHash().Equals(secondsBlocks[i].GenerateHash())) {
                     Console.WriteLine("Different data second!!!");
                     return false;
                 }
                 Console.WriteLine("END SEARCHING!!!");
             }
-
+            Console.WriteLine("RETURN TRUE???");
             return true;
         }
-
-        public void addVerficiation(bool validBlockChain)
+        public void giveVerificationAnswers(IDictionary<string,bool> answers)
         {
-            verificationCounter.Add(validBlockChain);
+            int numberOfTrue = 0;
+            int numberOfFalse = 0;
+            foreach(KeyValuePair<string,bool> valuePair in answers)
+            {
+                if (valuePair.Value)
+                {
+                    numberOfTrue++;
+                }
+                else
+                {
+                    numberOfFalse++;
+                }
+            }
+
+            if(numberOfTrue >= numberOfFalse)
+            {
+                verificationAnswers = answers;
+                BlockChainVerification = 1; //1 = true
+            }
+            else
+            {
+                verificationAnswers = answers;
+                BlockChainVerification = -1; //-1 = false
+            }
         }
-
-        public int getVerificationSize()
+        public int getVerificationAnswer()
         {
-            return verificationCounter.Count;
-        }
-
-        public void clearVerificationCounter()
-        {
-            verificationCounter.Clear();
+            if(BlockChainVerification == -1)
+            {
+                BlockChainVerification = 0;
+                return -1; //answer == false
+            }
+            if(BlockChainVerification == 1)
+            {
+                BlockChainVerification = 0;
+                return 1; //answer == true
+            }
+            return 0; //answer not redy code
         }
 
 
