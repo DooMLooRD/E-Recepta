@@ -20,13 +20,12 @@ namespace Authorisation
             {
                 string passHash2 = uDBD.GetPasswordHash(login, role);
                 if (Compare(passHash1, passHash2)) return sessionID;
+                else throw new ArgumentException("Incorrect password");
             }
             catch(ArgumentException e)
             {
-                WrongCredentialHandler wch = new WrongCredentialHandler(); //zamiast tego po prostu throw??
-                return null;
+                throw e;
             }
-            return null;
         }
 
         private bool Compare(string passwordHash1, string passwordHash2)

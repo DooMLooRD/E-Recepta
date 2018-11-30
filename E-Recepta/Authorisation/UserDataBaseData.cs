@@ -19,7 +19,7 @@ namespace Authorisation
         public void SaveLoginAttempt(string username, DateTime loginTime, bool isSuccesful)
         {
             LoginAttemptDTO laDTO = new LoginAttemptDTO { Username = username, LoginTime = loginTime, IsSuccessful = isSuccesful };
-            bool x = loginService.AddLoginAttempt(laDTO).Result; //po co mnie ten bool???
+            //bool x = loginService.AddLoginAttempt(laDTO).Result;
             return;
         }
     }
