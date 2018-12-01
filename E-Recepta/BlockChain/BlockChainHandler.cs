@@ -77,31 +77,6 @@ namespace BlockChain
             }
         }
 
-        public ObservableCollection<Prescription> GetAllPrescriptionsByPharmacist(string pharmacistId)
-        {
-            if (prescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
-            {
-                ObservableCollection<Prescription> prescriptionsCollection = new ObservableCollection<Prescription>();
-
-                List<Block> blocks = prescriptions.GetAll();
-
-                foreach (Block block in blocks)
-                {
-                    if(block.GetPrescription().pharmacistId.Equals(pharmacistId))
-                    {
-                        prescriptionsCollection.Add(block.GetPrescription());
-                    }
-                }
-
-                return prescriptionsCollection;
-            } else
-            {
-                // TODO Logger
-                // At least 2 peers connected are required to use this method.
-                return null;
-            }
-        }
-
         public ObservableCollection<Prescription> GetAllPrescriptionsByDoctor(string doctorId)
         {
             if (prescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)

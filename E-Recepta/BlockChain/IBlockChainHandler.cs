@@ -14,7 +14,6 @@ namespace BlockChain
         bool RealizePrescription(string prescriptionId, string pharmacistId);
 
         ObservableCollection<Prescription> GetAllPrescriptionsByPatient(string patientId);
-        ObservableCollection<Prescription> GetAllPrescriptionsByPharmacist(string pharmacistId);
         ObservableCollection<Prescription> GetAllPrescriptionsByDoctor(string doctorId);
         ObservableCollection<Prescription> GetAllPrescriptions();
 
@@ -22,6 +21,9 @@ namespace BlockChain
         ObservableCollection<Prescription> GetAllRealizedPrescriptionsByPharmacist(string pharmacistId);
         ObservableCollection<Prescription> GetAllRealizedPrescriptionsByDoctor(string doctorId);
         ObservableCollection<Prescription> GetAllRealizedPrescriptions();
+
+        int GetNumberOfPrescriptions();
+        int GetNumberOfRealizedPrescriptions();
 
     }
 }
