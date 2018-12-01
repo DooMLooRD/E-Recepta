@@ -14,12 +14,12 @@ namespace Authorisation
 
             string passHash1 = HashGenerator.GetHashFromPassword(password);
 
-            string sessionID = "aaa";
-
+            Guid sessionID = Guid.NewGuid();
+            
             try
             {
                 string passHash2 = uDBD.GetPasswordHash(login, role);
-                if (Compare(passHash1, passHash2)) return sessionID;
+                if (Compare(passHash1, passHash2)) return sessionID.ToString();
                 else throw new ArgumentException("Incorrect password");
             }
             catch(ArgumentException e)
