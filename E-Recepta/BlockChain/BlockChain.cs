@@ -46,11 +46,7 @@ namespace BlockChain
                 Block lastBlock = blocks[blocks.Count - 1];
                 block = new Block(lastBlock.GetHash(), prescription);
 
-                Console.WriteLine(JsonConvert.SerializeObject(block));
-
             } while (!CheckAddedBlock(block));
-
-            Console.WriteLine("Ended adding block");
 
             blocks.Add(block);
 
@@ -150,9 +146,8 @@ namespace BlockChain
 
         private bool CheckCurrentChain()
         {
-            Console.WriteLine("StartChecking");
+
             blockChainClient.InitializeVerificationAnswersCollecting(validator.giveVerificationAnswers);
-            Console.WriteLine("initialized answers collecting");
             blockChainClient.askForVerification(blocks);
             int validatorAnswer;
             do
@@ -174,9 +169,7 @@ namespace BlockChain
 
         private bool CheckAddedBlock(Block block)
         {
-            Console.WriteLine("StartCheckingAddedBlock");
             blockChainClient.InitializeAddBlockAnswersCollecting(validator.giveAddBlockVerificationAnswers);
-            Console.WriteLine("initialized answers collecting");
             blockChainClient.SendBlock(block);
             int validatorAnswer;
             do
@@ -199,7 +192,6 @@ namespace BlockChain
         {
             if (ChainRequestSent)
             {
-                Console.WriteLine("Blocks = " + blocks.Count + " :: newChain = " + newChain.Count);
                 blocks = newChain;
                 ChainRequestSent = false;
             }          

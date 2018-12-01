@@ -9,6 +9,8 @@ using System.Net.NetworkInformation;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Collections.ObjectModel;
+using System.Threading;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace BlockChainConsole
 {
@@ -19,14 +21,13 @@ namespace BlockChainConsole
             // BlockChain id representation:
             // 1 - prescriptions
             // 2 - realized prescriptions
-
-           
             Console.WriteLine(NetworkUtils.GetLocalIPAddress());
             Console.WriteLine(NetworkUtils.GetMask());
             Console.WriteLine(NetworkUtils.GetBroadcastAddress(NetworkUtils.GetLocalIPAddress(), NetworkUtils.GetMask()));
             Console.WriteLine(NetworkUtils.GetNetworkAddress(NetworkUtils.GetLocalIPAddress(), NetworkUtils.GetMask()));
 
             BlockChainHandler blockChainHandler = new BlockChainHandler();
+
             blockChainHandler.InitializeBlockChains();
 
         //    Console.WriteLine(blockChainHandler.getSizeOfPrescriptions());
@@ -55,8 +56,6 @@ namespace BlockChainConsole
 
             Console.ReadKey();
 
-
-
             /*   BlockChain prescriptions = new BlockChain(1);
               Prescription prescription = new Prescription("patientId_123asd",
               "doctorId_123asd", DateTime.Now, "testJsonData");
@@ -74,5 +73,10 @@ namespace BlockChainConsole
               }
               */
         }
+
+   
+
+       
+
     }
 }

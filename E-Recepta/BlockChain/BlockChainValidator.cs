@@ -25,8 +25,6 @@ namespace BlockChain
         {
             if(firstBlocks.Count != secondsBlocks.Count)
             {
-                Console.WriteLine(firstBlocks.Count + "==" + secondsBlocks.Count);
-                Console.WriteLine("Different sizes!!!");
                 return false;
             }
 
@@ -35,24 +33,16 @@ namespace BlockChain
 
             for (int i = 0; i < firstBlocks.Count; i++)
             {
-                Console.WriteLine("SEARCHING!!!");
                 if (!firstBlocks[i].GetHash().Equals(secondsBlocks[i].GetHash())) {
-                    Console.WriteLine("Different hashes!!!");
                     return false;
                 }
                 if (!firstBlocks[i].GetHash().Equals(firstBlocks[i].GenerateHash())) {
-                    Console.WriteLine("Hash1 = " + firstBlocks[i].GetHash());
-                    Console.WriteLine("Hash2 = " + firstBlocks[i].GenerateHash());
-                    Console.WriteLine("Different data first!!!");
                     return false;
                 }
                 if (!secondsBlocks[i].GetHash().Equals(secondsBlocks[i].GenerateHash())) {
-                    Console.WriteLine("Different data second!!!");
                     return false;
                 }
-                Console.WriteLine("END SEARCHING!!!");
             }
-            Console.WriteLine("RETURN TRUE???");
             return true;
         }
 

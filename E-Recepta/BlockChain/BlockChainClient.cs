@@ -36,7 +36,6 @@ namespace BlockChain
             {
                 if (!wsDict.ContainsKey("ws://" + serverAddress + ":" + port + "/Blockchain"))
                 {
-                    Console.WriteLine("[" + wsDict.Count + "]Trying... " + serverAddress + ":" + port);
                     WebSocket ws = new WebSocket($"ws://" + serverAddress + ":" + port + "/Blockchain");
 
                     // Remove StackTrace
@@ -47,44 +46,35 @@ namespace BlockChain
                     {
                         if(NetworkUtils.SplitPacket(e.Data, 0).Equals("packet_verification"))
                         {
-
-                            Console.WriteLine(NetworkUtils.SplitPacket(e.Data, 1));
                             SaveTheVerificationAnswer(NetworkUtils.SplitPacket(e.Data, 1), NetworkUtils.SplitPacket(e.Data, 2));
                         }
                         if (NetworkUtils.SplitPacket(e.Data, 0).Equals("packet_block"))
                         {
                             SaveTheAddBlockVerificationAnswer(NetworkUtils.SplitPacket(e.Data, 1));
-                            Console.WriteLine(NetworkUtils.SplitPacket(e.Data, 1));
-                            //saveTheWeryficationAnswer(StringToBool(NetworkUtils.SplitPacket(e.Data, 1)));
                         }
                         if (NetworkUtils.SplitPacket(e.Data, 0).Equals("packet_chain"))
                         {
                             sendNewChainMethod(JsonConvert.DeserializeObject<List<Block>>(NetworkUtils.SplitPacket(e.Data, 1)));
-                            Console.WriteLine(NetworkUtils.SplitPacket(e.Data, 1));
-                            
                         }
                     };
 
                     // Listen connection and delete it from dictionary if connection is closed.
                     ws.OnClose += (sender, e) => {
-                        Console.WriteLine("Somebody closed the connection with you.");
                         WebSocket SenderWebSocket = (WebSocket) sender;
                         Close(SenderWebSocket.Url.ToString());
                     };
 
                     // Show message when error occured.
                     ws.OnError += (sender, e) => {
-                    Console.WriteLine("Connection problem.");
                     };
 
                     ws.Connect();
                     ws.Send("packet_connect" + NetworkUtils.packetSeparator + clientIpAddress + NetworkUtils.packetSeparator + clientPort);
-                    Console.WriteLine(ws.Url.ToString());
                     wsDict.Add(ws.Url.ToString(), ws);
                 }
             } catch(Exception ex)
             {
-                Console.WriteLine("Connection failed");
+
             }
         }
 
@@ -92,10 +82,8 @@ namespace BlockChain
 
         public void SendBlock(Block block)
         {
-            Console.WriteLine("try_to_add_blocks");
             foreach (var item in wsDict)
             {
-                Console.WriteLine(JsonConvert.SerializeObject(block));
                 item.Value.Send("packet_block" + NetworkUtils.packetSeparator + JsonConvert.SerializeObject(block));
             }
         }
@@ -123,7 +111,6 @@ namespace BlockChain
 
         public void askForVerification(List<Block> blocks)
         {
-            Console.WriteLine("ask_for_verification");
             foreach (var item in wsDict)
             {
                 item.Value.Send("packet_verification" + NetworkUtils.packetSeparator + JsonConvert.SerializeObject(blocks));
@@ -149,7 +136,6 @@ namespace BlockChain
 
         public void SendRequestOfChain(string peerAddress)
         {
-            Console.WriteLine("Chain_request");
             Send(peerAddress, "packet_chainrequest");
         }
 

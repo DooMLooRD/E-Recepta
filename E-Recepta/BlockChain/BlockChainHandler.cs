@@ -8,8 +8,10 @@ using BlockChain.utils;
 
 namespace BlockChain
 {
+
     public class BlockChainHandler : IBlockChainHandler
     {
+
         List<string> availableIpAddresses;
 
         private BlockChainServer blockChainServer_prescriptions;
@@ -23,8 +25,9 @@ namespace BlockChain
 
         public async void InitializeBlockChains()
         {
-            GetOnlineHosts();
 
+            GetOnlineHosts();
+  
             PrescriptionBlockChainInit();
             RealizedPrescriptionBlockChainInit();
         }
@@ -43,10 +46,10 @@ namespace BlockChain
 
             } else
             {
-                Console.WriteLine("At least 2 peers connected are required to use this method.");
+                // TODO Logger
+                // At least 2 peers connected are required to use this method.
+                return false;
             }
-
-            return false;
         }
 
         public ObservableCollection<Prescription> GetAllPrescriptionsByPatient(string patientId)
@@ -66,9 +69,12 @@ namespace BlockChain
                 }
 
                 return prescriptionsCollection;
+            } else
+            {
+                // TODO Logger
+                // At least 2 peers connected are required to use this method.
+                return null;
             }
-
-            return null;
         }
 
         public ObservableCollection<Prescription> GetAllPrescriptionsByPharmacist(string pharmacistId)
@@ -88,9 +94,12 @@ namespace BlockChain
                 }
 
                 return prescriptionsCollection;
+            } else
+            {
+                // TODO Logger
+                // At least 2 peers connected are required to use this method.
+                return null;
             }
-
-            return null;
         }
 
         public ObservableCollection<Prescription> GetAllPrescriptionsByDoctor(string doctorId)
@@ -110,9 +119,12 @@ namespace BlockChain
                 }
 
                 return prescriptionsCollection;
+            } else
+            {
+                // TODO Logger
+                // At least 2 peers connected are required to use this method.
+                return null;
             }
-
-            return null;
         }
 
         public ObservableCollection<Prescription> GetAllRealizedPrescriptionsByPatient(string patientId)
@@ -132,10 +144,12 @@ namespace BlockChain
                 }
 
                 return realizedPrescriptionsCollection;
-
+            } else
+            {
+                // TODO Logger
+                // At least 2 peers connected are required to use this method.
+                return null;
             }
-
-            return null;
         }
 
         public ObservableCollection<Prescription> GetAllRealizedPrescriptionsByPharmacist(string pharmacistId)
@@ -155,9 +169,12 @@ namespace BlockChain
                 }
 
                 return realizedPrescriptionsCollection;
+            } else
+            {
+                // TODO Logger
+                // At least 2 peers connected are required to use this method.
+                return null;
             }
-
-            return null;
         }
 
         public ObservableCollection<Prescription> GetAllRealizedPrescriptionsByDoctor(string doctorId)
@@ -177,14 +194,16 @@ namespace BlockChain
                 }
 
                 return realizedPrescriptionsCollection;
+            } else
+            {
+                // TODO Logger
+                // At least 2 peers connected are required to use this method.
+                return null;
             }
-
-            return null;
         }
 
         public bool RealizePrescription(string prescriptionId, string pharmacistId)
         {
-            Console.WriteLine("Realization...");
 
             if (realizedPrescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
             {
@@ -200,21 +219,24 @@ namespace BlockChain
                         realizedPrescriptions.Add(block.GetPrescription());
 
                         return true;
+                    } else
+                    {
+                        // TODO Logger
+                        // Prescription not found.
+                        return false;
                     }
 
+                } else
+                {
+                    // TODO Logger
+                    // Prescription is already realized.
+                    return false;
                 }
-
-                Console.WriteLine("Prescription is already realized or is not existing.");
-                
-                return false;
-
             }
-            else
-            {
-                Console.WriteLine("At least 2 peers connected are required to use this method.");
 
-                return false;
-            }
+            // TODO Logger
+            // At least 2 peers connected are required to use this method.
+            return false;
         }
 
         public ObservableCollection<Prescription> GetAllPrescriptions()
@@ -235,6 +257,8 @@ namespace BlockChain
 
             }
 
+            // TODO Logger
+            // At least 2 peers connected are required to use this method.
             return null;
         }
 
@@ -256,6 +280,8 @@ namespace BlockChain
 
             }
 
+            // TODO Logger
+            // At least 2 peers connected are required to use this method.
             return null;
         }
 
@@ -266,6 +292,9 @@ namespace BlockChain
             {
                 return prescriptions.GetSize() - 1;
             }
+
+            // TODO Logger
+            // At least 2 peers connected are required to use this method.
             return 0;
         }
 
@@ -275,6 +304,9 @@ namespace BlockChain
             {
                 return realizedPrescriptions.GetSize() - 1;
             }
+
+            // TODO Logger
+            // At least 2 peers connected are required to use this method.
             return 0;
         }
 
@@ -306,11 +338,11 @@ namespace BlockChain
 
             if (prescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
             {
-                Console.WriteLine("Updating prescriptionBlockChain...");
                 prescriptions.UpdateBlockChain();
             } else
             {
-                Console.WriteLine("At least 2 peers connected are required to use this method.");
+                // TODO Logger
+                // At least 2 peers connected are required to create and update blockchain
             }
 
         }
@@ -335,12 +367,12 @@ namespace BlockChain
 
             if(realizedPrescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
             {
-                Console.WriteLine("Updating realizedPrescriptionBlockChain...");
                 realizedPrescriptions.UpdateBlockChain();
             }
             else
             {
-                Console.WriteLine("At least 2 peers connected are required to use this method.");
+                // TODO Logger
+                // At least 2 peers connected are required to create and update blockchain
             }
 
         }

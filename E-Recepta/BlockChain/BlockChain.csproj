@@ -44,6 +44,7 @@
     <Compile Include="Block.cs" />
     <Compile Include="BlockChain.cs" />
     <Compile Include="BlockChainHandler.cs" />
+    <Compile Include="BlockChainNetworkException.cs" />
     <Compile Include="BlockChainSerializer.cs" />
     <Compile Include="BlockChainServer.cs" />
     <Compile Include="BlockChainClient.cs" />

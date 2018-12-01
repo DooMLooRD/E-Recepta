@@ -48,7 +48,6 @@ namespace BlockChain.utils
             {
                 lock (lockObj)
                 {
-                    Console.WriteLine("SUCCESSFULL PING = " + ip);
                     availableIpAddresses.Add(ip);
                 }
             }

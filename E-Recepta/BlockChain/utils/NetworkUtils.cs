@@ -146,7 +146,6 @@ namespace BlockChain.utils
                 createdLastIp.Append(".");
                 createdLastIp.Append(numbesplitNetworkIP[3]);
 
-                //Console.WriteLine(createdLastIp);
                 ipList.Add(createdLastIp.ToString());
             }
 
