@@ -9,10 +9,12 @@ namespace ReportGenerator
 {
     public class GenerateCSV : GenerateFile
     {
-        public GenerateCSV(string fileName, ReportType reportType)
+        public GenerateCSV(string fileName, ReportType reportType, BlockchainData blockchainData, int personID)
         {
             this.fileName = fileName;
             this.reportType = reportType;
+            this.blockchainData = blockchainData;
+            this.personID = personID;
             switch (reportType)
             {
                 case ReportType.PrescriptionsReport:
@@ -28,7 +30,39 @@ namespace ReportGenerator
 
         public override void GeneratePrescriptionReport()
         {
-            throw new NotImplementedException();
+            var csv = new StringBuilder();
+            try
+            {
+                List<Prescription> data = new List<Prescription>();
+                data = blockchainData.GetPrescriptionListForPatient(this.personID);
+                csv.AppendLine("PatientID: " + data[0].PatientID.ToString());
+                csv.AppendLine("Name: " + data[0].PatientName);
+                csv.AppendLine("Address: " + data[0].PatientAddress);
+                var first = String.Empty;
+                var second = String.Empty;
+                var third = String.Empty;
+                var fourth = String.Empty;
+                var fifth = String.Empty;
+                var newLine = String.Empty;
+                foreach (Prescription prescription in data)
+                {
+                    first = prescription.PrescriptionDescription;
+                    second = prescription.Date.ToString();
+                    third = prescription.RealizationDate.ToString();
+                    fourth = prescription.Doctor;
+                    fifth = prescription.PharmacistID.ToString();
+                    newLine = string.Format("{0},{1},{2},{3},{4}", first, second, third, fourth, fifth);
+                    csv.AppendLine(newLine);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new NotImplementedException();
+            }
+            finally
+            {
+                File.WriteAllText(fileName, csv.ToString());
+            }
         }
 
         public override void GenerateSoldMedicamentsReport()

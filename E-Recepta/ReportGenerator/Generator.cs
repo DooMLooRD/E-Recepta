@@ -19,24 +19,25 @@ namespace ReportGenerator
         private static Prescription prescription2 = new Prescription("Pacjent2", "Ulica", 2, "Opis2", date2.Date, DateTime.Now, "Doktor", 10);
         private static List<Prescription> prescriptions = new List<Prescription>();
         //path jest niezaimplementowany
-        private static UIData uIData = new UIData(ReportExt.PDF, DateTime.Now, DateTime.Now, 1, ReportType.PrescriptionsReport, "path", 10);
+        
         private static BlockchainData blockchainData = new BlockchainData(prescriptions);
         #endregion
 
-        public static void Generate()
+        public static void Generate(ReportType reportType, ReportExt reportExt, DateTime begin, DateTime end, int personID, String path)
         {
             WrongDataHandler dataHandler = new WrongDataHandler();
             blockchainData.AddPrescriptionToList(prescription1);
             blockchainData.AddPrescriptionToList(prescription2);
+            UIData uIData = new UIData(reportExt,begin, end, personID, reportType, path);
             switch (uIData.FileFormat)
             {
                 case ReportExt.PDF:
                     //ten wyjątek trzeba złapać i wyslac ui
-                    dataHandler.WrongDataNotification(blockchainData.GetPrescriptionListForPatient(uIData.PatientID));
-                    GenerateFile generatePDF = new GeneratePDF("report.pdf", uIData.ReportType, blockchainData, uIData.PatientID);
+                    dataHandler.WrongDataNotification(blockchainData.GetPrescriptionListForPatient(uIData.PersonID));
+                    GenerateFile generatePDF = new GeneratePDF("report.pdf", uIData.ReportType, blockchainData, uIData.PersonID);
                     break;
                 case ReportExt.CSV:
-                    GenerateFile generateCSV = new GenerateCSV("report.csv", uIData.ReportType);
+                    GenerateFile generateCSV = new GenerateCSV("report.csv", uIData.ReportType, blockchainData, uIData.PersonID);
                     break;
                 default:
                     throw new NotImplementedException();
