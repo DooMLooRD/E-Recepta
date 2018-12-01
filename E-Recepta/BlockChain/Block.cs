@@ -1,23 +1,35 @@
+using Newtonsoft.Json;
 using System;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace EPrescription
+namespace BlockChain
 {
-    class Block
+    public class Block
     {
-        
+
+        [JsonProperty]
         private string hash;
+
+        [JsonProperty]
         private string previousHash;
+
+        [JsonProperty]
         private DateTime timeStamp;
+
+        [JsonProperty]
         private Prescription prescription;
         
         public Block(string previousHash, Prescription prescription) {
             this.timeStamp = DateTime.Now;
             this.previousHash = previousHash;
             this.prescription = prescription;
+            this.hash = GenerateHash();
 
-            GenerateHash();
+            if (prescription != null && previousHash != null && prescription.prescriptionId == null)
+            {
+                prescription.prescriptionId = this.hash;
+            }
         }
 
         public string GetHash() {
@@ -36,16 +48,27 @@ namespace EPrescription
             return prescription;
         }
 
-        private void GenerateHash() {
+        public string GenerateHash() {
         using (SHA256 sha256Hash = SHA256.Create())
             {
                 string prescriptionData;
 
+                if (prescription == null && previousHash == null)
+                {
+                    return "4e7b64b4d5b5a298a1d2b0ce105f9d44510fcd65c8672acec968c84e456c7691";
+                }
+
                 if (prescription != null) {
-                    prescriptionData = prescription.GetDoctorId() + "::" +
-                    prescription.GetPatientId() + "::" +
-                    prescription.GetPharmacistId() + "::" +
-                    prescription.GetPrescriptionInfo();
+                    prescriptionData = prescription.doctorId + "::" +
+                    prescription.patientId + "::" +
+                    prescription.pharmacistId + "::";
+                    for(int i = 0; i < prescription.medicines.Count; i++)
+                    {
+                        prescriptionData = prescription.medicines[i].id.ToString() + "::" +
+                            prescription.medicines[i].amount.ToString() + "::";
+                    }
+                    
+
                 } else {
                     prescriptionData = "empty";
                 }
@@ -62,7 +85,7 @@ namespace EPrescription
                 {
                     builder.Append(bytes[i].ToString("x2"));
                 }
-                this.hash = builder.ToString();
+                return builder.ToString();
             }
         }
 

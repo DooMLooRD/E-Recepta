@@ -1,53 +1,44 @@
+using Newtonsoft.Json;
 using System;
+using System.Collections.ObjectModel;
 
-namespace EPrescription
+namespace BlockChain
 {
-    class Prescription
+    public class Prescription
     {
-        private string prescriptionId;
-        private string patientId;
-        private string doctorId;
-        private string pharmacistId;
-        private DateTime date;
-        /*
-            PrescriptionInfo is a string in JSON format.
-        */
-        private string prescriptionInfo;
+        [JsonProperty]
+        public string prescriptionId { get; set; }
 
-        public Prescription(string patientId, string doctorId, DateTime date, string prescriptionInfo) {
+        [JsonProperty]
+        public string patientId { get; set; }
+  
+        [JsonProperty]
+        public string doctorId { get; set; }
+
+        [JsonProperty]
+        public string pharmacistId { get; set; }
+
+        [JsonProperty]
+        public DateTime Date { get; set; }
+
+        [JsonProperty]
+        public DateTime ValidSince { get; set; }
+
+        [JsonProperty]
+        public ObservableCollection<Medicine> medicines { get; set; }
+
+        public Prescription(string patientId, string doctorId, DateTime date, DateTime validSince, ObservableCollection<Medicine> medicines)
+        {
             this.patientId = patientId;
             this.doctorId = doctorId;
-            this.date = date;
-            this.prescriptionInfo = prescriptionInfo;
+            this.Date = date;
+            this.ValidSince = validSince;
+            this.medicines = medicines;
         }
 
-        public string GetPrescriptionId() {
-            return prescriptionId;
+        public void addMedicine(Medicine medicine)
+        {
+            medicines.Add(medicine);
         }
-
-        public string GetPatientId() {
-            return patientId;
-        }
-
-        public string GetDoctorId() {
-            return doctorId;
-        }
-
-        public string GetPharmacistId() {
-            return pharmacistId;
-        }
-
-        public DateTime GetDate() {
-            return date;
-        }
-
-        public string GetPrescriptionInfo() {
-            return prescriptionInfo;
-        }
-
-        public void setPharmacistId(string pharmacistId) {
-            this.pharmacistId = pharmacistId;
-        }
-
     }
 }
