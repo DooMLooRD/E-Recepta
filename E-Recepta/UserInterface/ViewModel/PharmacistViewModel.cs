@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
 using MedicinesInStockDatabase;
+using ReportGenerator;
 using UserDatabaseAPI.Service;
 using UserDatabaseAPI.UserDB.Entities;
 using UserInterface.Command;
@@ -18,13 +19,14 @@ namespace UserInterface.ViewModel
         MedicinesInStockDB pharmacyDB = new MedicinesInStockDB("1");
 
         private List<UserDTO> _pharmacists;
-        private ObservableCollection<MedicineInStock> _pharmacyState;
+        
         public List<string> FileExtensions { get; set; } = new List<string>() {"pdf", "csv"};
         public string SelectedFileExtension { get; set; }
 
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate{ get; set; }
 
+        private ObservableCollection<MedicineInStock> _pharmacyState;
         public ObservableCollection<MedicineInStock> PharmacyState
         {
             get => _pharmacyState;
@@ -115,7 +117,12 @@ namespace UserInterface.ViewModel
         private async void GetPatientsPrescriptions()
         {
             IsWorking = true;
-            await Task.Run(() => Thread.Sleep(1500));
+            await Task.Run(() =>
+            {
+                var ext = ReportExt.CSV.ToString().ToLower() == SelectedFileExtension ? ReportExt.CSV : ReportExt.PDF;
+                var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                Generator.Generate(ReportType.PrescriptionsReport, ext, StartDate.Value, EndDate.Value, 1, loc);
+            });
             IsWorking = false;
         }
 

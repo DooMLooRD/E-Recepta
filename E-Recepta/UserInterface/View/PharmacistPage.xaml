@@ -85,7 +85,7 @@
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
                     <StackPanel>
-                        <TextBlock>raport ze sprzedanych lekow dla farmaceuty TODO: REMOVE ID FROM GRID</TextBlock>
+                        <!--<TextBlock>raport ze sprzedanych lekow dla farmaceuty TODO: REMOVE ID FROM GRID</TextBlock>-->
                         <StackPanel Orientation="Horizontal">
                             <TextBox mah:TextBoxHelper.Watermark="First name" Text="{Binding UserFilter.Name, Mode=OneWayToSource}"/>
                             <TextBox mah:TextBoxHelper.Watermark="Last name" Text="{Binding UserFilter.LastName, Mode=OneWayToSource}"/>
@@ -96,7 +96,7 @@
                             <Button Command="{Binding GetPharmacistsSalesCommand}">Submit</Button>
                     </StackPanel>
                     <StackPanel Grid.Column="2">
-                        <TextBlock>raport z receptami dla danego pacjenta TODO: REMOVE ID FROM GRID</TextBlock>
+                        <!--<TextBlock>raport z receptami dla danego pacjenta TODO: REMOVE ID FROM GRID</TextBlock>-->
                         <StackPanel Orientation="Horizontal">
                             <TextBox mah:TextBoxHelper.Watermark="First name" Text="{Binding UserFilter.Name}"/>
                             <TextBox mah:TextBoxHelper.Watermark="Last name" Text="{Binding UserFilter.LastName}"/>
@@ -122,7 +122,7 @@
             <TabItem>
                 <TabItem.Header>Pharmacy state</TabItem.Header>
                 <StackPanel>
-                    <Button Command="{Binding GetPharmacyStateCommand}">xd</Button>
+                    <Button Command="{Binding GetPharmacyStateCommand}"></Button>
                     <DataGrid IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding PharmacyState}" SelectedItem="{Binding SelectedMedicine, Mode=OneWayToSource}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>

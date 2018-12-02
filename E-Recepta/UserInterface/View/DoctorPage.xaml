@@ -93,7 +93,7 @@
             <TabItem>
                 <TabItem.Header>My Prescriptions</TabItem.Header>
                 <StackPanel>
-                    <Button Command="{Binding LoadDoctorsPrescriptionsCommand}">xd</Button>
+                    <Button Command="{Binding LoadDoctorsPrescriptionsCommand}"></Button>
                     <DataGrid AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Prescriptions}">
                         <DataGrid.Columns>
                             <DataGridTextColumn IsReadOnly="True" Header="Patient" Binding="{Binding Doctor.LastName}"/>

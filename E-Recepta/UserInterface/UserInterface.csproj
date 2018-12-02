@@ -150,6 +150,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Authorisation\Authorisation.csproj">
+      <Project>{21573264-05BB-44FA-9258-EA981879B6C4}</Project>
+      <Name>Authorisation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MedicinesDatabase\MedicinesDatabase.csproj">
       <Project>{9be338d1-251f-44cf-8a88-7987803b0e23}</Project>
       <Name>MedicinesDatabase</Name>
@@ -157,6 +161,10 @@
     <ProjectReference Include="..\MedicinesInStockDatabase\MedicinesInStockDatabase.csproj">
       <Project>{EDAD9714-55A3-4924-8A70-16BE4695DB9C}</Project>
       <Name>MedicinesInStockDatabase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ReportGenerator\ReportGenerator.csproj">
+      <Project>{C67B5765-4483-44DE-B4E0-91A0A897A599}</Project>
+      <Name>ReportGenerator</Name>
     </ProjectReference>
     <ProjectReference Include="..\UserDatabaseAPI\UserDatabaseAPI.csproj">
       <Project>{5a81fd1f-2672-4e60-9696-e7ca013dc9f7}</Project>

@@ -18,10 +18,10 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel>
-        <Button Command="{Binding LoadPatientsPrescriptionsCommand}">xd</Button>
+            <Button Command="{Binding LoadPatientsPrescriptionsCommand}"></Button>
         <DataGrid AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Prescriptions}">
             <DataGrid.Columns>
-                <DataGridTextColumn IsReadOnly="True" Header="Patient" Binding="{Binding Doctor.LastName}"/>
+                <DataGridTextColumn IsReadOnly="True" Header="Doctor" Binding="{Binding Doctor.LastName}"/>
                 <DataGridTextColumn IsReadOnly="True" Header="Date" Binding="{Binding Date}"/>
                 <DataGridTextColumn IsReadOnly="True" Header="Valid since" Binding="{Binding ValidSince}"/>
             </DataGrid.Columns>
