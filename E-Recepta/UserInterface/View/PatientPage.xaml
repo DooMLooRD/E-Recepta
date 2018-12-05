@@ -8,7 +8,7 @@
       xmlns:viewModel="clr-namespace:UserInterface.ViewModel"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="PatientPage">
+      Title="PatientPage" Loaded="Page_Loaded">
     <Page.DataContext>
         <viewModel:PatientViewModel/>
     </Page.DataContext>
@@ -18,7 +18,7 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel>
-            <Button Command="{Binding LoadPatientsPrescriptionsCommand}"></Button>
+            <Button Command="{Binding LoadPatientsPrescriptionsCommand}">refresh</Button>
         <DataGrid AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Prescriptions}">
             <DataGrid.Columns>
                 <DataGridTextColumn IsReadOnly="True" Header="Doctor" Binding="{Binding Doctor.LastName}"/>

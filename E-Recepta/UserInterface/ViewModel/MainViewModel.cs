@@ -67,10 +67,10 @@ namespace UserInterface.ViewModel
 
         public MainViewModel()
         {
-            //CurrentPage = new Uri("DoctorPage.Xaml", UriKind.RelativeOrAbsolute);
+            CurrentPage = new Uri("DoctorPage.Xaml", UriKind.RelativeOrAbsolute);
             //CurrentPage = new Uri("PharmacistPage.Xaml", UriKind.RelativeOrAbsolute);
             //CurrentPage = new Uri("PatientPage.Xaml", UriKind.RelativeOrAbsolute);
-            CurrentPage = new Uri("LoginPage.Xaml", UriKind.RelativeOrAbsolute);
+            //CurrentPage = new Uri("LoginPage.Xaml", UriKind.RelativeOrAbsolute);
         }
 
         public bool ShowLogs
@@ -79,7 +79,13 @@ namespace UserInterface.ViewModel
             set { _showLogs = value; OnPropertyChanged(); }
         }
 
-        public ICommand SwitchShowLogsCommand => new RelayCommand(() => ShowLogs = !ShowLogs);
+        public ICommand SwitchShowLogsCommand => new RelayCommand(() => ShowLogs = !ShowLogs, () => IsLoggedIn);
+        public ICommand LogOutCommand => new RelayCommand(LogOut, () => IsLoggedIn);
+
+        private void LogOut()
+        {
+            CurrentPage = new Uri("LoginPage.Xaml", System.UriKind.RelativeOrAbsolute);
+        }
 
         #region StaticPropertyChanged
         public static event EventHandler<PropertyChangedEventArgs> StaticPropertyChanged;

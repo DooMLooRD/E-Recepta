@@ -21,6 +21,7 @@ namespace UserInterface.ViewModel
         private ObservableCollection<PrescriptionMedicine> _newPrescription = new ObservableCollection<PrescriptionMedicine>();
 
         public MedicinesDatabase.Medicine SelectedMedicine { get; set; }
+        public MedicinesDatabase.Medicine MedicineFilter { get; set; } = new MedicinesDatabase.Medicine("", "", "", "0");
         public PrescriptionMedicine SelectedPrescriptionMedicine { get; set; }
         public ObservableCollection<MedicinesDatabase.Medicine> Medicines
         {
@@ -34,7 +35,7 @@ namespace UserInterface.ViewModel
             set => _newPrescription = value;
         }
 
-        public MedicinesDatabase.Medicine MedicineFilter { get; set; } = new MedicinesDatabase.Medicine("", "", "","0");
+        
         public ICommand LoadPatientsCommand => new RelayCommand(async () =>
         {
             IsWorking = true;
@@ -72,6 +73,7 @@ namespace UserInterface.ViewModel
         public DoctorViewModel()
         {
             medicineModule = new MedicinesDB();
+            LoadDoctorsPrescriptionsCommand.Execute(null);
         }
         public ICommand LoadMedicinesCommand => new RelayCommand(LoadMedicines, () => true);
 

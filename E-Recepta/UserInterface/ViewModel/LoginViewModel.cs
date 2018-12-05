@@ -43,7 +43,7 @@ namespace UserInterface.ViewModel
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show("error");
+                    MessageBox.Show(e.Message);
                 }
             });
             IsWorking = false;

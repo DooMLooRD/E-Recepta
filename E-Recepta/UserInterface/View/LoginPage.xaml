@@ -23,15 +23,16 @@
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">
             <ComboBox Width="100px" SelectedIndex="0" ItemsSource="{Binding Path=Roles}" SelectedItem="{Binding Role, Mode=OneWayToSource}"></ComboBox>
             <TextBox mah:TextBoxHelper.Watermark="username" Text="{Binding Username, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" >
-                <!--<i:Interaction.Triggers>
-                    <i:EventTrigger EventName="KeyDown">
-                        <i:InvokeCommandAction 
-                            Command="{Binding VerifyDataCommand}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>-->
+                <TextBox.InputBindings>
+                    <KeyBinding Command="{Binding LoginCommand}" Key="Return" />
+                </TextBox.InputBindings>
             </TextBox>
             <!--<TextBox mah:TextBoxHelper.Watermark="password"  Text="{Binding Password, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"/>-->
-            <PasswordBox mah:TextBoxHelper.Watermark="password" PasswordChanged="PasswordBox_PasswordChanged"/>
+            <PasswordBox mah:TextBoxHelper.Watermark="password" PasswordChanged="PasswordBox_PasswordChanged">
+                <PasswordBox.InputBindings>
+                    <KeyBinding Command="{Binding LoginCommand}" Key="Return" />
+                </PasswordBox.InputBindings>
+            </PasswordBox>
                 <Button Style="{StaticResource AccentedSquareButtonStyle}" Content="Login" Command="{Binding LoginCommand}"></Button>
             <mah:ProgressRing Foreground="{DynamicResource AccentColorBrush}" Visibility="{Binding IsWorking, Converter={StaticResource BoolToVis}}"/>
         </StackPanel>

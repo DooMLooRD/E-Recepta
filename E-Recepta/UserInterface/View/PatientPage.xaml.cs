@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using UserInterface.ViewModel;
 
 namespace UserInterface.View
 {
@@ -23,6 +24,11 @@ namespace UserInterface.View
         public PatientPage()
         {
             InitializeComponent();
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            ((PatientViewModel) DataContext).LoadPatientsPrescriptionsCommand.Execute(null);
         }
     }
 }

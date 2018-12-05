@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
+using MahApps.Metro.Controls;
+using MedicinesDatabase;
 using MedicinesInStockDatabase;
 using ReportGenerator;
 using UserDatabaseAPI.Service;
 using UserDatabaseAPI.UserDB.Entities;
 using UserInterface.Command;
+using Medicine = MedicinesInStockDatabase.Medicine;
 
 namespace UserInterface.ViewModel
 {
@@ -19,8 +23,23 @@ namespace UserInterface.ViewModel
         MedicinesInStockDB pharmacyDB = new MedicinesInStockDB("1");
 
         private List<UserDTO> _pharmacists;
+
+        public PharmacistViewModel()
+        {
+            GetPharmacyStateCommand.Execute(null);
+            GetGeneralPharmacyStateCommand.Execute(null);
+            
+            
+        }
+
+        public MedicinesInStockDatabase.Medicine GeneralMedicineFilter { get; set; } = new MedicinesInStockDatabase.Medicine("", "", "");
         
-        public List<string> FileExtensions { get; set; } = new List<string>() {"pdf", "csv"};
+        public MedicinesInStockDatabase.Medicine SelectedGeneralMedicine { get; set; }
+        public MedicinesInStockDatabase.MedicineInStock InStockMedicineFilter { get; set; } = new MedicineInStock("", "", "", "0", "0", "0");
+
+
+
+        public List<string> FileExtensions { get; set; } = new List<string>() {"Select file extension", "pdf", "csv"};
         public string SelectedFileExtension { get; set; }
 
         public DateTime? StartDate { get; set; }
@@ -33,6 +52,17 @@ namespace UserInterface.ViewModel
             set
             {
                 _pharmacyState = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private ObservableCollection<Medicine> _generalPharmacyState;
+        public ObservableCollection<Medicine> GeneralPharmacyState
+        {
+            get => _generalPharmacyState;
+            set
+            {
+                _generalPharmacyState = value;
                 OnPropertyChanged();
             }
         }
@@ -55,9 +85,18 @@ namespace UserInterface.ViewModel
 
 
 
-        public ICommand GetPharmacistsSalesCommand => new RelayCommand(GetPharmacistsSales, () => SelectedPharmacist != null);
+        public ICommand GetPharmacistsSalesCommand => new RelayCommand(GetPharmacistsSales, () => SelectedPharmacist != null && SelectedFileExtension != FileExtensions[0]);
         public ICommand GetPatientsPrescriptionsCommand => new RelayCommand(GetPatientsPrescriptions, IsPrescriptionsDataReady);
         public ICommand LoadPatientsUnrealisedPrescriptionsCommand => new RelayCommand(GetPrescriptions, () => true);
+        public ICommand AddToPharmacyCommand => new RelayCommand(AddToPharmacy, () => true);
+
+        private void AddToPharmacy()
+        {
+            var medicine = new MedicineInStock(SelectedGeneralMedicine.Id, SelectedGeneralMedicine.Name, SelectedGeneralMedicine.Manufacturer, "1", "100", "1");
+            PharmacyState.Add(medicine);
+            GeneralPharmacyState.Remove(SelectedGeneralMedicine);
+        }
+
         public ICommand LoadPatientsCommand => new RelayCommand(async () =>
         {
             IsWorking = true;
@@ -72,22 +111,48 @@ namespace UserInterface.ViewModel
             IsWorking = true;
             UserFilter.Role = "Pharmacist";
             UserFilter.Username = "";
-            var x = Task.Run(async () => await LoadUsers());
-            Pharmacists = new List<UserDTO>(await x);
+            var users = await Task.Run(LoadUsers);
+            Pharmacists = new List<UserDTO>(users);
             IsWorking = false;
         }, () => true);
 
         public ICommand GetPharmacyStateCommand => new RelayCommand(GetPharmacyState, () => true);
+        public ICommand GetGeneralPharmacyStateCommand => new RelayCommand(GetGeneralPharmacyState, () => true);
+
+        private async void GetGeneralPharmacyState()
+        {
+            IsWorking = true;
+            GeneralPharmacyState = new ObservableCollection<Medicine>(await pharmacyDB.SearchMedicine(GeneralMedicineFilter.Name, GeneralMedicineFilter.Manufacturer));
+            var temp = (from x in PharmacyState
+                      join y in GeneralPharmacyState
+                          on x.Id equals y.Id
+                      select y).ToList();
+            GeneralPharmacyState.Add(new Medicine("44", "test", "test"));
+            GeneralPharmacyState = new ObservableCollection<Medicine>(GeneralPharmacyState.Except(temp));
+            IsWorking = false;
+        }
+
         public ICommand UpdatePharmacyStateCommand => new RelayCommand(UpdatePharmacyState, () => true);
 
         private void UpdatePharmacyState()
         {
-            // todo
+            for (int i = 0; i < actualPharmacyMedicinesCount; i++)
+            {
+
+            }
+            for (int i = actualPharmacyMedicinesCount; i < PharmacyState.Count; i++)
+            {
+                Console.WriteLine("xd");
+            }
         }
 
+        private int actualPharmacyMedicinesCount;
         private async void GetPharmacyState()
         {
-            PharmacyState = new ObservableCollection<MedicineInStock>(await pharmacyDB.SearchMedicineInStock("", ""));
+            IsWorking = true;
+            PharmacyState = new ObservableCollection<MedicineInStock>(await pharmacyDB.SearchMedicineInStock(InStockMedicineFilter.Name, InStockMedicineFilter.Manufacturer));
+            actualPharmacyMedicinesCount = PharmacyState.Count;
+            IsWorking = false;
         }
 
 
@@ -111,7 +176,7 @@ namespace UserInterface.ViewModel
         private bool IsPrescriptionsDataReady()
         {
             return SelectedUser != null && StartDate != null && EndDate != null &&
-                   SelectedFileExtension != String.Empty && EndDate >= StartDate;
+                   SelectedFileExtension != String.Empty && EndDate >= StartDate && SelectedFileExtension != FileExtensions[0];
         }
 
         private async void GetPatientsPrescriptions()
@@ -131,9 +196,6 @@ namespace UserInterface.ViewModel
             IsWorking = true;
             await Task.Run(() => Thread.Sleep(1500));
             IsWorking = false;
-        }
-
-
-        
+        }   
     }
 }

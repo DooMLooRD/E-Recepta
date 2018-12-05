@@ -18,7 +18,7 @@ namespace UserInterface.ViewModel
             set { _patients = value; OnPropertyChanged(); }
         }
 
-
+        
         public UserDTO UserFilter { get; set; } = new UserDTO();
         protected async Task<IEnumerable<UserDTO>> LoadUsers()
         {

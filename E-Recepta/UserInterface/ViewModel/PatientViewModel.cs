@@ -6,5 +6,12 @@ namespace UserInterface.ViewModel
     public class PatientViewModel : ViewModelBase
     {
         public ICommand LoadPatientsPrescriptionsCommand => new RelayCommand(GetPrescriptions, () => true);
+
+        public PatientViewModel()
+        {
+            LoadPatientsPrescriptionsCommand.Execute(null);
+        }
     }
+
+
 }

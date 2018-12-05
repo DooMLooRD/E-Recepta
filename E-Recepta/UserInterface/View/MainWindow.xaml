@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UserInterface.View"
         mc:Ignorable="d"
-        Title="E-Recepty" Height="450" Width="800">
+        Title="E-Recepty" Height="750" Width="1200">
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl DataContext="{Binding}">
             <Controls:Flyout Header="Login logs" Position="Right" Width="200" IsOpen="{Binding ShowLogs}">
@@ -16,7 +16,8 @@
     </Controls:MetroWindow.Flyouts>
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands DataContext="{Binding}">
-            <Button Content="Show logs" IsEnabled="{Binding IsLoggedIn}" Command="{Binding SwitchShowLogsCommand}"></Button>
+            <Button Content="Show logs" Command="{Binding SwitchShowLogsCommand}"></Button>
+            <Button Content="Sign out" Command="{Binding LogOutCommand}"></Button>
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
     <Grid>
