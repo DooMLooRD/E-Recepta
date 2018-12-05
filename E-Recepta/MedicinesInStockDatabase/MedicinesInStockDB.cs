@@ -170,7 +170,7 @@ namespace MedicinesInStockDatabase
             return result;
         }
 
-        public async Task<int> ChangeMedicineAmountInStock(string medicineId, string amountChange)    //returns 1 when amount was updated, 0 when it was not and -1 if exception occured
+        public async Task<int> UpdateMedicineAmountInStock(string medicineId, string amountChange, string price)    //returns 1 when was updated, 0 when it was not and -1 if exception occured
         {
 
             int result = -1;
@@ -182,7 +182,7 @@ namespace MedicinesInStockDatabase
                     conn.Open();
                     SqlCommand command = conn.CreateCommand();
                     string commandText = "UPDATE medicines_in_stock SET amount = amount + " + amountChange +
-                                            " WHERE pharmacy_id = " + pharmacyId +
+                                            ", cost = " + price + " WHERE pharmacy_id = " + pharmacyId +
                                             " AND medicine_id = " + medicineId;
                     command.CommandText = commandText;
                     result = await command.ExecuteNonQueryAsync();
