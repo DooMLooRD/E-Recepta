@@ -38,6 +38,11 @@ namespace MedicinesInStockDatabase
             {
                 return this._name;
             }
+
+            set
+            {
+                this._name = value;
+            }
         }
 
         public string Manufacturer
@@ -45,6 +50,11 @@ namespace MedicinesInStockDatabase
             get
             {
                 return this._manufacturer;
+            }
+
+            set
+            {
+                this._manufacturer = value;
             }
         }
     }
