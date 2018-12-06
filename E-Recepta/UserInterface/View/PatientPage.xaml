@@ -15,28 +15,32 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="4*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <StackPanel>
-            <Button Command="{Binding LoadPatientsPrescriptionsCommand}">refresh</Button>
-        <DataGrid AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Prescriptions}">
-            <DataGrid.Columns>
-                <DataGridTextColumn IsReadOnly="True" Header="Doctor" Binding="{Binding Doctor.LastName}"/>
-                <DataGridTextColumn IsReadOnly="True" Header="Date" Binding="{Binding Date}"/>
-                <DataGridTextColumn IsReadOnly="True" Header="Valid since" Binding="{Binding ValidSince}"/>
-            </DataGrid.Columns>
-            <DataGrid.RowDetailsTemplate>
-                <DataTemplate>
-                    <DataGrid AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Medicines}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Name" Binding="{Binding Medicine.Name}"/>
-                            <DataGridTextColumn Header="Manufacturer" Binding="{Binding Medicine.Manufacturer}"/>
-                            <DataGridTextColumn Header="Amount" Binding="{Binding Amount}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </DataTemplate>
-            </DataGrid.RowDetailsTemplate>
-        </DataGrid>
+        <StackPanel Margin="10">
+            <Border Opacity="0.98" Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
+                <StackPanel Margin="10">
+                    <Button Command="{Binding LoadPatientsPrescriptionsCommand}">refresh</Button>
+                    <DataGrid ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ColumnWidth="*" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="600" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Prescriptions}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn IsReadOnly="True" Header="Doctor" Binding="{Binding Doctor.LastName}"/>
+                        <DataGridTextColumn IsReadOnly="True" Header="Date" Binding="{Binding Date}"/>
+                        <DataGridTextColumn IsReadOnly="True" Header="Valid since" Binding="{Binding ValidSince}"/>
+                    </DataGrid.Columns>
+                    <DataGrid.RowDetailsTemplate>
+                        <DataTemplate>
+                            <DataGrid AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Medicines}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Name" Binding="{Binding Medicine.Name}"/>
+                                    <DataGridTextColumn Header="Manufacturer" Binding="{Binding Medicine.Manufacturer}"/>
+                                    <DataGridTextColumn Header="Amount" Binding="{Binding Amount}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </DataTemplate>
+                    </DataGrid.RowDetailsTemplate>
+                </DataGrid>
+        </StackPanel>
+        </Border>
         </StackPanel>
         <mah:ProgressRing Grid.Row="1" Grid.Column="0" Foreground="{DynamicResource AccentColorBrush}" Visibility="{Binding IsWorking, Converter={StaticResource BoolToVis}}"/>
     </Grid>

@@ -55,6 +55,7 @@ namespace UserInterface.ViewModel
         {
             IsWorking = true;
             await Task.Run(() => Thread.Sleep(1000));
+            GetPrescriptions();
             IsWorking = false;
         }
 

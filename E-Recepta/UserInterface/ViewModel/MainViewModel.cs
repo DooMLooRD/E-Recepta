@@ -41,36 +41,20 @@ namespace UserInterface.ViewModel
             }
         }
 
-        public static ObservableCollection<LoginAttemptDTO> LoginLogs { get; set; }
-
-
-        // ### NIE DODAWAC TEJ WLASCIWOSCI DO UML ###
-        public static string loginLogs2;
-        public static string LoginLogs2
+        public static ObservableCollection<LoginAttemptDTO> LoginLogs
         {
-            get { return loginLogs2; }
-            set
-            {
-                StringBuilder xd = new StringBuilder();
-                if (LoginLogs == null) loginLogs2="";
-                foreach (var log in LoginLogs)
-                {
-                    xd.Append(log.LoginTime).Append("\t").Append(log.IsSuccessful)
-                        .Append(Environment.NewLine);
-                }
-
-                loginLogs2= xd.ToString();
-                NotifyStaticPropertyChanged("LoginLogs2");
-            }
+            get => _loginLogs;
+            set { _loginLogs = value; NotifyStaticPropertyChanged("LoginLogs");}
         }
-        //###
+
+        private static ObservableCollection<LoginAttemptDTO> _loginLogs;
 
         public MainViewModel()
         {
-            CurrentPage = new Uri("DoctorPage.Xaml", UriKind.RelativeOrAbsolute);
+            //CurrentPage = new Uri("DoctorPage.Xaml", UriKind.RelativeOrAbsolute);
             //CurrentPage = new Uri("PharmacistPage.Xaml", UriKind.RelativeOrAbsolute);
             //CurrentPage = new Uri("PatientPage.Xaml", UriKind.RelativeOrAbsolute);
-            //CurrentPage = new Uri("LoginPage.Xaml", UriKind.RelativeOrAbsolute);
+            CurrentPage = new Uri("LoginPage.Xaml", UriKind.RelativeOrAbsolute);
         }
 
         public bool ShowLogs
@@ -84,6 +68,7 @@ namespace UserInterface.ViewModel
 
         private void LogOut()
         {
+            IsLoggedIn = false;
             CurrentPage = new Uri("LoginPage.Xaml", System.UriKind.RelativeOrAbsolute);
         }
 
@@ -119,7 +104,6 @@ namespace UserInterface.ViewModel
             
         
             LoginLogs = new ObservableCollection<LoginAttemptDTO>(await logs);
-            LoginLogs2 = "xd";
             IsLoggedIn = true;
         }
     }

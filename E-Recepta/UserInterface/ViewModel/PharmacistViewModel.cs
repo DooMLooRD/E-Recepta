@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace UserInterface.ViewModel
 
         public PharmacistViewModel()
         {
-            GetPharmacyStateCommand.Execute(null);
+            //GetPharmacyStateCommand.Execute(null);
             GetGeneralPharmacyStateCommand.Execute(null);
             
             
@@ -116,34 +117,48 @@ namespace UserInterface.ViewModel
             IsWorking = false;
         }, () => true);
 
-        public ICommand GetPharmacyStateCommand => new RelayCommand(GetPharmacyState, () => true);
+        public ICommand GetPharmacyStateCommand => new RelayCommand(GetGeneralPharmacyState, () => true);
         public ICommand GetGeneralPharmacyStateCommand => new RelayCommand(GetGeneralPharmacyState, () => true);
 
         private async void GetGeneralPharmacyState()
         {
             IsWorking = true;
+            PharmacyState = new ObservableCollection<MedicineInStock>(await pharmacyDB.SearchMedicineInStock(InStockMedicineFilter.Name, InStockMedicineFilter.Manufacturer));
+            actualPharmacyMedicinesCount = PharmacyState.Count;
             GeneralPharmacyState = new ObservableCollection<Medicine>(await pharmacyDB.SearchMedicine(GeneralMedicineFilter.Name, GeneralMedicineFilter.Manufacturer));
             var temp = (from x in PharmacyState
                       join y in GeneralPharmacyState
                           on x.Id equals y.Id
                       select y).ToList();
-            GeneralPharmacyState.Add(new Medicine("44", "test", "test"));
             GeneralPharmacyState = new ObservableCollection<Medicine>(GeneralPharmacyState.Except(temp));
             IsWorking = false;
         }
 
         public ICommand UpdatePharmacyStateCommand => new RelayCommand(UpdatePharmacyState, () => true);
 
-        private void UpdatePharmacyState()
+        private async void UpdatePharmacyState()
         {
             for (int i = 0; i < actualPharmacyMedicinesCount; i++)
             {
-
+                var medicine = PharmacyState[i];
+                if (medicine.Amount == 0)
+                {
+                    await pharmacyDB.RemoveMedicineFromStock(medicine.Id);
+                }
+                else
+                {
+                    await pharmacyDB.UpdateMedicineAmountInStock(medicine.Id, medicine.Amount.ToString(),
+                        medicine.Cost.ToString("G", CultureInfo.InvariantCulture));
+                }
             }
             for (int i = actualPharmacyMedicinesCount; i < PharmacyState.Count; i++)
             {
-                Console.WriteLine("xd");
+                var medicine = PharmacyState[i];
+                if(medicine.Amount == 0)
+                    continue;
+                await pharmacyDB.AddMedicineToStock(medicine.Id, medicine.Amount.ToString(), medicine.Cost.ToString("G", CultureInfo.InvariantCulture));
             }
+            GetGeneralPharmacyStateCommand.Execute(null);
         }
 
         private int actualPharmacyMedicinesCount;

@@ -25,7 +25,7 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Row="0" Margin="10">
-                        <Border  Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
+                        <Border Opacity="0.98"  Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
 
                             <StackPanel Name="Sp1" Margin="10">
                                 <TextBlock>1. Choose patient</TextBlock>
@@ -56,7 +56,7 @@
                     </StackPanel>
 
                     <StackPanel Grid.Row="1" Margin="10">
-                        <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
+                        <Border Opacity="0.98" Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
                             <StackPanel Margin="10">
                                 <TextBlock>2. Choose prescription</TextBlock>
                                 <DataGrid ColumnWidth="*" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="200" Margin="0 10 0 0" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Prescriptions}" SelectedItem="{Binding SelectedPatientsUnrealisedPrescription, Mode=OneWayToSource}">
@@ -107,7 +107,7 @@
 
                     <StackPanel Grid.Row="0" Margin="10">
                         <ComboBox Margin="0 0 0 5" SelectedIndex="0" SelectedItem="{Binding SelectedFileExtension, Mode=OneWayToSource}" ItemsSource="{Binding FileExtensions}"></ComboBox>
-                        <Border  Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
+                        <Border  Opacity="0.98" Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
 
                             <StackPanel Margin="10">
                                 
@@ -118,12 +118,12 @@
                                     <TextBox mah:TextBoxHelper.Watermark="PESEL" Text="{Binding UserFilter.Pesel, Mode=OneWayToSource}"/>
                                     <Button Command="{Binding LoadPharmacistsCommand}">Search</Button>
                                 </StackPanel>
-                                <DataGrid ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="150" Margin="0 10 0 0"  IsReadOnly="True" ColumnWidth="*" AutoGenerateColumns="True" IsTextSearchEnabled="True" SelectionMode="Single" ItemsSource="{Binding Pharmacists}" SelectedItem="{Binding SelectedPharmacist, Mode=OneWayToSource}">
-                                    <!--<DataGrid.Columns>
+                                <DataGrid ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="150" Margin="0 10 0 0"  IsReadOnly="True" ColumnWidth="*" AutoGenerateColumns="False" IsTextSearchEnabled="True" SelectionMode="Single" ItemsSource="{Binding Pharmacists}" SelectedItem="{Binding SelectedPharmacist, Mode=OneWayToSource}">
+                                    <DataGrid.Columns>
                                         <DataGridTextColumn IsReadOnly="True" Header="First name" Binding="{Binding Name}"/>
                                         <DataGridTextColumn IsReadOnly="True" Header="Last name" Binding="{Binding LastName}"/>
                                         <DataGridTextColumn IsReadOnly="True" Header="Pesel" Binding="{Binding Pesel}"/>
-                                    </DataGrid.Columns>-->
+                                    </DataGrid.Columns>
                                 </DataGrid>
                                 <Button Command="{Binding GetPharmacistsSalesCommand}">Submit</Button>
                             </StackPanel>
@@ -134,7 +134,7 @@
                     </StackPanel>
 
                     <StackPanel Grid.Row="1" Margin="10">
-                        <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
+                        <Border Opacity="0.98" Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
                             <StackPanel Margin="10">
                                 <TextBlock>Patient's prescriptions</TextBlock>
                                 <StackPanel Orientation="Horizontal">
@@ -170,24 +170,24 @@
                 <TabItem.Header>Pharmacy state</TabItem.Header>
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="4*"></RowDefinition>
-                        <RowDefinition Height="4*"></RowDefinition>
+                        <RowDefinition Height="1*"></RowDefinition>
+                        <RowDefinition Height="1*"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <StackPanel Grid.Row="0" Margin="10">
-                        
-                        <Border  Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
+                    <StackPanel Grid.Row="0" Margin="10 10 10 0">
+
+                        <Border  Opacity="0.98" Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
 
                             <StackPanel Margin="10">
 
-                                <TextBlock>Pharmacists' sales    todo: kolumny</TextBlock>
+                                <TextBlock>General pharmacy</TextBlock>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBox mah:TextBoxHelper.Watermark="Name" Text="{Binding GeneralMedicineFilter.Name}"/>
                                     <TextBox mah:TextBoxHelper.Watermark="Manufacturer" Text="{Binding GeneralMedicineFilter.Manufacturer}"/>
                                     <Button Command="{Binding GetGeneralPharmacyStateCommand}">Search</Button>
                                 </StackPanel>
-                                <DataGrid ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="150" Margin="0 10 0 0"  IsReadOnly="True" ColumnWidth="*" AutoGenerateColumns="False" IsTextSearchEnabled="True" SelectionMode="Single" ItemsSource="{Binding GeneralPharmacyState}" SelectedItem="{Binding SelectedGeneralMedicine, Mode=OneWayToSource}">
+                                <DataGrid ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="190" Margin="0 10 0 0"  IsReadOnly="True" ColumnWidth="*" AutoGenerateColumns="False" IsTextSearchEnabled="True" SelectionMode="Single" ItemsSource="{Binding GeneralPharmacyState}" SelectedItem="{Binding SelectedGeneralMedicine, Mode=OneWayToSource}">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn IsReadOnly="True" Header="Name" Binding="{Binding Name}"/>
                                         <DataGridTextColumn IsReadOnly="True" Header="Manufacturer" Binding="{Binding Manufacturer}"/>
@@ -200,24 +200,20 @@
                                         </DataGridTemplateColumn>
                                     </DataGrid.Columns>
                                 </DataGrid>
-                                
                             </StackPanel>
-
                         </Border>
-
-                        <StackPanel Margin="5"></StackPanel>
                     </StackPanel>
 
-                    <StackPanel Grid.Row="1" Margin="10">
-                        <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
+                    <StackPanel Grid.Row="1" Margin="10 0">
+                        <Border Opacity="0.98" Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
                             <StackPanel Margin="10">
-                                <TextBlock>Patient's prescriptions</TextBlock>
+                                <TextBlock>Local pharmacy state</TextBlock>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBox mah:TextBoxHelper.Watermark="Name" Text="{Binding InStockMedicineFilter.Name}"/>
                                     <TextBox mah:TextBoxHelper.Watermark="Manufacturer" Text="{Binding InStockMedicineFilter.Manufacturer}"/>
                                     <Button Command="{Binding GetPharmacyStateCommand}">Search</Button>
                                 </StackPanel>
-                                <DataGrid IsReadOnly="False" AutoGenerateColumns="False" ItemsSource="{Binding PharmacyState}" SelectedItem="{Binding SelectedGeneralMedicine, Mode=OneWayToSource}">
+                                <DataGrid ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ColumnWidth="*" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="210" IsReadOnly="False" AutoGenerateColumns="False" ItemsSource="{Binding PharmacyState}" SelectedItem="{Binding SelectedGeneralMedicine, Mode=OneWayToSource}">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn IsReadOnly="True" Header="Name" Binding="{Binding Name}"/>
                                         <DataGridTextColumn IsReadOnly="True" Header="Manufacturer" Binding="{Binding Manufacturer}"/>
