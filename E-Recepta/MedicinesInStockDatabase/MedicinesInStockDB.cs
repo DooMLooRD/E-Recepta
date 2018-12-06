@@ -181,7 +181,7 @@ namespace MedicinesInStockDatabase
                 {
                     conn.Open();
                     SqlCommand command = conn.CreateCommand();
-                    string commandText = "UPDATE medicines_in_stock SET amount = amount + " + amountChange +
+                    string commandText = "UPDATE medicines_in_stock SET amount = " + amountChange +
                                             ", cost = " + price + " WHERE pharmacy_id = " + pharmacyId +
                                             " AND medicine_id = " + medicineId;
                     command.CommandText = commandText;

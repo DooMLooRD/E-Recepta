@@ -27,6 +27,11 @@ namespace MedicinesInStockDatabase
             {
                 return this._amount;
             }
+
+            set
+            {
+                this._amount = value;
+            }
         }
 
         public float Cost
@@ -35,6 +40,11 @@ namespace MedicinesInStockDatabase
             {
                 return this._cost;
             }
+
+            set
+            {
+                this._cost = value;
+            }
         } 
 
         public string PharmacyId
@@ -42,6 +52,11 @@ namespace MedicinesInStockDatabase
             get
             {
                 return this._pharmacyId;
+            }
+
+            set
+            {
+                this._pharmacyId = value;
             }
         }
 
