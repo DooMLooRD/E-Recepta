@@ -47,6 +47,36 @@ namespace MedicinesDatabase
             return medicines;
         }
 
+        public async Task<IEnumerable<Medicine>> SearchMedicineById(string id)
+        {
+            List<Medicine> medicines = new List<Medicine>();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    SqlCommand command = conn.CreateCommand();
+                    string commandText = "SELECT * FROM medicines WHERE id = " + id;
+                    command.CommandText = commandText;
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
+
+                    while (reader.Read())
+                    {
+                        medicines.Add(new Medicine(reader["id"].ToString(), reader["name"].ToString(),
+                                                   reader["manufacturer"].ToString(), reader["refund_rate"].ToString()));
+                    }
+                    reader.Close();
+                }
+                catch (Exception e)
+                {
+                    medicines = null;
+                }
+            }
+
+            return medicines;
+        }
+
         public async Task<int> IsMedicineInDB(string id)    //returns 1 when id is in DB, 0 when it's not and -1 when exception occurs
         {
             int response = -1;
