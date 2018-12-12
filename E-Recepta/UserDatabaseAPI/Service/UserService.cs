@@ -11,6 +11,22 @@ namespace UserDatabaseAPI.Service
 {
     public class UserService
     {
+        public async Task<UserDTO> GetUser(int id)
+        {
+            using (DatabaseUserContext context = new DatabaseUserContext())
+            {
+                var user = await context.Users.FirstOrDefaultAsync(n => n.Id == id);
+                return user != null ? new UserDTO
+                {
+                    Id = user.Id,
+                    LastName = user.LastName,
+                    Name = user.LastName,
+                    Pesel = user.Pesel,
+                    Role = user.Role,
+                    Username = user.Username
+                } : null;
+            }
+        }
         public async Task<IEnumerable<UserDTO>> GetUsers(string name, string lastName, string pesel, string role, string username)
         {
             using (DatabaseUserContext context = new DatabaseUserContext())
@@ -22,7 +38,7 @@ namespace UserDatabaseAPI.Service
                         && (lastName == "" || u.LastName == lastName)
                         && (pesel == "" || u.Pesel == pesel)
                         && (username == "" || u.Username == username))
-                    .Select(n=> new UserDTO
+                    .Select(n => new UserDTO
                     {
                         Id = n.Id,
                         LastName = n.LastName,
