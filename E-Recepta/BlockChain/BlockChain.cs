@@ -69,12 +69,11 @@ namespace BlockChain
         public void Add(Prescription prescription)
         {
             Console.WriteLine("Add method in blockChain running");
-            //if (addThread.ThreadState == ThreadState.Running || addThread.ThreadState == ThreadState.WaitSleepJoin)
-            //{
-            //    Console.WriteLine("Waiting during adding block");
-            //    addThread.Join(); //wait until last block add
-            //}
-            addThread.Join();
+            if (addThread.ThreadState == ThreadState.Running || addThread.ThreadState == ThreadState.WaitSleepJoin)
+            {
+                Console.WriteLine("Waiting during adding block");
+                addThread.Join(); //wait until last block add
+            }
             prescriptionToAdd = prescription;
             Console.WriteLine("Starting adding task");
             addThread.Start();
