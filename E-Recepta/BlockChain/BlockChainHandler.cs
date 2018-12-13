@@ -319,8 +319,6 @@ namespace BlockChain
                 // At least 2 peers connected are required to create and update blockchain
             }
 
-            System.Windows.MessageBox.Show(availableIpAddresses.Count.ToString());
-
         }
 
         private async void RealizedPrescriptionBlockChainInit()
@@ -354,10 +352,6 @@ namespace BlockChain
              
             }
 
-        }
-
-        ~BlockChainHandler() {
-            System.Windows.MessageBox.Show("prescriptions ok");
         }
     }
 }
