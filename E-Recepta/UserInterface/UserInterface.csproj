@@ -154,6 +154,10 @@
       <Project>{21573264-05BB-44FA-9258-EA981879B6C4}</Project>
       <Name>Authorisation</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BlockChain\BlockChain.csproj">
+      <Project>{ebdf72af-2e77-4cc3-8f7c-736cefb3f1ca}</Project>
+      <Name>BlockChain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MedicinesDatabase\MedicinesDatabase.csproj">
       <Project>{9be338d1-251f-44cf-8a88-7987803b0e23}</Project>
       <Name>MedicinesDatabase</Name>

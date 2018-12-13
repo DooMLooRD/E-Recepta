@@ -36,8 +36,10 @@ namespace BlockChain
             {
                 if (!wsDict.ContainsKey("ws://" + serverAddress + ":" + port + "/Blockchain"))
                 {
+                   
                     WebSocket ws = new WebSocket($"ws://" + serverAddress + ":" + port + "/Blockchain");
-
+                    
+                    
                     // Remove StackTrace
                  //   ws.Log.Output = (_, __) => { };
 
@@ -67,8 +69,9 @@ namespace BlockChain
                     // Show message when error occured.
                     ws.OnError += (sender, e) => {
                     };
-
+                    ws.WaitTime = TimeSpan.FromMilliseconds(500);
                     ws.Connect();
+                    
                     ws.Send("packet_connect" + NetworkUtils.packetSeparator + clientIpAddress + NetworkUtils.packetSeparator + clientPort);
                     wsDict.Add(ws.Url.ToString(), ws);
                 }

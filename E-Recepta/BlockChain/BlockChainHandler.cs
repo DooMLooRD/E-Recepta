@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using BlockChain.utils;
 
 namespace BlockChain
@@ -25,11 +26,17 @@ namespace BlockChain
 
         public async void InitializeBlockChains()
         {
+            availableIpAddresses = new List<string>();
 
-            GetOnlineHosts();
-  
-            PrescriptionBlockChainInit();
-            RealizedPrescriptionBlockChainInit();
+            NetworkPing networkPing = new NetworkPing();
+
+            await Task.WhenAll(networkPing.RunPingAsync()).ContinueWith(t =>
+            {
+                availableIpAddresses = networkPing.availableIpAddresses;
+                PrescriptionBlockChainInit();
+                RealizedPrescriptionBlockChainInit();
+            });
+
         }
 
         public bool AddPrescription(string patientId, string doctorId, ObservableCollection<Medicine> medicines)
@@ -285,14 +292,6 @@ namespace BlockChain
             return 0;
         }
 
-        private async void GetOnlineHosts()
-        {
-            availableIpAddresses = new List<string>();
-
-            NetworkPing networkPing = new NetworkPing();
-            availableIpAddresses = await networkPing.RunPingAsync();
-        }
-
         private async void PrescriptionBlockChainInit()
         {
             blockChainClient_prescriptions = new BlockChainClient(NetworkUtils.GetLocalIPAddress().ToString(), "6066");
@@ -301,8 +300,8 @@ namespace BlockChain
 
             blockChainServer_prescriptions = new BlockChainServer(prescriptions, NetworkUtils.GetLocalIPAddress().ToString(), "6066");
             blockChainServer_prescriptions.Start();
-
-            foreach(string ipAddress in availableIpAddresses)
+            
+            foreach (string ipAddress in availableIpAddresses)
             {
                     if (!ipAddress.Equals(NetworkUtils.GetLocalIPAddress().ToString()))
                     {
@@ -320,6 +319,8 @@ namespace BlockChain
                 // At least 2 peers connected are required to create and update blockchain
             }
 
+            System.Windows.MessageBox.Show(availableIpAddresses.Count.ToString());
+
         }
 
         private async void RealizedPrescriptionBlockChainInit()
@@ -330,6 +331,8 @@ namespace BlockChain
 
             blockChainServer_realized = new BlockChainServer(realizedPrescriptions, NetworkUtils.GetLocalIPAddress().ToString(), "6067");
             blockChainServer_realized.Start();
+
+            
 
             foreach (string ipAddress in availableIpAddresses)
             {
@@ -348,10 +351,13 @@ namespace BlockChain
             {
                 // TODO Logger
                 // At least 2 peers connected are required to create and update blockchain
+             
             }
 
         }
 
-
+        ~BlockChainHandler() {
+            System.Windows.MessageBox.Show("prescriptions ok");
+        }
     }
 }

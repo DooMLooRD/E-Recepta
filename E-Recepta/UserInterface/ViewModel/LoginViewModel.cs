@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Authorisation;
+using BlockChain;
 using UserInterface.Command;
 using UserInterface.View;
 
@@ -17,6 +18,12 @@ namespace UserInterface.ViewModel
         public string Password { get; set; }
         public string Role { get; set; }
         public List<string> Roles => new List<string> { "Patient", "Pharmacist", "Doctor" };
+
+
+        public LoginViewModel()
+        {
+            Task.Run(() => blockChainHandler.InitializeBlockChains()); 
+        }
 
 
         public ICommand LoginCommand => new RelayCommand(SignIn, VerifyData);

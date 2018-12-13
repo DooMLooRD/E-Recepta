@@ -5,20 +5,23 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
+using BlockChain;
 using UserDatabaseAPI.Service;
 using UserDatabaseAPI.UserDB.Entities;
 using UserInterface.Command;
+using BlockChain = BlockChain.BlockChain;
 
 namespace UserInterface.ViewModel
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
-
+        public static BlockChainHandler blockChainHandler = new BlockChainHandler();
 
         protected ViewModelBase()
         {
-            
+
         }
 
         private bool isWorking;
@@ -69,7 +72,7 @@ namespace UserInterface.ViewModel
                         {
                             pm, pm2
                         },
-                        Doctor = new User()
+                        Doctor = new UserDTO()
                         {
                             LastName = "abc"
                         },
@@ -81,7 +84,7 @@ namespace UserInterface.ViewModel
                         {
                             pm, pm2
                         },
-                        Doctor = new User()
+                        Doctor = new UserDTO()
                         {
                             LastName = "cba"
                         }

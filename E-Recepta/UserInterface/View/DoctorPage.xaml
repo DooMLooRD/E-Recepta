@@ -81,7 +81,7 @@
                         <Border Opacity="0.98"  Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
                             <StackPanel Margin="10 0 10 0">
                                 <TextBlock>3. Chosen medicines</TextBlock>
-                                <DataGrid ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="100" ColumnWidth="*" AutoGenerateColumns="False" ItemsSource="{Binding NewPrescription}" SelectedItem="{Binding SelectedPrescriptionMedicine}">
+                                <DataGrid ScrollViewer.CanContentScroll="True" IsReadOnly="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="100" ColumnWidth="*" AutoGenerateColumns="False" ItemsSource="{Binding NewPrescription}" SelectedItem="{Binding SelectedPrescriptionMedicine, Mode=OneWayToSource}">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn IsReadOnly="True" Header="Name" Binding="{Binding Medicine.Name}"/>
                                         <DataGridTextColumn IsReadOnly="True" Header="Manufacturer" Binding="{Binding Medicine.Manufacturer}"/>
@@ -97,7 +97,7 @@
                                         </DataGridTemplateColumn>
                                     </DataGrid.Columns>
                                 </DataGrid>
-                                <Button Command="{Binding RealizePrescriptionCommand}">Realize</Button>
+                                <Button Command="{Binding CreatePrescriptionCommand}">Realize</Button>
                             </StackPanel>
                         </Border>
                         <!--<StackPanel Margin="5"></StackPanel>-->
