@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace BlockChain
 {
@@ -15,12 +16,18 @@ namespace BlockChain
 
         public BlockChainClient blockChainClient { get; private set; }
         private BlockChainValidator validator;
+        private Thread updateThread;
+        private Thread addThread;
+        private Prescription prescriptionToAdd;
         private bool ChainRequestSent = false;
+        private delegate void addDelegate(Prescription prescription);
 
         public BlockChain(BlockChainClient blockChainClient, string blockChainName)
         {
             this.blockChainClient = blockChainClient;
             this.blockChainName = blockChainName;
+            this.updateThread = new Thread(new ThreadStart(InternalUpdateBlockChain));
+            this.addThread = new Thread(new ThreadStart(InternalAdd));
 
             blocks = BlockChainSerializer.deserialize(blockChainName);
 
@@ -32,25 +39,45 @@ namespace BlockChain
             }
 
             
-            validator = new BlockChainValidator();
+            validator = new BlockChainValidator(blockChainName);
+        }
+        public bool CompareBlocks(List<Block> gotBlocks)
+        {           
+            return validator.Compare(blocks, gotBlocks);
         }
 
-        public void Add(Prescription prescription) {
+        private void InternalAdd() {
 
+            Console.WriteLine("Internal Add started");
             Block block = null;
-
+            Thread.Sleep(3000);
             do
             {
                 UpdateBlockChain();
 
                 Block lastBlock = blocks[blocks.Count - 1];
-                block = new Block(lastBlock.GetHash(), prescription);
+                block = new Block(lastBlock.GetHash(), prescriptionToAdd);
 
             } while (!CheckAddedBlock(block));
 
             blocks.Add(block);
 
             BlockChainSerializer.serialize(blocks, blockChainName);
+
+            Console.WriteLine("Block added and serialized");
+        }
+        public void Add(Prescription prescription)
+        {
+            Console.WriteLine("Add method in blockChain running");
+            //if (addThread.ThreadState == ThreadState.Running || addThread.ThreadState == ThreadState.WaitSleepJoin)
+            //{
+            //    Console.WriteLine("Waiting during adding block");
+            //    addThread.Join(); //wait until last block add
+            //}
+            addThread.Join();
+            prescriptionToAdd = prescription;
+            Console.WriteLine("Starting adding task");
+            addThread.Start();
         }
 
         public bool AddForeignBlock(Block block) {
@@ -120,9 +147,35 @@ namespace BlockChain
         public int GetSize() {
             return blocks.Count;
         }
+        public void UpdateBlockChain()
+        {
+            if (updateThread.ThreadState == ThreadState.Unstarted)
+            {
+                updateThread.Start();
+                Console.WriteLine("Waiting until first update finish");
+                updateThread.Join();  //wait until update.thread finish
 
-        public void UpdateBlockChain() {
+            }
+            else
+            {
+                if (updateThread.ThreadState != ThreadState.Running && updateThread.ThreadState != ThreadState.WaitSleepJoin)
+                {
+                    updateThread.Start();
+                    Console.WriteLine("Waiting until this update finish");
+                    updateThread.Join();
 
+                }
+                else
+                {
+                    Console.WriteLine("Wait until ANOTHER update finish");
+                    updateThread.Join();
+                }
+            }
+        }
+
+        public void InternalUpdateBlockChain() {
+
+            Thread.Sleep(3000);
             blockChainClient.sendNewChainMethod = GiveNewChain;
             while (!CheckCurrentChain())
             {
@@ -142,6 +195,7 @@ namespace BlockChain
             }
 
             BlockChainSerializer.serialize(blocks, blockChainName);
+            Console.WriteLine("Update done and blockChainSerialized");
         }
 
         private bool CheckCurrentChain()
@@ -156,7 +210,7 @@ namespace BlockChain
             }
             while (validatorAnswer == 0); //waiting for answers
 
-            if(validatorAnswer == 1)
+            if (validatorAnswer == 1) 
             {
                 return true;
             }

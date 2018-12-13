@@ -50,7 +50,7 @@ namespace BlockChain
             
             if (NetworkUtils.SplitPacket(e.Data, 0).Equals("packet_verification"))
             {
-                bool isBlockChainValid = BlockChainValidator.Compare(blockChain.GetAllBlocks(), JsonConvert.DeserializeObject<List<Block>>(NetworkUtils.SplitPacket(e.Data, 1)));
+                bool isBlockChainValid = blockChain.CompareBlocks(JsonConvert.DeserializeObject<List<Block>>(NetworkUtils.SplitPacket(e.Data, 1)));
                 Send("packet_verification" + NetworkUtils.packetSeparator + isBlockChainValid + NetworkUtils.packetSeparator + "ws://" + ipAddress + ":" + port + "/Blockchain");
                 
             }
