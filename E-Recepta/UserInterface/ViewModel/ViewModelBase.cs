@@ -58,7 +58,6 @@ namespace UserInterface.ViewModel
             IsWorking = true;
             await Task.Run(() =>
             {
-                Thread.Sleep(1000);
 
                 DoctorViewModel.PrescriptionMedicine pm = new DoctorViewModel.PrescriptionMedicine(new MedicinesDatabase.Medicine("a", "lek1", "man1", "1"));
                 pm.Amount = 2;

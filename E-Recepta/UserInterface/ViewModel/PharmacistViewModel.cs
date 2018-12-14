@@ -102,7 +102,7 @@ namespace UserInterface.ViewModel
 
                 foreach (var prescription in allPrescriptions)
                 {
-                    if(!realizedPrescriptions.Contains(prescription))
+                    if(!realizedPrescriptions.Select(x => x.prescriptionId).Contains(prescription.prescriptionId))
                         unrealizedPrescriptions.Add(prescription);
                 }
                 //var ret = new ObservableCollection<BlockChain.Prescription>

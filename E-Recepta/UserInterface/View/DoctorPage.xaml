@@ -119,9 +119,9 @@
                         <Border Opacity="0.97"  Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
                             <StackPanel Margin="10">
                                 <Button Command="{Binding LoadDoctorsPrescriptionsCommand}">refresh</Button>
-                                <DataGrid ColumnWidth="*" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="530" Margin="0 10 0 0" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Prescriptions}">
+                                <DataGrid ColumnWidth="*" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="530" Margin="0 10 0 0" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding DoctorsPrescriptions}">
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn IsReadOnly="True" Header="Patient" Binding="{Binding Doctor.LastName}"/>
+                                        <DataGridTextColumn IsReadOnly="True" Header="Patient" Binding="{Binding Patient.LastName}"/>
                                         <DataGridTextColumn IsReadOnly="True" Header="Date" Binding="{Binding Date}"/>
                                         <DataGridTextColumn IsReadOnly="True" Header="Valid since" Binding="{Binding ValidSince}"/>
                                     </DataGrid.Columns>

@@ -30,6 +30,7 @@ namespace UserInterface.ViewModel
             get => _medicines;
             set { _medicines = value; OnPropertyChanged(); }
         }
+        public ObservableCollection<DoctorViewModel.Prescription> DoctorsPrescriptions { get; set; } = new ObservableCollection<Prescription>();
 
         public ObservableCollection<PrescriptionMedicine> NewPrescription
         {
@@ -51,7 +52,39 @@ namespace UserInterface.ViewModel
         public ICommand AddToPrescriptionCommand => new RelayCommand(AddToPrescription, () => true);
         public ICommand RemoveFromPrescriptionCommand => new RelayCommand(RemoveFromPrescription, () => true);
         public ICommand CreatePrescriptionCommand => new RelayCommand(CreatePrescription, () => NewPrescription.Any() && SelectedUser != null);
-        public ICommand LoadDoctorsPrescriptionsCommand => new RelayCommand(GetPrescriptions, () => true);
+        public ICommand LoadDoctorsPrescriptionsCommand => new RelayCommand(GetDoctorsPrescriptions, () => true);
+
+        private async void GetDoctorsPrescriptions()
+        {
+            DoctorsPrescriptions.Clear();
+            var allPrescriptions = blockChainHandler.GetAllPrescriptionsByDoctor("12");
+            if(allPrescriptions == null)
+            {
+                MessageBox.Show("null");
+                return;
+            }
+
+            MessageBox.Show(allPrescriptions.Count.ToString());
+            foreach (var prescription in allPrescriptions)
+            {
+                DoctorsPrescriptions.Add(new Prescription
+                {
+                    Date = prescription.Date,
+                    ValidSince = prescription.ValidSince,
+                    Patient = await userService.GetUser(Convert.ToInt32(prescription.patientId))
+                });
+                foreach (var prescriptionMedicine in prescription.medicines)
+                {
+                    var medicine = (await medicineModule.SearchMedicineById(prescriptionMedicine.id.ToString())).SingleOrDefault();
+                    
+                    if (medicine != null)
+                    {
+                        DoctorsPrescriptions.Last().Medicines.Add(new PrescriptionMedicine(medicine));
+                    }
+                }
+            }
+            OnPropertyChanged("DoctorsPrescriptions");
+        }
 
         private async void CreatePrescription()
         {
@@ -70,7 +103,7 @@ namespace UserInterface.ViewModel
                 //Medicine medicine2 = new Medicine(1, 1);
                 //medicines.Add(medicine);
                 //medicines.Add(medicine2);
-                blockChainHandler.AddPrescription(selectedUser.Id.ToString(), "1234", medicines);
+                blockChainHandler.AddPrescription(selectedUser.Id.ToString(), "12", medicines);
 
                 
             }//);
@@ -111,8 +144,9 @@ namespace UserInterface.ViewModel
             public DateTime Date { get; set; }
             public DateTime ValidSince { get; set; }
             public UserDTO Doctor { get; set; }
+            public UserDTO Patient { get; set; }
             public bool Realised { get; set; }
-            public ObservableCollection<PrescriptionMedicine> Medicines { get; set; }
+            public ObservableCollection<PrescriptionMedicine> Medicines { get; set; } = new ObservableCollection<PrescriptionMedicine>();
         }
 
         public class PrescriptionMedicine
