@@ -9,7 +9,7 @@ namespace BlockChain
     class BlockChainValidator
     {
 
-        private static int MAX_NUMBER_OF_COMPARED_BLOCKS = 25;
+        public static int MAX_NUMBER_OF_COMPARED_BLOCKS = 25;
         private int BlockChainVerificationDone;
         private int BlockChainAddBlockVerificationDone;
         private string OwnerName;
@@ -25,29 +25,32 @@ namespace BlockChain
 
         public bool Compare(List<Block> ownBlocks, List<Block> gotBlocks)
         {
-            if(ownBlocks.Count != gotBlocks.Count)
-            {
-                TraceingManager.Message(LogMessages.NotEqualsBlockChainsLenghtMessage + OwnerName);
-                return false;
-            }
 
             int index = ownBlocks.Count - MAX_NUMBER_OF_COMPARED_BLOCKS - 1;
             if(index < 0) { index = 0; }
 
+            int indexGotBlocks = 0;
             for (int i = index; i < ownBlocks.Count; i++)
             {
-                if (!ownBlocks[i].GetHash().Equals(gotBlocks[i].GetHash())) {
+                if (indexGotBlocks >= gotBlocks.Count)
+                {
+                    return false;
+                }
+
+                if (!ownBlocks[i].GetHash().Equals(gotBlocks[indexGotBlocks].GetHash())) {
                     TraceingManager.Message(LogMessages.NotEqualHashMessage + OwnerName + i);
                     return false;
                 }
-                if (!ownBlocks[i].GetHash().Equals(gotBlocks[i].GenerateHash())) {
+                if (!ownBlocks[i].GetHash().Equals(gotBlocks[indexGotBlocks].GenerateHash())) {
                     TraceingManager.Message(LogMessages.IncorrectHashMessage + OwnerName + i);
                     return false;
                 }
-                if (!gotBlocks[i].GetHash().Equals(gotBlocks[i].GenerateHash())) {
+                if (!gotBlocks[indexGotBlocks].GetHash().Equals(gotBlocks[indexGotBlocks].GenerateHash())) {
                     TraceingManager.Message(LogMessages.IncorrectHashMessage + OwnerName + i);
                     return false;
                 }
+
+                indexGotBlocks++;
             }
             return true;
         }

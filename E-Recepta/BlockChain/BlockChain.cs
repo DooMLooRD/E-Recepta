@@ -201,7 +201,18 @@ namespace BlockChain
         {
 
             blockChainClient.InitializeVerificationAnswersCollecting(validator.giveVerificationAnswers);
-            blockChainClient.askForVerification(blocks);
+
+              List<Block> sendBlocks = new List<Block>();
+
+            int index = blocks.Count - BlockChainValidator.MAX_NUMBER_OF_COMPARED_BLOCKS - 1;
+            if (index < 0) { index = 0; }
+
+            for (int i = index; i < blocks.Count; i++)
+            {
+                sendBlocks.Add(blocks[i]);
+            }
+
+            blockChainClient.askForVerification(sendBlocks);
             int validatorAnswer;
             do
             {
@@ -224,6 +235,7 @@ namespace BlockChain
         {
             blockChainClient.InitializeAddBlockAnswersCollecting(validator.giveAddBlockVerificationAnswers);
             blockChainClient.SendBlock(block);
+
             int validatorAnswer;
             do
             {
