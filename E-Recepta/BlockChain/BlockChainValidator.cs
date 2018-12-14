@@ -9,37 +9,43 @@ namespace BlockChain
     class BlockChainValidator
     {
 
-        private static int MAX_NUMBER_OF_COMPARED_BLOCKS = 50;
+        private static int MAX_NUMBER_OF_COMPARED_BLOCKS = 25;
         private int BlockChainVerificationDone;
         private int BlockChainAddBlockVerificationDone;
+        private string OwnerName;
         public IDictionary<string, bool> verificationAnswers { get;  private set; }
         public List<bool> addBlockVerificationAnswers { get; private set; }
 
-        public BlockChainValidator()
+        public BlockChainValidator(string OwnerName)
         {
+            this.OwnerName = OwnerName;
             BlockChainVerificationDone = 0;
             BlockChainAddBlockVerificationDone = 0;
         }
 
-        public static bool Compare(List<Block> firstBlocks, List<Block> secondsBlocks)
+        public bool Compare(List<Block> ownBlocks, List<Block> gotBlocks)
         {
-            if(firstBlocks.Count != secondsBlocks.Count)
+            if(ownBlocks.Count != gotBlocks.Count)
             {
+                TraceingManager.Message(LogMessages.NotEqualsBlockChainsLenghtMessage + OwnerName);
                 return false;
             }
 
-            int index = firstBlocks.Count - MAX_NUMBER_OF_COMPARED_BLOCKS - 1;
+            int index = ownBlocks.Count - MAX_NUMBER_OF_COMPARED_BLOCKS - 1;
             if(index < 0) { index = 0; }
 
-            for (int i = 0; i < firstBlocks.Count; i++)
+            for (int i = index; i < ownBlocks.Count; i++)
             {
-                if (!firstBlocks[i].GetHash().Equals(secondsBlocks[i].GetHash())) {
+                if (!ownBlocks[i].GetHash().Equals(gotBlocks[i].GetHash())) {
+                    TraceingManager.Message(LogMessages.NotEqualHashMessage + OwnerName + i);
                     return false;
                 }
-                if (!firstBlocks[i].GetHash().Equals(firstBlocks[i].GenerateHash())) {
+                if (!ownBlocks[i].GetHash().Equals(gotBlocks[i].GenerateHash())) {
+                    TraceingManager.Message(LogMessages.IncorrectHashMessage + OwnerName + i);
                     return false;
                 }
-                if (!secondsBlocks[i].GetHash().Equals(secondsBlocks[i].GenerateHash())) {
+                if (!gotBlocks[i].GetHash().Equals(gotBlocks[i].GenerateHash())) {
+                    TraceingManager.Message(LogMessages.IncorrectHashMessage + OwnerName + i);
                     return false;
                 }
             }

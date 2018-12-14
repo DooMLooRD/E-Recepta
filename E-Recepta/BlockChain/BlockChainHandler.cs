@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 using BlockChain.utils;
 
 namespace BlockChain
@@ -13,6 +12,7 @@ namespace BlockChain
     public class BlockChainHandler : IBlockChainHandler
     {
 
+        #region Properties
         List<string> availableIpAddresses;
 
         private BlockChainServer blockChainServer_prescriptions;
@@ -23,7 +23,9 @@ namespace BlockChain
 
         private BlockChain prescriptions;
         private BlockChain realizedPrescriptions;
+        #endregion
 
+        #region API
         public async void InitializeBlockChains()
         {
             availableIpAddresses = new List<string>();
@@ -41,10 +43,8 @@ namespace BlockChain
 
         public bool AddPrescription(string patientId, string doctorId, ObservableCollection<Medicine> medicines)
         {
-
             if (prescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
             {
-
                 Prescription prescription = new Prescription(patientId,
               doctorId, DateTime.Now, DateTime.Now, medicines);
 
@@ -53,8 +53,7 @@ namespace BlockChain
 
             } else
             {
-                // TODO Logger
-                // At least 2 peers connected are required to use this method.
+                TraceingManager.Message(LogMessages.LessThen2pearsMessage);
                 return false;
             }
         }
@@ -78,8 +77,7 @@ namespace BlockChain
                 return prescriptionsCollection;
             } else
             {
-                // TODO Logger
-                // At least 2 peers connected are required to use this method.
+                TraceingManager.Message(LogMessages.LessThen2pearsMessage);
                 return null;
             }
         }
@@ -103,8 +101,7 @@ namespace BlockChain
                 return prescriptionsCollection;
             } else
             {
-                // TODO Logger
-                // At least 2 peers connected are required to use this method.
+                TraceingManager.Message(LogMessages.LessThen2pearsMessage);
                 return null;
             }
         }
@@ -128,8 +125,7 @@ namespace BlockChain
                 return realizedPrescriptionsCollection;
             } else
             {
-                // TODO Logger
-                // At least 2 peers connected are required to use this method.
+                TraceingManager.Message(LogMessages.LessThen2pearsMessage);
                 return null;
             }
         }
@@ -153,8 +149,7 @@ namespace BlockChain
                 return realizedPrescriptionsCollection;
             } else
             {
-                // TODO Logger
-                // At least 2 peers connected are required to use this method.
+                TraceingManager.Message(LogMessages.LessThen2pearsMessage);
                 return null;
             }
         }
@@ -178,8 +173,7 @@ namespace BlockChain
                 return realizedPrescriptionsCollection;
             } else
             {
-                // TODO Logger
-                // At least 2 peers connected are required to use this method.
+                TraceingManager.Message(LogMessages.LessThen2pearsMessage);
                 return null;
             }
         }
@@ -216,8 +210,7 @@ namespace BlockChain
                 }
             }
 
-            // TODO Logger
-            // At least 2 peers connected are required to use this method.
+            TraceingManager.Message(LogMessages.LessThen2pearsMessage);
             return false;
         }
 
@@ -239,8 +232,7 @@ namespace BlockChain
 
             }
 
-            // TODO Logger
-            // At least 2 peers connected are required to use this method.
+            TraceingManager.Message(LogMessages.LessThen2pearsMessage);
             return null;
         }
 
@@ -262,11 +254,9 @@ namespace BlockChain
 
             }
 
-            // TODO Logger
-            // At least 2 peers connected are required to use this method.
+            TraceingManager.Message(LogMessages.LessThen2pearsMessage);
             return null;
         }
-
 
         public int GetNumberOfPrescriptions()
         {
@@ -275,8 +265,7 @@ namespace BlockChain
                 return prescriptions.GetSize() - 1;
             }
 
-            // TODO Logger
-            // At least 2 peers connected are required to use this method.
+            TraceingManager.Message(LogMessages.LessThen2pearsMessage);
             return 0;
         }
 
@@ -287,10 +276,12 @@ namespace BlockChain
                 return realizedPrescriptions.GetSize() - 1;
             }
 
-            // TODO Logger
-            // At least 2 peers connected are required to use this method.
+            TraceingManager.Message(LogMessages.LessThen2pearsMessage);
             return 0;
         }
+        #endregion
+
+        #region private
 
         private async void PrescriptionBlockChainInit()
         {
@@ -300,8 +291,8 @@ namespace BlockChain
 
             blockChainServer_prescriptions = new BlockChainServer(prescriptions, NetworkUtils.GetLocalIPAddress().ToString(), "6066");
             blockChainServer_prescriptions.Start();
-            
-            foreach (string ipAddress in availableIpAddresses)
+
+            foreach(string ipAddress in availableIpAddresses)
             {
                     if (!ipAddress.Equals(NetworkUtils.GetLocalIPAddress().ToString()))
                     {
@@ -315,10 +306,9 @@ namespace BlockChain
                 prescriptions.UpdateBlockChain();
             } else
             {
-                // TODO Logger
-                // At least 2 peers connected are required to create and update blockchain
+                TraceingManager.Message(LogMessages.LessThen2pearsMessage);
             }
-
+            TraceingManager.Message(LogMessages.PrescryptionsBlockChainInitializeMessage);
         }
 
         private async void RealizedPrescriptionBlockChainInit()
@@ -329,8 +319,6 @@ namespace BlockChain
 
             blockChainServer_realized = new BlockChainServer(realizedPrescriptions, NetworkUtils.GetLocalIPAddress().ToString(), "6067");
             blockChainServer_realized.Start();
-
-            
 
             foreach (string ipAddress in availableIpAddresses)
             {
@@ -347,11 +335,11 @@ namespace BlockChain
             }
             else
             {
-                // TODO Logger
-                // At least 2 peers connected are required to create and update blockchain
-             
+                TraceingManager.Message(LogMessages.LessThen2pearsMessage);
             }
-
+            TraceingManager.Message(LogMessages.RealizedPrescryptionsBlockChainInitializedMessage);
         }
+        #endregion
+
     }
 }

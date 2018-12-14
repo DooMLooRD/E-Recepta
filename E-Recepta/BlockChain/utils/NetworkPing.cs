@@ -44,7 +44,7 @@ namespace BlockChain.utils
         public async Task PingAsync(System.Net.NetworkInformation.Ping ping, string ip)
         {
             var reply = await ping.SendPingAsync(ip, timeout);
-            
+
             if (reply.Status == System.Net.NetworkInformation.IPStatus.Success)
             {
                 lock (lockObj)

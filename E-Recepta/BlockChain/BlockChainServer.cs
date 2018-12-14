@@ -19,8 +19,6 @@ namespace BlockChain
             this.blockChain = blockChain;
             this.ipAddress = ipAddress;
             this.port = port;
-
-            Console.WriteLine(blockChain.GetHashCode());
         }
 
     public void Start()
@@ -31,7 +29,6 @@ namespace BlockChain
         wss.AddWebSocketService<BlockChainServer>("/Blockchain", () => new BlockChainServer(blockChain, ipAddress, port));
         wss.Start();
       //  wss.Log.Output = (_, __) => { };
-        Console.WriteLine($"Started server at ws://" + ipAddress + ":" + port + "");
     }
 
     protected override void OnMessage(MessageEventArgs e)
@@ -50,7 +47,7 @@ namespace BlockChain
             
             if (NetworkUtils.SplitPacket(e.Data, 0).Equals("packet_verification"))
             {
-                bool isBlockChainValid = BlockChainValidator.Compare(blockChain.GetAllBlocks(), JsonConvert.DeserializeObject<List<Block>>(NetworkUtils.SplitPacket(e.Data, 1)));
+                bool isBlockChainValid = blockChain.CompareBlocks(JsonConvert.DeserializeObject<List<Block>>(NetworkUtils.SplitPacket(e.Data, 1)));
                 Send("packet_verification" + NetworkUtils.packetSeparator + isBlockChainValid + NetworkUtils.packetSeparator + "ws://" + ipAddress + ":" + port + "/Blockchain");
                 
             }
