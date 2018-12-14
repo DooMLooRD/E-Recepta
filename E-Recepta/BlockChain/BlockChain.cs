@@ -75,8 +75,31 @@ namespace BlockChain
                     Console.WriteLine("Waiting during adding block");
                     addThread.Join(); //wait until last block add
                 }
+                if(addThread.ThreadState == ThreadState.Unstarted)
+                {
+                prescriptionToAdd = prescription;
+                addThread = new Thread(new ThreadStart(InternalAdd));
+                addThread.Start();
+                addingDone = true;
+                }
 
-            addThread.Start();          
+            while (!addingDone)
+            {              
+                try
+                {
+                    Console.WriteLine("Try Starting adding task");
+                    prescriptionToAdd = prescription;
+                    addThread = new Thread(new ThreadStart(InternalAdd));
+                    addThread.Start();
+                    addingDone = true;
+                }
+                catch (ThreadStateException e)
+                {
+                    Console.WriteLine("Waiting during adding block");
+                    addThread.Join();
+                    addingDone = false;
+                }
+            }            
         }
 
         public bool AddForeignBlock(Block block) {
@@ -152,6 +175,7 @@ namespace BlockChain
                 {
                     try
                     {
+                    updateThread = new Thread(new ThreadStart(InternalUpdateBlockChain));
                     updateThread.Start();
                     Console.WriteLine("Waiting until this update finish");
                     updateThread.Join();
