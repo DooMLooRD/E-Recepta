@@ -76,22 +76,7 @@ namespace BlockChain
                     addThread.Join(); //wait until last block add
                 }
 
-            while (!addingDone)
-            {              
-                try
-                {
-                    Console.WriteLine("Try Starting adding task");
-                    prescriptionToAdd = prescription;
-                    addThread.Start();
-                    addingDone = true;
-                }
-                catch (ThreadStateException e)
-                {
-                    Console.WriteLine("Waiting during adding block");
-                    addThread.Join();
-                    addingDone = false;
-                }
-            }            
+            addThread.Start();          
         }
 
         public bool AddForeignBlock(Block block) {

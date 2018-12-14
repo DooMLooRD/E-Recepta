@@ -24,7 +24,7 @@ namespace BlockChainTesterConsole
             collection.Add(medicine);
             Task.Run(() => handler.AddPrescription("adc", "cde", collection));
             //Thread.Sleep(10);
-           // Task.Run(() => handler.AddPrescription("pat", "kot", collection));
+            Task.Run(() => handler.AddPrescription("pat", "kot", collection));
 
 
 
