@@ -59,12 +59,18 @@ namespace UserInterface.ViewModel
             IsWorking = true;
             //await Task.Run(() =>
             {
-                ObservableCollection<Medicine> medicines = new ObservableCollection<Medicine>();
-                Medicine medicine = new Medicine(2, 5);
-                Medicine medicine2 = new Medicine(1, 1);
-                medicines.Add(medicine);
-                medicines.Add(medicine2);
-                blockChainHandler.AddPrescription("patientId_123asd", "doctorId_321asd", medicines);
+                var medicines = new ObservableCollection<Medicine>();
+                foreach (var prescriptionMedicine in NewPrescription)
+                {
+                    medicines.Add(new Medicine(Convert.ToInt32(prescriptionMedicine.Medicine.Id),
+                        prescriptionMedicine.Amount));
+                }
+                //ObservableCollection<Medicine> medicines = new ObservableCollection<Medicine>();
+                //Medicine medicine = new Medicine(2, 5);
+                //Medicine medicine2 = new Medicine(1, 1);
+                //medicines.Add(medicine);
+                //medicines.Add(medicine2);
+                blockChainHandler.AddPrescription(selectedUser.Id.ToString(), "1234", medicines);
 
                 
             }//);
@@ -105,7 +111,7 @@ namespace UserInterface.ViewModel
             public DateTime Date { get; set; }
             public DateTime ValidSince { get; set; }
             public UserDTO Doctor { get; set; }
-
+            public bool Realised { get; set; }
             public ObservableCollection<PrescriptionMedicine> Medicines { get; set; }
         }
 

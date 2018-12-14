@@ -22,7 +22,7 @@ namespace UserInterface.ViewModel
     public class PharmacistViewModel : EmployeeViewModel
     {
         MedicinesInStockDB pharmacyDB = new MedicinesInStockDB("1");
-
+        MedicinesDB NFZmedicines = new MedicinesDB();
         private List<UserDTO> _pharmacists;
 
         public PharmacistViewModel()
@@ -83,12 +83,65 @@ namespace UserInterface.ViewModel
 
         
         public DoctorViewModel.Prescription SelectedPatientsUnrealisedPrescription { get; set; }
-
+        public List<DoctorViewModel.Prescription> SelectedPatientsUnrealisedPrescriptions { get; set; }
 
 
         public ICommand GetPharmacistsSalesCommand => new RelayCommand(GetPharmacistsSales, () => SelectedPharmacist != null && SelectedFileExtension != FileExtensions[0]);
         public ICommand GetPatientsPrescriptionsCommand => new RelayCommand(GetPatientsPrescriptions, IsPrescriptionsDataReady);
-        public ICommand LoadPatientsUnrealisedPrescriptionsCommand => new RelayCommand(GetPrescriptions, () => true);
+        public ICommand LoadPatientsUnrealisedPrescriptionsCommand => new RelayCommand(GetPatientsUnrealisedPrescriptions, () => true);
+
+        private async void GetPatientsUnrealisedPrescriptions()
+        {
+            IsWorking = true;
+            await Task.Run(async () =>
+            {
+                SelectedPatientsUnrealisedPrescriptions = new List<DoctorViewModel.Prescription>();
+                var allPrescriptions = blockChainHandler.GetAllPrescriptionsByPatient(selectedUser.Id.ToString());
+                var realizedPrescriptions = blockChainHandler.GetAllRealizedPrescriptionsByPatient(SelectedUser.Id.ToString());
+                var unrealizedPrescriptions = new ObservableCollection<BlockChain.Prescription>();
+
+                foreach (var prescription in allPrescriptions)
+                {
+                    if(!realizedPrescriptions.Contains(prescription))
+                        unrealizedPrescriptions.Add(prescription);
+                }
+                //var ret = new ObservableCollection<BlockChain.Prescription>
+                //{
+                //    new BlockChain.Prescription(SelectedUser.Id.ToString(), "18", DateTime.Now - TimeSpan.FromDays(3), DateTime.Now, new ObservableCollection<BlockChain.Medicine>
+                //    {
+                //        new BlockChain.Medicine(1, 30)
+                //    })
+                //};
+                foreach (var prescription in unrealizedPrescriptions)
+                {
+                    var medicines = new ObservableCollection<DoctorViewModel.PrescriptionMedicine>();
+                    foreach (var prescriptionMedicine in prescription.medicines)
+                    {
+                        medicines.Add(new DoctorViewModel.PrescriptionMedicine
+                        {
+                            Amount = prescriptionMedicine.amount,
+                            Medicine = (await NFZmedicines.SearchMedicineById(prescriptionMedicine.id.ToString())).Single(),
+
+                        });
+                        var actualMedicine = PharmacyState.SingleOrDefault(x => x.Name == medicines.Last().Medicine.Name);
+                        medicines.Last().InStockAmount = actualMedicine == null ? 0 : actualMedicine.Amount;
+                    }
+                    SelectedPatientsUnrealisedPrescriptions.Add(new DoctorViewModel.Prescription
+                    {
+                        Date = prescription.Date,
+                        Doctor = await userService.GetUser(Convert.ToInt32(prescription.doctorId)),
+                        Id = prescription.prescriptionId,
+                        ValidSince = prescription.ValidSince,
+                        Medicines = medicines
+                    });
+                    
+                }
+
+                OnPropertyChanged("SelectedPatientsUnrealisedPrescriptions");
+            });
+            IsWorking = false;
+        }
+
         public ICommand AddToPharmacyCommand => new RelayCommand(AddToPharmacy, () => true);
 
         private void AddToPharmacy()
@@ -117,10 +170,10 @@ namespace UserInterface.ViewModel
             IsWorking = false;
         }, () => true);
 
-        public ICommand GetPharmacyStateCommand => new RelayCommand(GetGeneralPharmacyState, () => true);
-        public ICommand GetGeneralPharmacyStateCommand => new RelayCommand(GetGeneralPharmacyState, () => true);
+        //public ICommand GetPharmacyStateCommand => new RelayCommand(GetGeneralPharmacyState, () => true);
+        public ICommand GetGeneralPharmacyStateCommand => new RelayCommandAsync(GetGeneralPharmacyState, () => true);
 
-        private async void GetGeneralPharmacyState()
+        private async Task GetGeneralPharmacyState()
         {
             IsWorking = true;
             PharmacyState = new ObservableCollection<MedicineInStock>(await pharmacyDB.SearchMedicineInStock(InStockMedicineFilter.Name, InStockMedicineFilter.Manufacturer));
@@ -134,9 +187,9 @@ namespace UserInterface.ViewModel
             IsWorking = false;
         }
 
-        public ICommand UpdatePharmacyStateCommand => new RelayCommand(UpdatePharmacyState, () => true);
+        public ICommand UpdatePharmacyStateCommand => new RelayCommandAsync(UpdatePharmacyState, () => true);
 
-        private async void UpdatePharmacyState()
+        private async Task UpdatePharmacyState()
         {
             for (int i = 0; i < actualPharmacyMedicinesCount; i++)
             {
@@ -182,7 +235,23 @@ namespace UserInterface.ViewModel
             //}
             //var xd = await pharmacyDB.SearchMedicineInStock("", "");
             IsWorking = true;
-            await Task.Run(() => Thread.Sleep(1500));
+            await Task.Run(async () =>
+            {
+                blockChainHandler.RealizePrescription(SelectedPatientsUnrealisedPrescription.Id, "1"); // id_zalogowanego
+
+                await GetGeneralPharmacyState();
+
+                foreach (var prescriptionMedicine in SelectedPatientsUnrealisedPrescription.Medicines)
+                {
+                    PharmacyState.SingleOrDefault(x => x.Name == prescriptionMedicine.Medicine.Name).Amount -=
+                        prescriptionMedicine.Amount;
+                }
+
+                await UpdatePharmacyState();
+                //SelectedPatientsUnrealisedPrescriptions.Remove(SelectedPatientsUnrealisedPrescription);
+                OnPropertyChanged("SelectedPatientsUnrealisedPrescriptions");
+                GetPatientsUnrealisedPrescriptions();
+            });
             IsWorking = false;
         }
 
