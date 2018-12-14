@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using BlockChain;
 
@@ -12,7 +13,7 @@ namespace BlockChainTesterConsole
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Start");
+            Console.WriteLine("Start v1");
             BlockChainHandler handler = new BlockChainHandler();
             handler.InitializeBlockChains();
             Console.WriteLine("Pressa any button to start the threads tests");
@@ -22,7 +23,8 @@ namespace BlockChainTesterConsole
             ObservableCollection<Medicine> collection = new ObservableCollection<Medicine>();
             collection.Add(medicine);
             Task.Run(() => handler.AddPrescription("adc", "cde", collection));
-            Task.Run(() => handler.AddPrescription("pat", "kot", collection));
+            //Thread.Sleep(10);
+           // Task.Run(() => handler.AddPrescription("pat", "kot", collection));
 
 
 

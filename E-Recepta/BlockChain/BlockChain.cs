@@ -20,7 +20,6 @@ namespace BlockChain
         private Thread addThread;
         private Prescription prescriptionToAdd;
         private bool ChainRequestSent = false;
-        private delegate void addDelegate(Prescription prescription);
 
         public BlockChain(BlockChainClient blockChainClient, string blockChainName)
         {
@@ -46,17 +45,18 @@ namespace BlockChain
             return validator.Compare(blocks, gotBlocks);
         }
 
-        private void InternalAdd() {
+        public void InternalAdd() {
 
+            Prescription prescription = prescriptionToAdd;
             Console.WriteLine("Internal Add started");
             Block block = null;
-            Thread.Sleep(3000);
+            Thread.Sleep(3000); //rememberToDelete
             do
             {
                 UpdateBlockChain();
 
                 Block lastBlock = blocks[blocks.Count - 1];
-                block = new Block(lastBlock.GetHash(), prescriptionToAdd);
+                block = new Block(lastBlock.GetHash(), prescription);
 
             } while (!CheckAddedBlock(block));
 
@@ -68,15 +68,30 @@ namespace BlockChain
         }
         public void Add(Prescription prescription)
         {
+            bool addingDone = false;
             Console.WriteLine("Add method in blockChain running");
-            if (addThread.ThreadState == ThreadState.Running || addThread.ThreadState == ThreadState.WaitSleepJoin)
-            {
-                Console.WriteLine("Waiting during adding block");
-                addThread.Join(); //wait until last block add
-            }
-            prescriptionToAdd = prescription;
-            Console.WriteLine("Starting adding task");
-            addThread.Start();
+                if (addThread.ThreadState == ThreadState.Running || addThread.ThreadState == ThreadState.WaitSleepJoin)
+                {
+                    Console.WriteLine("Waiting during adding block");
+                    addThread.Join(); //wait until last block add
+                }
+
+            while (!addingDone)
+            {              
+                try
+                {
+                    Console.WriteLine("Try Starting adding task");
+                    prescriptionToAdd = prescription;
+                    addThread.Start();
+                    addingDone = true;
+                }
+                catch (ThreadStateException e)
+                {
+                    Console.WriteLine("Waiting during adding block");
+                    addThread.Join();
+                    addingDone = false;
+                }
+            }            
         }
 
         public bool AddForeignBlock(Block block) {
@@ -148,28 +163,25 @@ namespace BlockChain
         }
         public void UpdateBlockChain()
         {
-            if (updateThread.ThreadState == ThreadState.Unstarted)
-            {
-                updateThread.Start();
-                Console.WriteLine("Waiting until first update finish");
-                updateThread.Join();  //wait until update.thread finish
-
-            }
-            else
-            {
                 if (updateThread.ThreadState != ThreadState.Running && updateThread.ThreadState != ThreadState.WaitSleepJoin)
                 {
-                    updateThread.Start();
+                    try
+                    {
+                        updateThread.Start();
+                    }catch (Exception e)
+                    {
+                        Console.WriteLine("Wait until ANOTHER update finish");
+                        updateThread.Join();
+                    }                    
                     Console.WriteLine("Waiting until this update finish");
                     updateThread.Join();
-
                 }
                 else
                 {
                     Console.WriteLine("Wait until ANOTHER update finish");
                     updateThread.Join();
                 }
-            }
+            Console.WriteLine("Update finished");
         }
 
         public void InternalUpdateBlockChain() {
