@@ -43,7 +43,6 @@ namespace BlockChain
 
         public bool AddPrescription(string patientId, string doctorId, ObservableCollection<Medicine> medicines)
         {
-            Console.WriteLine("AddPrescryption method running");
             if (prescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
             {
                 Prescription prescription = new Prescription(patientId,

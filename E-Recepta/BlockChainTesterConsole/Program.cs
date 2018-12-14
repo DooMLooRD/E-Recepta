@@ -22,12 +22,11 @@ namespace BlockChainTesterConsole
             Medicine medicine = new Medicine(3, 3);
             ObservableCollection<Medicine> collection = new ObservableCollection<Medicine>();
             collection.Add(medicine);
-            Task.Run(() => handler.AddPrescription("adc", "cde", collection));
             Task.Run(() => handler.GetAllPrescriptions());
             Task.Run(() => handler.GetAllPrescriptions());
-
-
-
+            Task.Run(() => handler.GetAllPrescriptions());
+            Task.Run(() => handler.GetAllPrescriptions());
+            Task.Run(() => handler.GetAllPrescriptions());
             Console.WriteLine("Press any button to exit...");
             Console.ReadKey();
         }

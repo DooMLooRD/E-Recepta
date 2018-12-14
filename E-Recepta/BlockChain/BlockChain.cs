@@ -48,7 +48,6 @@ namespace BlockChain
         public void InternalAdd() {
 
             Prescription prescription = prescriptionToAdd;
-            Console.WriteLine("Internal Add started");
             Block block = null;
             do
             {
@@ -62,14 +61,11 @@ namespace BlockChain
             blocks.Add(block);
             BlockChainSerializer.serialize(blocks, blockChainName);
             prescriptionToAdd = null;
-            Console.WriteLine("Block added and serialized and prescriptionToAdd nulled");
         }
         public void Add(Prescription prescription)
         {
-            Console.WriteLine("Add method in blockChain running");
                 if (addThread.ThreadState == ThreadState.Running || addThread.ThreadState == ThreadState.WaitSleepJoin)
                 {
-                    Console.WriteLine("Waiting during adding block");
                     addThread.Join(); //wait until last block add
                 }
                 if(addThread.ThreadState == ThreadState.Unstarted)
@@ -166,21 +162,17 @@ namespace BlockChain
                     {
                     updateThread = new Thread(new ThreadStart(InternalUpdateBlockChain));
                     updateThread.Start();
-                    Console.WriteLine("Waiting until this update finish");
                     updateThread.Join();
                     }
                 catch (Exception e)
                     {
-                        Console.WriteLine("Wait until ANOTHER update finish");
                         updateThread.Join();
                     }                                        
                 }
                 else
                 {
-                    Console.WriteLine("Wait until ANOTHER update finish");
                     updateThread.Join();
                 }
-            Console.WriteLine("Update finished");
         }
 
         public void InternalUpdateBlockChain() {
@@ -203,7 +195,6 @@ namespace BlockChain
             }
 
             BlockChainSerializer.serialize(blocks, blockChainName);
-            Console.WriteLine("Update done and blockChainSerialized");
         }
 
         private bool CheckCurrentChain()
