@@ -28,12 +28,19 @@ namespace BlockChain
         #region API
         public async void InitializeBlockChains()
         {
-            TraceingManager.InitializeTraceing();
-            GetOnlineHosts();
-  
-            PrescriptionBlockChainInit();
-            RealizedPrescriptionBlockChainInit();           
+            availableIpAddresses = new List<string>();
+
+            NetworkPing networkPing = new NetworkPing();
+
+            await Task.WhenAll(networkPing.RunPingAsync()).ContinueWith(t =>
+            {
+                availableIpAddresses = networkPing.availableIpAddresses;
+                PrescriptionBlockChainInit();
+                RealizedPrescriptionBlockChainInit();
+            });
+
         }
+
         public bool AddPrescription(string patientId, string doctorId, ObservableCollection<Medicine> medicines)
         {
             Console.WriteLine("AddPrescryption method running");
@@ -276,13 +283,6 @@ namespace BlockChain
         #endregion
 
         #region private
-        private async void GetOnlineHosts()
-        {
-            availableIpAddresses = new List<string>();
-
-            NetworkPing networkPing = new NetworkPing();
-            availableIpAddresses = await networkPing.RunPingAsync();
-        }
 
         private async void PrescriptionBlockChainInit()
         {

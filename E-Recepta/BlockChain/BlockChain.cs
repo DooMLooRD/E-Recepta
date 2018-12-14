@@ -50,7 +50,6 @@ namespace BlockChain
             Prescription prescription = prescriptionToAdd;
             Console.WriteLine("Internal Add started");
             Block block = null;
-            Thread.Sleep(3000); //rememberToDelete
             do
             {
                 UpdateBlockChain();
@@ -61,14 +60,12 @@ namespace BlockChain
             } while (!CheckAddedBlock(block));
 
             blocks.Add(block);
-
             BlockChainSerializer.serialize(blocks, blockChainName);
-
-            Console.WriteLine("Block added and serialized");
+            prescriptionToAdd = null;
+            Console.WriteLine("Block added and serialized and prescriptionToAdd nulled");
         }
         public void Add(Prescription prescription)
         {
-            bool addingDone = false;
             Console.WriteLine("Add method in blockChain running");
                 if (addThread.ThreadState == ThreadState.Running || addThread.ThreadState == ThreadState.WaitSleepJoin)
                 {
@@ -80,26 +77,18 @@ namespace BlockChain
                 prescriptionToAdd = prescription;
                 addThread = new Thread(new ThreadStart(InternalAdd));
                 addThread.Start();
-                addingDone = true;
+                } else
+            {
+                while (prescriptionToAdd != null)
+                {
+                    //waiting
                 }
+                prescriptionToAdd = prescription;
+                addThread = new Thread(new ThreadStart(InternalAdd));
+                addThread.Start();
+            }
 
-            while (!addingDone)
-            {              
-                try
-                {
-                    Console.WriteLine("Try Starting adding task");
-                    prescriptionToAdd = prescription;
-                    addThread = new Thread(new ThreadStart(InternalAdd));
-                    addThread.Start();
-                    addingDone = true;
-                }
-                catch (ThreadStateException e)
-                {
-                    Console.WriteLine("Waiting during adding block");
-                    addThread.Join();
-                    addingDone = false;
-                }
-            }            
+           
         }
 
         public bool AddForeignBlock(Block block) {
@@ -195,8 +184,6 @@ namespace BlockChain
         }
 
         public void InternalUpdateBlockChain() {
-
-            Thread.Sleep(3000);
             blockChainClient.sendNewChainMethod = GiveNewChain;
             while (!CheckCurrentChain())
             {

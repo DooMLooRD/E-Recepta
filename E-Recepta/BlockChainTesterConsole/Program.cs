@@ -15,7 +15,7 @@ namespace BlockChainTesterConsole
         {
             Console.WriteLine("Start v1");
             BlockChainHandler handler = new BlockChainHandler();
-            handler.InitializeBlockChains();
+            Task.Run(() => handler.InitializeBlockChains());
             Console.WriteLine("Pressa any button to start the threads tests");
             Console.ReadKey();
             //Adding prescription//
@@ -23,9 +23,8 @@ namespace BlockChainTesterConsole
             ObservableCollection<Medicine> collection = new ObservableCollection<Medicine>();
             collection.Add(medicine);
             Task.Run(() => handler.AddPrescription("adc", "cde", collection));
-            //Thread.Sleep(10);
-            Task.Run(() => handler.AddPrescription("pat", "kot", collection));
-
+            Task.Run(() => handler.GetAllPrescriptions());
+            Task.Run(() => handler.GetAllPrescriptions());
 
 
 
