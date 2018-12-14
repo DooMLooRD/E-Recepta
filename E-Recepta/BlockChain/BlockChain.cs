@@ -167,14 +167,15 @@ namespace BlockChain
                 {
                     try
                     {
-                        updateThread.Start();
-                    }catch (Exception e)
+                    updateThread.Start();
+                    Console.WriteLine("Waiting until this update finish");
+                    updateThread.Join();
+                    }
+                catch (Exception e)
                     {
                         Console.WriteLine("Wait until ANOTHER update finish");
                         updateThread.Join();
-                    }                    
-                    Console.WriteLine("Waiting until this update finish");
-                    updateThread.Join();
+                    }                                        
                 }
                 else
                 {
