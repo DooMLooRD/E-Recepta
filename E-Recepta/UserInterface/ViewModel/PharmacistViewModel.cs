@@ -212,6 +212,7 @@ namespace UserInterface.ViewModel
                 await pharmacyDB.AddMedicineToStock(medicine.Id, medicine.Amount.ToString(), medicine.Cost.ToString("G", CultureInfo.InvariantCulture));
             }
             GetGeneralPharmacyStateCommand.Execute(null);
+            GetPatientsUnrealisedPrescriptions();
         }
 
         private int actualPharmacyMedicinesCount;
@@ -225,7 +226,22 @@ namespace UserInterface.ViewModel
 
 
         public ICommand RealizePrescriptionCommand =>
-            new RelayCommand(RealizePrescription, () => SelectedPatientsUnrealisedPrescription != null);
+            new RelayCommand(RealizePrescription, CanBeRealised);
+
+        private bool CanBeRealised()
+        {
+            if (SelectedPatientsUnrealisedPrescription == null)
+                return false;
+            if (SelectedPatientsUnrealisedPrescription.ValidSince > DateTime.Now)
+                return false;
+            foreach (var medicine in SelectedPatientsUnrealisedPrescription.Medicines)
+            {
+                if (medicine.Amount > medicine.InStockAmount)
+                    return false;
+            }
+
+            return true;
+        }
 
         private async void RealizePrescription()
         {

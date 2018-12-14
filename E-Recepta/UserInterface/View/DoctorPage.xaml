@@ -97,7 +97,7 @@
                                         </DataGridTemplateColumn>
                                     </DataGrid.Columns>
                                 </DataGrid>
-                                <Button Command="{Binding CreatePrescriptionCommand}">Realize</Button>
+                                <Button Command="{Binding CreatePrescriptionCommand}">Add prescription</Button>
                             </StackPanel>
                         </Border>
                         <!--<StackPanel Margin="5"></StackPanel>-->

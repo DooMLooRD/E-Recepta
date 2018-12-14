@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using BlockChain;
+using MedicinesDatabase;
 using UserDatabaseAPI.Service;
 using UserDatabaseAPI.UserDB.Entities;
 using UserInterface.Command;
@@ -18,6 +19,8 @@ namespace UserInterface.ViewModel
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
         public static BlockChainHandler blockChainHandler = new BlockChainHandler();
+        protected UserService userService = new UserService();
+        protected MedicinesDB medicineModule = new MedicinesDB();
 
         protected ViewModelBase()
         {

@@ -18,7 +18,6 @@ namespace UserInterface.ViewModel
 {
     public class DoctorViewModel : EmployeeViewModel
     {
-        private MedicinesDB medicineModule;
         private ObservableCollection<MedicinesDatabase.Medicine> _medicines;
         private ObservableCollection<PrescriptionMedicine> _newPrescription = new ObservableCollection<PrescriptionMedicine>();
 
@@ -58,13 +57,11 @@ namespace UserInterface.ViewModel
         {
             DoctorsPrescriptions.Clear();
             var allPrescriptions = blockChainHandler.GetAllPrescriptionsByDoctor("12");
-            if(allPrescriptions == null)
+            if (allPrescriptions == null)
             {
-                MessageBox.Show("null");
                 return;
             }
 
-            MessageBox.Show(allPrescriptions.Count.ToString());
             foreach (var prescription in allPrescriptions)
             {
                 DoctorsPrescriptions.Add(new Prescription
@@ -76,10 +73,11 @@ namespace UserInterface.ViewModel
                 foreach (var prescriptionMedicine in prescription.medicines)
                 {
                     var medicine = (await medicineModule.SearchMedicineById(prescriptionMedicine.id.ToString())).SingleOrDefault();
-                    
+
                     if (medicine != null)
                     {
                         DoctorsPrescriptions.Last().Medicines.Add(new PrescriptionMedicine(medicine));
+                        DoctorsPrescriptions.Last().Medicines.Last().Amount = prescriptionMedicine.amount;
                     }
                 }
             }
@@ -125,7 +123,7 @@ namespace UserInterface.ViewModel
 
         public DoctorViewModel()
         {
-            medicineModule = new MedicinesDB();
+
             LoadDoctorsPrescriptionsCommand.Execute(null);
         }
         public ICommand LoadMedicinesCommand => new RelayCommand(LoadMedicines, () => true);

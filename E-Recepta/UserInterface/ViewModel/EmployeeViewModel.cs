@@ -10,7 +10,7 @@ namespace UserInterface.ViewModel
 {
     public abstract class EmployeeViewModel : ViewModelBase
     {
-        protected UserService userService = new UserService();
+        
         protected List<UserDTO> _patients;
         public List<UserDTO> Patients
         {
