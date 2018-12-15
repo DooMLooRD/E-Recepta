@@ -22,26 +22,7 @@ namespace UserInterface.ViewModel
         protected UserService userService = new UserService();
         protected MedicinesDB medicineModule = new MedicinesDB();
 
-        protected ViewModelBase()
-        {
-
-        }
-
         private bool isWorking;
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected UserDTO selectedUser;
-        public UserDTO SelectedUser
-        {
-            get => selectedUser;
-            set { selectedUser = value; OnPropertyChanged(); }
-        }
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         public bool IsWorking
         {
             get => isWorking;
@@ -53,49 +34,10 @@ namespace UserInterface.ViewModel
         }
 
 
-
-
-        public List<DoctorViewModel.Prescription> Prescriptions { get; set; }
-        protected async void GetPrescriptions()
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            IsWorking = true;
-            await Task.Run(() =>
-            {
-
-                DoctorViewModel.PrescriptionMedicine pm = new DoctorViewModel.PrescriptionMedicine(new MedicinesDatabase.Medicine("a", "lek1", "man1", "1"));
-                pm.Amount = 2;
-                DoctorViewModel.PrescriptionMedicine pm2 = new DoctorViewModel.PrescriptionMedicine(new MedicinesDatabase.Medicine("b", "lek2", "man2", "2"));
-                pm.Amount = 4;
-                Prescriptions = new List<DoctorViewModel.Prescription>()
-                {
-                    new DoctorViewModel.Prescription()
-                    {
-                        Medicines = new ObservableCollection<DoctorViewModel.PrescriptionMedicine>()
-                        {
-                            pm, pm2
-                        },
-                        Doctor = new UserDTO()
-                        {
-                            LastName = "abc"
-                        },
-                        Date = DateTime.Now
-                    },
-                    new DoctorViewModel.Prescription()
-                    {
-                        Medicines = new ObservableCollection<DoctorViewModel.PrescriptionMedicine>()
-                        {
-                            pm, pm2
-                        },
-                        Doctor = new UserDTO()
-                        {
-                            LastName = "cba"
-                        }
-                    },
-                };
-                OnPropertyChanged("Prescriptions");
-
-            });
-            IsWorking = false;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,13 +21,9 @@ namespace UserInterface.ViewModel
         public List<string> Roles => new List<string> { "Patient", "Pharmacist", "Doctor" };
 
 
-        public LoginViewModel()
-        {
-            Task.Run(() => blockChainHandler.InitializeBlockChains()); 
-        }
-
-
         public ICommand LoginCommand => new RelayCommand(SignIn, VerifyData);
+
+
         private bool VerifyData()
         {
             if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password) ||
@@ -43,6 +40,16 @@ namespace UserInterface.ViewModel
                 UserAuthorisation userAuthorisation = new UserAuthorisation();
                 try
                 {
+                    if (!CheckInternetConnection())
+                    {
+                        MessageBox.Show("No internet connection");
+                        return;
+                    }
+                    if (!blockChainHandler.IsBlockChainAvailable())
+                    {
+                        MessageBox.Show("Blockchain unavailable");
+                        return;
+                    }
                     if (userAuthorisation.CreateSession(Username, Password, Role) != String.Empty)
                     {
                         MainViewModel.LoginSuccessful(Username, Role);
@@ -56,6 +63,27 @@ namespace UserInterface.ViewModel
             IsWorking = false;
 
             
+        }
+
+        private bool CheckInternetConnection()
+        {
+            try
+            {
+                string URL = "http://google.com";
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(URL);
+                request.Timeout = 5000;
+                request.Credentials = CredentialCache.DefaultNetworkCredentials;
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                    return true;
+                else
+                    return false;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

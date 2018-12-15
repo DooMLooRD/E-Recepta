@@ -30,8 +30,15 @@
                         </DataGrid.Columns>
                     <DataGrid.RowDetailsTemplate>
                         <DataTemplate>
-                            <DataGrid AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Medicines}">
-                                <DataGrid.Columns>
+                            <DataGrid Margin="5 0" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Medicines}">
+                                <DataGrid.Resources>
+                                    <ResourceDictionary>
+                                        <ResourceDictionary.MergedDictionaries>
+                                            <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Cobalt.xaml" />
+                                        </ResourceDictionary.MergedDictionaries>
+                                    </ResourceDictionary>
+                                </DataGrid.Resources>
+                                    <DataGrid.Columns>
                                     <DataGridTextColumn Header="Name" Binding="{Binding Medicine.Name}"/>
                                     <DataGridTextColumn Header="Manufacturer" Binding="{Binding Medicine.Manufacturer}"/>
                                     <DataGridTextColumn Header="Amount" Binding="{Binding Amount}"/>

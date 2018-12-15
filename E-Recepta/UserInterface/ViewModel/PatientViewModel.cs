@@ -9,16 +9,19 @@ namespace UserInterface.ViewModel
 {
     public class PatientViewModel : ViewModelBase
     {
-        public ICommand LoadPatientsPrescriptionsCommand => new RelayCommand(GetUsersPrescriptions, () => true);
         public ObservableCollection<DoctorViewModel.Prescription> PatientsPrescriptions { get; set; } = new ObservableCollection<DoctorViewModel.Prescription>();
+        public ICommand LoadPatientsPrescriptionsCommand => new RelayCommand(GetUsersPrescriptions, () => true);
+        
         private async void GetUsersPrescriptions()
         {
-            
             PatientsPrescriptions.Clear();
             var allPrescriptions = blockChainHandler.GetAllPrescriptionsByPatient("16");
             var realisedPrescriptions = blockChainHandler.GetAllRealizedPrescriptionsByPatient("16");
-
-
+            if (allPrescriptions == null || realisedPrescriptions == null)
+            {
+                MessageBox.Show("Blockchain unavailable, signing out..");
+                MainViewModel.LogOut();
+            }
             foreach (var prescription in allPrescriptions)
             {
                 PatientsPrescriptions.Add(new DoctorViewModel.Prescription
@@ -48,11 +51,6 @@ namespace UserInterface.ViewModel
             }
 
             OnPropertyChanged("PatientsPrescriptions");
-        }
-
-        public PatientViewModel()
-        {
-            //LoadPatientsPrescriptionsCommand.Execute(null);
         }
     }
 
