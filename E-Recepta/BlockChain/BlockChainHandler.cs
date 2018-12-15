@@ -28,6 +28,7 @@ namespace BlockChain
         #region API
         public async void InitializeBlockChains()
         {
+            TraceingManager.InitializeTraceing();
             availableIpAddresses = new List<string>();
 
             NetworkPing networkPing = new NetworkPing();
