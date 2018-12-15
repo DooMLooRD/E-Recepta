@@ -13,7 +13,7 @@ namespace BlockChain
     {
 
         #region Properties
-        List<string> availableIpAddresses;
+        private List<string> availableIpAddresses;
 
         private BlockChainServer blockChainServer_prescriptions;
         private BlockChainServer blockChainServer_realized;
@@ -279,6 +279,18 @@ namespace BlockChain
             TraceingManager.Message(LogMessages.LessThen2pearsMessage);
             return 0;
         }
+
+        public bool IsBlockChainAvailable()
+        {
+            if(realizedPrescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2 && prescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
+        }
+
         #endregion
 
         #region private
