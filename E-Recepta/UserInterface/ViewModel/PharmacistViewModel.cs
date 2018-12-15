@@ -287,7 +287,7 @@ namespace UserInterface.ViewModel
                 }
                 var ext = ReportExt.CSV.ToString().ToLower() == SelectedFileExtension ? ReportExt.CSV : ReportExt.PDF;
                 var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                Generator.Generate(ReportType.PrescriptionsReport, ext, StartDate.Value, EndDate.Value, 1, loc);
+                Generator.Generate(ReportType.PrescriptionsReport, ext, StartDate.Value, EndDate.Value, 1, ref blockChainHandler);
             });
             IsWorking = false;
         }
