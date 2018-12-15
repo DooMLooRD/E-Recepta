@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace BlockChain
 {
@@ -15,12 +16,17 @@ namespace BlockChain
 
         public BlockChainClient blockChainClient { get; private set; }
         private BlockChainValidator validator;
+        private Thread updateThread;
+        private Thread addThread;
+        private Prescription prescriptionToAdd;
         private bool ChainRequestSent = false;
 
         public BlockChain(BlockChainClient blockChainClient, string blockChainName)
         {
             this.blockChainClient = blockChainClient;
             this.blockChainName = blockChainName;
+            this.updateThread = new Thread(new ThreadStart(InternalUpdateBlockChain));
+            this.addThread = new Thread(new ThreadStart(InternalAdd));
 
             blocks = BlockChainSerializer.deserialize(blockChainName);
 
@@ -32,13 +38,17 @@ namespace BlockChain
             }
 
             
-            validator = new BlockChainValidator();
+            validator = new BlockChainValidator(blockChainName);
+        }
+        public bool CompareBlocks(List<Block> gotBlocks)
+        {           
+            return validator.Compare(blocks, gotBlocks);
         }
 
-        public void Add(Prescription prescription) {
+        public void InternalAdd() {
 
+            Prescription prescription = prescriptionToAdd;
             Block block = null;
-
             do
             {
                 UpdateBlockChain();
@@ -49,8 +59,32 @@ namespace BlockChain
             } while (!CheckAddedBlock(block));
 
             blocks.Add(block);
-
             BlockChainSerializer.serialize(blocks, blockChainName);
+            prescriptionToAdd = null;
+        }
+        public void Add(Prescription prescription)
+        {
+                if (addThread.ThreadState == ThreadState.Running || addThread.ThreadState == ThreadState.WaitSleepJoin)
+                {
+                    addThread.Join(); //wait until last block add
+                }
+                if(addThread.ThreadState == ThreadState.Unstarted)
+                {
+                prescriptionToAdd = prescription;
+                addThread = new Thread(new ThreadStart(InternalAdd));
+                addThread.Start();
+                } else
+            {
+                while (prescriptionToAdd != null)
+                {
+                    //waiting
+                }
+                prescriptionToAdd = prescription;
+                addThread = new Thread(new ThreadStart(InternalAdd));
+                addThread.Start();
+            }
+
+           
         }
 
         public bool AddForeignBlock(Block block) {
@@ -120,9 +154,28 @@ namespace BlockChain
         public int GetSize() {
             return blocks.Count;
         }
+        public void UpdateBlockChain()
+        {
+                if (updateThread.ThreadState != ThreadState.Running && updateThread.ThreadState != ThreadState.WaitSleepJoin)
+                {
+                    try
+                    {
+                    updateThread = new Thread(new ThreadStart(InternalUpdateBlockChain));
+                    updateThread.Start();
+                    updateThread.Join();
+                    }
+                catch (Exception e)
+                    {
+                        updateThread.Join();
+                    }                                        
+                }
+                else
+                {
+                    updateThread.Join();
+                }
+        }
 
-        public void UpdateBlockChain() {
-
+        public void InternalUpdateBlockChain() {
             blockChainClient.sendNewChainMethod = GiveNewChain;
             while (!CheckCurrentChain())
             {
@@ -148,7 +201,18 @@ namespace BlockChain
         {
 
             blockChainClient.InitializeVerificationAnswersCollecting(validator.giveVerificationAnswers);
-            blockChainClient.askForVerification(blocks);
+
+              List<Block> sendBlocks = new List<Block>();
+
+            int index = blocks.Count - BlockChainValidator.MAX_NUMBER_OF_COMPARED_BLOCKS - 1;
+            if (index < 0) { index = 0; }
+
+            for (int i = index; i < blocks.Count; i++)
+            {
+                sendBlocks.Add(blocks[i]);
+            }
+
+            blockChainClient.askForVerification(sendBlocks);
             int validatorAnswer;
             do
             {
@@ -156,7 +220,7 @@ namespace BlockChain
             }
             while (validatorAnswer == 0); //waiting for answers
 
-            if(validatorAnswer == 1)
+            if (validatorAnswer == 1) 
             {
                 return true;
             }
@@ -171,6 +235,7 @@ namespace BlockChain
         {
             blockChainClient.InitializeAddBlockAnswersCollecting(validator.giveAddBlockVerificationAnswers);
             blockChainClient.SendBlock(block);
+
             int validatorAnswer;
             do
             {

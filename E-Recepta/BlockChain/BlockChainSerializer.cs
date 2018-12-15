@@ -15,6 +15,11 @@ namespace BlockChain
         {
             CreateDirectory();
             string serializedPrescriptions = JsonConvert.SerializeObject(prescriptions);
+
+            while (!IsFileReady("data" + System.IO.Path.DirectorySeparatorChar.ToString() + blockChainName + ".json") && File.Exists("data" + System.IO.Path.DirectorySeparatorChar.ToString() + blockChainName + ".json")) {
+                
+            }
+
             System.IO.File.WriteAllText(@"data" + System.IO.Path.DirectorySeparatorChar.ToString() + blockChainName + ".json", serializedPrescriptions);
         }
 
@@ -34,6 +39,21 @@ namespace BlockChain
             if (!dataDirExists)
             {
                 System.IO.Directory.CreateDirectory("data");
+            }
+        }
+
+        public static bool IsFileReady(string filename)
+        {
+            // If the file can be opened for exclusive access it means that the file
+            // is no longer locked by another process.
+            try
+            {
+                using (FileStream inputStream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.None))
+                    return inputStream.Length > 0;
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
 

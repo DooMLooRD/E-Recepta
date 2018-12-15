@@ -21,16 +21,24 @@
             <Border Opacity="0.98" Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
                 <StackPanel Margin="10">
                     <Button Command="{Binding LoadPatientsPrescriptionsCommand}">refresh</Button>
-                    <DataGrid ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ColumnWidth="*" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="600" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Prescriptions}">
+                    <DataGrid ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ColumnWidth="*" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="600" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding PatientsPrescriptions}">
                     <DataGrid.Columns>
                         <DataGridTextColumn IsReadOnly="True" Header="Doctor" Binding="{Binding Doctor.LastName}"/>
                         <DataGridTextColumn IsReadOnly="True" Header="Date" Binding="{Binding Date}"/>
                         <DataGridTextColumn IsReadOnly="True" Header="Valid since" Binding="{Binding ValidSince}"/>
-                    </DataGrid.Columns>
+                        <DataGridTextColumn IsReadOnly="True" Header="Realized" Binding="{Binding Realised}"/>
+                        </DataGrid.Columns>
                     <DataGrid.RowDetailsTemplate>
                         <DataTemplate>
-                            <DataGrid AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Medicines}">
-                                <DataGrid.Columns>
+                            <DataGrid Margin="5 0" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Medicines}">
+                                <DataGrid.Resources>
+                                    <ResourceDictionary>
+                                        <ResourceDictionary.MergedDictionaries>
+                                            <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Cobalt.xaml" />
+                                        </ResourceDictionary.MergedDictionaries>
+                                    </ResourceDictionary>
+                                </DataGrid.Resources>
+                                    <DataGrid.Columns>
                                     <DataGridTextColumn Header="Name" Binding="{Binding Medicine.Name}"/>
                                     <DataGridTextColumn Header="Manufacturer" Binding="{Binding Medicine.Manufacturer}"/>
                                     <DataGridTextColumn Header="Amount" Binding="{Binding Amount}"/>

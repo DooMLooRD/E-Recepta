@@ -30,12 +30,12 @@
                             <StackPanel Name="Sp1" Margin="10">
                                 <TextBlock>1. Choose patient</TextBlock>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBox mah:TextBoxHelper.Watermark="First name" Text="{Binding UserFilter.Name, Mode=OneWayToSource}"/>
-                                    <TextBox mah:TextBoxHelper.Watermark="Last name" Text="{Binding UserFilter.LastName, Mode=OneWayToSource}"/>
-                                    <TextBox mah:TextBoxHelper.Watermark="PESEL" Text="{Binding UserFilter.Pesel, Mode=OneWayToSource}"/>
+                                    <TextBox mah:TextBoxHelper.Watermark="First name" Text="{Binding PatientFilter.Name, Mode=OneWayToSource}"/>
+                                    <TextBox mah:TextBoxHelper.Watermark="Last name" Text="{Binding PatientFilter.LastName, Mode=OneWayToSource}"/>
+                                    <TextBox mah:TextBoxHelper.Watermark="PESEL" Text="{Binding PatientFilter.Pesel, Mode=OneWayToSource}"/>
                                     <Button Command="{Binding LoadPatientsCommand}">Search</Button>
                                 </StackPanel>
-                                <DataGrid ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="100" Margin="0 10 0 0"  IsReadOnly="True" ColumnWidth="*" AutoGenerateColumns="False" IsTextSearchEnabled="True" SelectionMode="Single" ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedUser, Mode=OneWayToSource}">
+                                <DataGrid ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="100" Margin="0 10 0 0"  IsReadOnly="True" ColumnWidth="*" AutoGenerateColumns="False" IsTextSearchEnabled="True" SelectionMode="Single" ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatient, Mode=OneWayToSource}">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn IsReadOnly="True" Header="First name" Binding="{Binding Name}"/>
                                         <DataGridTextColumn IsReadOnly="True" Header="Last name" Binding="{Binding LastName}"/>
@@ -58,7 +58,7 @@
                                     <TextBox mah:TextBoxHelper.Watermark="Manufacturer" Text="{Binding MedicineFilter.Manufacturer}"/>
                                     <Button Command="{Binding LoadMedicinesCommand}">Search</Button>
                                 </StackPanel>
-                                <DataGrid ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="133" ColumnWidth="*" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding Medicines}" SelectedItem="{Binding SelectedMedicine, Mode=OneWayToSource}" Margin="0,0,0.4,0">
+                                <DataGrid ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="133" ColumnWidth="*" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding NFZMedicines}" SelectedItem="{Binding SelectedNFZMedicine, Mode=OneWayToSource}" Margin="0,0,0.4,0">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
                                         <DataGridTextColumn Header="Manufacturer" Binding="{Binding Manufacturer}"/>
@@ -81,7 +81,7 @@
                         <Border Opacity="0.98"  Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
                             <StackPanel Margin="10 0 10 0">
                                 <TextBlock>3. Chosen medicines</TextBlock>
-                                <DataGrid ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="100" ColumnWidth="*" AutoGenerateColumns="False" ItemsSource="{Binding NewPrescription}" SelectedItem="{Binding SelectedPrescriptionMedicine}">
+                                <DataGrid ScrollViewer.CanContentScroll="True" CanUserAddRows="False" IsReadOnly="False" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="100" ColumnWidth="*" AutoGenerateColumns="False" ItemsSource="{Binding NewPrescription}" SelectedItem="{Binding SelectedPrescriptionMedicine, Mode=OneWayToSource}">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn IsReadOnly="True" Header="Name" Binding="{Binding Medicine.Name}"/>
                                         <DataGridTextColumn IsReadOnly="True" Header="Manufacturer" Binding="{Binding Medicine.Manufacturer}"/>
@@ -97,7 +97,7 @@
                                         </DataGridTemplateColumn>
                                     </DataGrid.Columns>
                                 </DataGrid>
-                                <Button Command="{Binding RealizePrescriptionCommand}">Realize</Button>
+                                <Button Command="{Binding CreatePrescriptionCommand}">Add prescription</Button>
                             </StackPanel>
                         </Border>
                         <!--<StackPanel Margin="5"></StackPanel>-->
@@ -119,9 +119,9 @@
                         <Border Opacity="0.97"  Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
                             <StackPanel Margin="10">
                                 <Button Command="{Binding LoadDoctorsPrescriptionsCommand}">refresh</Button>
-                                <DataGrid ColumnWidth="*" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="530" Margin="0 10 0 0" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Prescriptions}">
+                                <DataGrid ColumnWidth="*" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="530" Margin="0 10 0 0" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding DoctorsPrescriptions}">
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn IsReadOnly="True" Header="Patient" Binding="{Binding Doctor.LastName}"/>
+                                        <DataGridTextColumn IsReadOnly="True" Header="Patient" Binding="{Binding Patient.LastName}"/>
                                         <DataGridTextColumn IsReadOnly="True" Header="Date" Binding="{Binding Date}"/>
                                         <DataGridTextColumn IsReadOnly="True" Header="Valid since" Binding="{Binding ValidSince}"/>
                                     </DataGrid.Columns>

@@ -15,11 +15,11 @@ namespace BlockChain.utils
     {
         private int timeout = 100;
 
-        List<string> availableIpAddresses = new List<string>();
+        public List<string> availableIpAddresses = new List<string>();
 
         static object lockObj = new object();
 
-        public async Task<List<string>> RunPingAsync()
+        public List<Task> RunPingAsync()
         {
             string localIpAddress = NetworkUtils.GetLocalIPAddress().ToString();
             string networkAddress = NetworkUtils.GetNetworkAddress(NetworkUtils.GetLocalIPAddress(), NetworkUtils.GetMask()).ToString();
@@ -37,13 +37,14 @@ namespace BlockChain.utils
                 tasks.Add(task);
             }
 
-            return availableIpAddresses;
+            return tasks;
+
         }
 
-        private async Task PingAsync(System.Net.NetworkInformation.Ping ping, string ip)
+        public async Task PingAsync(System.Net.NetworkInformation.Ping ping, string ip)
         {
             var reply = await ping.SendPingAsync(ip, timeout);
-            
+
             if (reply.Status == System.Net.NetworkInformation.IPStatus.Success)
             {
                 lock (lockObj)
