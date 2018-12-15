@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlockChain;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,9 +10,8 @@ namespace ReportGenerator
 {
     public class GenerateCSV : GenerateFile
     {
-        public GenerateCSV(string fileName, ReportType reportType, BlockchainData blockchainData, int personID)
+        public GenerateCSV(ReportType reportType, BlockchainData blockchainData, int personID)
         {
-            this.fileName = fileName;
             this.reportType = reportType;
             this.blockchainData = blockchainData;
             this.personID = personID;
@@ -25,7 +25,7 @@ namespace ReportGenerator
                     break;
                 default:
                     throw new NotImplementedException();
-            }        
+            }
         }
 
         public override void GeneratePrescriptionReport()
@@ -57,11 +57,12 @@ namespace ReportGenerator
             }
             catch (Exception ex)
             {
-                throw new NotImplementedException();
+
             }
             finally
             {
-                File.WriteAllText(fileName, csv.ToString());
+                String t = DateTime.Now.Day + "." + DateTime.Now.Month + "." + DateTime.Now.Year + " " + DateTime.Now.Hour + "." + DateTime.Now.Minute + "." + DateTime.Now.Second + ".csv";
+                File.WriteAllText(t, csv.ToString());
             }
         }
 

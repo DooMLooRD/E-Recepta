@@ -11,9 +11,8 @@ namespace ReportGenerator
 {
     public class GeneratePDF : GenerateFile
     {
-        public GeneratePDF(string fileName, ReportType reportType, BlockchainData blockchainData, int personID)
+        public GeneratePDF(ReportType reportType, BlockchainData blockchainData, int personID)
         {
-            this.fileName = fileName;
             this.reportType = reportType;
             this.blockchainData = blockchainData;
             this.personID = personID;
@@ -37,7 +36,8 @@ namespace ReportGenerator
             {
                 List<Prescription> data = new List<Prescription>();
                 data = blockchainData.GetPrescriptionListForPatient(this.personID);
-                PdfWriter.GetInstance(doc, new FileStream(fileName, FileMode.Create));
+                String t = DateTime.Now.Day + "." + DateTime.Now.Month + "." + DateTime.Now.Year + " " + DateTime.Now.Hour + "." + DateTime.Now.Minute + "." + DateTime.Now.Second + ".pdf";
+                PdfWriter.GetInstance(doc, new FileStream(t, FileMode.Create));
                 doc.Open();
                 doc.Add(new Paragraph("PatientID: " + data[0].PatientID.ToString()));
                 doc.Add(new Paragraph("Name: " + data[0].PatientName));
@@ -49,11 +49,11 @@ namespace ReportGenerator
                     doc.Add(new Paragraph("Realization date: " + prescription.RealizationDate.ToString()));
                     doc.Add(new Paragraph("Doctor: " + prescription.Doctor));
                     doc.Add(new Paragraph("PharmacistID: " + prescription.PharmacistID.ToString()));
-                }     
+                }
             }
             catch (Exception ex)
             {
-                throw new NotImplementedException();
+
             }
             finally
             {
