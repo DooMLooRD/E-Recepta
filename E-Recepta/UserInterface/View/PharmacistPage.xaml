@@ -108,6 +108,10 @@
 
                     <StackPanel Grid.Row="0" Margin="10">
                         <ComboBox Margin="0 0 0 5" SelectedIndex="0" SelectedItem="{Binding SelectedFileExtension, Mode=OneWayToSource}" ItemsSource="{Binding FileExtensions}"></ComboBox>
+                        <StackPanel Orientation="Horizontal">
+                            <DatePicker mah:TextBoxHelper.Watermark="Starting date" SelectedDate="{Binding StartDate, Mode=OneWayToSource}"></DatePicker>
+                            <DatePicker mah:TextBoxHelper.Watermark="End date" SelectedDate="{Binding EndDate, Mode=OneWayToSource}"></DatePicker>
+                        </StackPanel>
                         <Border  Opacity="0.98" Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
 
                             <StackPanel Margin="10">
@@ -119,7 +123,7 @@
                                     <TextBox mah:TextBoxHelper.Watermark="PESEL" Text="{Binding PharmacistFilter.Pesel, Mode=OneWayToSource}"/>
                                     <Button Command="{Binding LoadPharmacistsCommand}">Search</Button>
                                 </StackPanel>
-                                <DataGrid ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="150" Margin="0 10 0 0"  IsReadOnly="True" ColumnWidth="*" AutoGenerateColumns="False" IsTextSearchEnabled="True" SelectionMode="Single" ItemsSource="{Binding Pharmacists}" SelectedItem="{Binding SelectedPharmacist, Mode=OneWayToSource}">
+                                <DataGrid ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="133" Margin="0 10 0 0"  IsReadOnly="True" ColumnWidth="*" AutoGenerateColumns="False" IsTextSearchEnabled="True" SelectionMode="Single" ItemsSource="{Binding Pharmacists}" SelectedItem="{Binding SelectedPharmacist, Mode=OneWayToSource}">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn IsReadOnly="True" Header="First name" Binding="{Binding Name}"/>
                                         <DataGridTextColumn IsReadOnly="True" Header="Last name" Binding="{Binding LastName}"/>
@@ -131,7 +135,7 @@
 
                         </Border>
 
-                        <StackPanel Margin="5"></StackPanel>
+                        <StackPanel Margin="8"></StackPanel>
                     </StackPanel>
 
                     <StackPanel Grid.Row="1" Margin="10">
@@ -152,10 +156,7 @@
                                     </DataGrid.Columns>
                                 </DataGrid>
                                 
-                                <StackPanel Orientation="Horizontal">
-                                    <DatePicker mah:TextBoxHelper.Watermark="Starting date" SelectedDate="{Binding StartDate, Mode=OneWayToSource}"></DatePicker>
-                                    <DatePicker mah:TextBoxHelper.Watermark="End date" SelectedDate="{Binding EndDate, Mode=OneWayToSource}"></DatePicker>
-                                </StackPanel>
+
                                 <Button Command="{Binding GetPatientsPrescriptionsCommand}">Submit</Button>
                             </StackPanel>
                         </Border>
