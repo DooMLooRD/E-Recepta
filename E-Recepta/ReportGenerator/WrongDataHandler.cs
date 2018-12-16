@@ -8,10 +8,11 @@ namespace ReportGenerator
 {
     public class WrongDataHandler : Exception
     {
-        public void WrongDataNotification(List<Prescription> list)
+        public bool WrongDataNotification(List<Prescription> list)
         {
             if (list.Capacity == 0)
-                throw new WrongDataHandler("Cannot receive data from blockchain");   
+                return true;
+            return false;
         }
         public WrongDataHandler()
         { }
