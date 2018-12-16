@@ -104,42 +104,53 @@ namespace UserInterface.ViewModel
             IsWorking = true;
             await Task.Run(async () =>
             {
-                SelectedPatientsUnrealisedPrescriptions = new ObservableCollection<DoctorViewModel.Prescription>();
-                var allPrescriptions = blockChainHandler.GetAllPrescriptionsByPatient(_selectedPatient.Id.ToString());
-                var realizedPrescriptions = blockChainHandler.GetAllRealizedPrescriptionsByPatient(SelectedPatient.Id.ToString());
-                var unrealizedPrescriptions = new ObservableCollection<BlockChain.Prescription>();
-
-                foreach (var prescription in allPrescriptions)
+                try
                 {
-                    if (!realizedPrescriptions.Select(x => x.prescriptionId).Contains(prescription.prescriptionId))
-                        unrealizedPrescriptions.Add(prescription);
-                }
+                    var selectedPatientsUnrealisedPrescriptions = new ObservableCollection<DoctorViewModel.Prescription>();
+                    var allPrescriptions =
+                        blockChainHandler.GetAllPrescriptionsByPatient(_selectedPatient.Id.ToString());
+                    var realizedPrescriptions =
+                        blockChainHandler.GetAllRealizedPrescriptionsByPatient(SelectedPatient.Id.ToString());
+                    var unrealizedPrescriptions = new ObservableCollection<BlockChain.Prescription>();
 
-                foreach (var prescription in unrealizedPrescriptions)
-                {
-                    var medicines = new ObservableCollection<DoctorViewModel.PrescriptionMedicine>();
-                    foreach (var prescriptionMedicine in prescription.medicines)
+                    foreach (var prescription in allPrescriptions)
                     {
-                        medicines.Add(new DoctorViewModel.PrescriptionMedicine
-                        {
-                            Amount = prescriptionMedicine.amount,
-                            Medicine = (await medicineModule.SearchMedicineById(prescriptionMedicine.id.ToString())).Single(),
-
-                        });
-                        var actualMedicine = PharmacyState.SingleOrDefault(x => x.Name == medicines.Last().Medicine.Name);
-                        medicines.Last().InStockAmount = actualMedicine == null ? 0 : actualMedicine.Amount;
+                        if (!realizedPrescriptions.Select(x => x.prescriptionId).Contains(prescription.prescriptionId))
+                            unrealizedPrescriptions.Add(prescription);
                     }
 
-                    SelectedPatientsUnrealisedPrescriptions.Add(new DoctorViewModel.Prescription
+                    
+                    foreach (var prescription in unrealizedPrescriptions)
                     {
-                        Date = prescription.Date,
-                        Doctor = await userService.GetUser(Convert.ToInt32(prescription.doctorId)),
-                        Id = prescription.prescriptionId,
-                        ValidSince = prescription.ValidSince,
-                        Medicines = medicines
-                    });
+                        var medicines = new ObservableCollection<DoctorViewModel.PrescriptionMedicine>();
+                        foreach (var prescriptionMedicine in prescription.medicines)
+                        {
+                            medicines.Add(new DoctorViewModel.PrescriptionMedicine
+                            {
+                                Amount = prescriptionMedicine.amount,
+                                Medicine = (await medicineModule.SearchMedicineById(prescriptionMedicine.id.ToString()))
+                                    .Single(),
 
+                            });
+                            var actualMedicine =
+                                PharmacyState.SingleOrDefault(x => x.Name == medicines.Last().Medicine.Name);
+                            medicines.Last().InStockAmount = actualMedicine == null ? 0 : actualMedicine.Amount;
+                        }
+
+                        selectedPatientsUnrealisedPrescriptions.Add(new DoctorViewModel.Prescription
+                        {
+                            Date = prescription.Date,
+                            Doctor = await userService.GetUser(Convert.ToInt32(prescription.doctorId)),
+                            Id = prescription.prescriptionId,
+                            ValidSince = prescription.ValidSince,
+                            Medicines = medicines
+                        });
+                    }
+                    SelectedPatientsUnrealisedPrescriptions = selectedPatientsUnrealisedPrescriptions;
                 }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.StackTrace);}
 
                 OnPropertyChanged("SelectedPatientsUnrealisedPrescriptions");
             });
@@ -217,6 +228,7 @@ namespace UserInterface.ViewModel
             }
             GetGeneralPharmacyStateCommand.Execute(null);
             GetPatientsUnrealisedPrescriptions();
+            //LoadPatients();
         }
 
         private bool CanBeRealised()
@@ -237,6 +249,7 @@ namespace UserInterface.ViewModel
         private async void RealizePrescription()
         {
             IsWorking = true;
+            
             await Task.Run(async () =>
             {
 
@@ -246,6 +259,7 @@ namespace UserInterface.ViewModel
                     MainViewModel.LogOut();
                 }
 
+                
                 await GetGeneralPharmacyState();
 
                 foreach (var prescriptionMedicine in SelectedPatientsUnrealisedPrescription.Medicines)
@@ -253,12 +267,12 @@ namespace UserInterface.ViewModel
                     PharmacyState.SingleOrDefault(x => x.Name == prescriptionMedicine.Medicine.Name).Amount -=
                         prescriptionMedicine.Amount;
                 }
-
                 await UpdatePharmacyState();
                 //SelectedPatientsUnrealisedPrescriptions.Remove(SelectedPatientsUnrealisedPrescription);
-                OnPropertyChanged("SelectedPatientsUnrealisedPrescriptions");
+                
                 //GetPatientsUnrealisedPrescriptions();
             });
+            
             IsWorking = false;
         }
 
@@ -279,7 +293,15 @@ namespace UserInterface.ViewModel
                     MainViewModel.LogOut();
                 }
                 var ext = ReportExt.CSV.ToString().ToLower() == SelectedFileExtension ? ReportExt.CSV : ReportExt.PDF;
-                Generator.Generate(ReportType.PrescriptionsReport, ext, StartDate.Value, EndDate.Value, SelectedPatient.Id, ref blockChainHandler);
+                try
+                {
+                    Generator.Generate(ReportType.PrescriptionsReport, ext, StartDate.Value, EndDate.Value,
+                        SelectedPatient.Id, ref blockChainHandler);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
             });
             IsWorking = false;
         }
@@ -289,13 +311,24 @@ namespace UserInterface.ViewModel
             IsWorking = true;
             await Task.Run(() =>
             {
-                if (!blockChainHandler.IsBlockChainAvailable())
+                try
                 {
-                    MessageBox.Show("Blockchain unavailable, signing out..");
-                    MainViewModel.LogOut();
+                    if (!blockChainHandler.IsBlockChainAvailable())
+                    {
+                        MessageBox.Show("Blockchain unavailable, signing out..");
+                        MainViewModel.LogOut();
+                    }
+
+                    var ext = ReportExt.CSV.ToString().ToLower() == SelectedFileExtension
+                        ? ReportExt.CSV
+                        : ReportExt.PDF;
+                    Generator.Generate(ReportType.SoldMedicamentsReport, ext, StartDate.Value, EndDate.Value,
+                        SelectedPharmacist.Id, ref blockChainHandler);
                 }
-                var ext = ReportExt.CSV.ToString().ToLower() == SelectedFileExtension ? ReportExt.CSV : ReportExt.PDF;
-                Generator.Generate(ReportType.PrescriptionsReport, ext, StartDate.Value, EndDate.Value, SelectedPatient.Id, ref blockChainHandler);
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
             });
             IsWorking = false;
         }   

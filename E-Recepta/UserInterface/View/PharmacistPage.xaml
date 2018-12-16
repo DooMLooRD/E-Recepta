@@ -59,7 +59,7 @@
                         <Border Opacity="0.98" Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
                             <StackPanel Margin="10">
                                 <TextBlock>2. Choose prescription</TextBlock>
-                                <DataGrid ColumnWidth="*" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="200" Margin="0 10 0 0" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding SelectedPatientsUnrealisedPrescriptions}" SelectedItem="{Binding SelectedPatientsUnrealisedPrescription, Mode=OneWayToSource}">
+                                <DataGrid ColumnWidth="*" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="200" Margin="0 10 0 0" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding SelectedPatientsUnrealisedPrescriptions}" SelectedItem="{Binding SelectedPatientsUnrealisedPrescription, Mode=TwoWay}">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn IsReadOnly="True" Header="Doctor" Binding="{Binding Doctor.LastName}"/>
                                         <DataGridTextColumn IsReadOnly="True" Header="Date" Binding="{Binding Date}"/>
@@ -67,7 +67,7 @@
                                     </DataGrid.Columns>
                                     <DataGrid.RowDetailsTemplate>
                                         <DataTemplate>
-                                            <DataGrid Margin="5 0" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Medicines}">
+                                            <DataGrid Margin="5 0" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Medicines, Mode=TwoWay}">
                                                 <DataGrid.Resources>
                                                     <ResourceDictionary>
                                                         <ResourceDictionary.MergedDictionaries>
@@ -213,7 +213,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <TextBox mah:TextBoxHelper.Watermark="Name" Text="{Binding InStockMedicineFilter.Name}"/>
                                     <TextBox mah:TextBoxHelper.Watermark="Manufacturer" Text="{Binding InStockMedicineFilter.Manufacturer}"/>
-                                    <Button Command="{Binding GetPharmacyStateCommand}">Search</Button>
+                                    <Button Command="{Binding GetGeneralPharmacyStateCommand}">Search</Button>
                                 </StackPanel>
                                 <DataGrid ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ColumnWidth="*" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="210" IsReadOnly="False" AutoGenerateColumns="False" ItemsSource="{Binding PharmacyState}" SelectedItem="{Binding SelectedGeneralMedicine, Mode=OneWayToSource}">
                                     <DataGrid.Columns>
