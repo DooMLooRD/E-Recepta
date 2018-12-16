@@ -8,21 +8,21 @@ namespace Authorisation
 {
     public class UserAuthorisation
     {
-        public string CreateSession(string login, string password, string role)
+        public int CreateSession(string login, string password, string role)
         {
             UserDatabaseData uDBD = new UserDatabaseData();
 
             string passHash1 = HashGenerator.GetHashFromPassword(password);
 
-            Guid sessionID = Guid.NewGuid();
-
             try
             {
-                string passHash2 = uDBD.GetPasswordHash(login, role);
+                ValueTuple<string,int> userData = uDBD.GetPasswordHash(login, role);
+                string passHash2 = userData.Item1;
+                int sessionID = userData.Item2;
                 if (Compare(passHash1, passHash2))
                 {
                     uDBD.SaveLoginAttempt(login, DateTime.Now, true);
-                    return sessionID.ToString();
+                    return sessionID;
                 }
                 else
                 {

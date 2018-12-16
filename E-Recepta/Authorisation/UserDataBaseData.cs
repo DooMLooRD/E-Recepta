@@ -11,7 +11,7 @@ namespace Authorisation
     {
         LoginService loginService = new LoginService();
 
-        public string GetPasswordHash(string login, string role)
+        public ValueTuple<string, int> GetPasswordHash(string login, string role)
         {
             return loginService.GetPasswordHash(login, role).Result;
         }
