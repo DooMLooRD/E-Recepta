@@ -247,7 +247,7 @@ namespace UserInterface.ViewModel
         {
             if (SelectedPatientsUnrealisedPrescription == null)
                 return false;
-            if (SelectedPatientsUnrealisedPrescription.ValidSince <= DateTime.Now.Date)
+            if (SelectedPatientsUnrealisedPrescription.ValidSince < DateTime.Now.Date)
                 return false;
             foreach (var medicine in SelectedPatientsUnrealisedPrescription.Medicines)
             {
