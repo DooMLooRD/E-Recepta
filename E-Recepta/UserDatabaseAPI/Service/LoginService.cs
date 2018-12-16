@@ -11,7 +11,7 @@ namespace UserDatabaseAPI.Service
 {
     public class LoginService
     {
-        public async Task<string> GetPasswordHash(string username, string role)
+        public async Task<(string,int)> GetPasswordHash(string username, string role)
         {
             if (!await IsUserInDatabase(username))
                 throw new ArgumentException("User not exist in database");
@@ -20,7 +20,7 @@ namespace UserDatabaseAPI.Service
             using (DatabaseUserContext context = new DatabaseUserContext())
             {
                 var user = await context.Users.FirstAsync(u => u.Username == username);
-                return user.PasswordHash;
+                return (user.PasswordHash,user.Id);
             }
 
         }
