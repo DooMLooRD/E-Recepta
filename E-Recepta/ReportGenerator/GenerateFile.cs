@@ -14,6 +14,8 @@ namespace ReportGenerator
         public ReportType reportType;
         public BlockchainData blockchainData;
         public int personID;
+        public DateTime begin;
+        public DateTime end;
         public abstract void GeneratePrescriptionReport();
         public abstract void GenerateSoldMedicamentsReport();
     }

@@ -68,6 +68,14 @@
       <Project>{ebdf72af-2e77-4cc3-8f7c-736cefb3f1ca}</Project>
       <Name>BlockChain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MedicinesDatabase\MedicinesDatabase.csproj">
+      <Project>{9be338d1-251f-44cf-8a88-7987803b0e23}</Project>
+      <Name>MedicinesDatabase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UserDatabaseAPI\UserDatabaseAPI.csproj">
+      <Project>{5a81fd1f-2672-4e60-9696-e7ca013dc9f7}</Project>
+      <Name>UserDatabaseAPI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

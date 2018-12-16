@@ -14,9 +14,6 @@ namespace ReportGenerator
     {
         //do testowania
         #region Testy
-        private static DateTime date1 = new DateTime(2018, 7, 20);
-        private static DateTime date2 = new DateTime(2018, 8, 10);
-        private static Prescription prescription1 = new Prescription("Pacjent1", "Ulica", 1, "Opis1", date1.Date, DateTime.Now, "Doktor", 10);
 
         private static BlockchainData blockchainData;
         private static UIData uIData;
@@ -31,10 +28,10 @@ namespace ReportGenerator
             {
                 case ReportExt.PDF:
                     dataHandler.WrongDataNotification(blockchainData.GetPrescriptionListForPatient(uIData.PersonID));
-                    GenerateFile generatePDF = new GeneratePDF(uIData.ReportType, blockchainData, uIData.PersonID);
+                    GenerateFile generatePDF = new GeneratePDF(uIData.ReportType, blockchainData, uIData.PersonID, uIData.Begin, uIData.End);
                     break;
                 case ReportExt.CSV:
-                    GenerateFile generateCSV = new GenerateCSV(uIData.ReportType, blockchainData, uIData.PersonID);
+                    GenerateFile generateCSV = new GenerateCSV(uIData.ReportType, blockchainData, uIData.PersonID, uIData.Begin, uIData.End);
                     break;
                 default:
                     throw new NotImplementedException();
