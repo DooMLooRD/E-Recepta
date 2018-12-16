@@ -42,12 +42,12 @@ namespace BlockChain
 
         }
 
-        public bool AddPrescription(string patientId, string doctorId, ObservableCollection<Medicine> medicines)
+        public bool AddPrescription(string patientId, string doctorId, DateTime validSinceDate, ObservableCollection<Medicine> medicines)
         {
             if (prescriptions.blockChainClient.GetNumberOfConnectedPeers() >= 2)
             {
                 Prescription prescription = new Prescription(patientId,
-              doctorId, DateTime.Now, DateTime.Now, medicines);
+              doctorId, DateTime.Now, validSinceDate, medicines);
 
             prescriptions.Add(prescription);
             return true;

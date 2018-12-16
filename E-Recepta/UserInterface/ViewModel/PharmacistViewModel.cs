@@ -93,7 +93,19 @@ namespace UserInterface.ViewModel
         public ICommand GetGeneralPharmacyStateCommand => new RelayCommandAsync(GetGeneralPharmacyState, () => true);
         public ICommand UpdatePharmacyStateCommand => new RelayCommandAsync(UpdatePharmacyState, () => true);
         public ICommand RealizePrescriptionCommand => new RelayCommand(RealizePrescription, CanBeRealised);
-        public ICommand GetPharmacistsSalesCommand => new RelayCommand(GetPharmacistsSales, () => SelectedPharmacist != null && SelectedFileExtension != FileExtensions[0]);
+        public ICommand GetPharmacistsSalesCommand => new RelayCommand(GetPharmacistsSales, IsSalesDataReady);
+
+        private bool IsSalesDataReady()
+        {
+            if (SelectedPharmacist == null)
+                return false;
+            if (SelectedFileExtension == FileExtensions[0])
+                return false;
+            if (EndDate < StartDate)
+                return false;
+            return true;
+        }
+
         public ICommand GetPatientsPrescriptionsCommand => new RelayCommand(GetPatientsPrescriptions, IsPrescriptionsDataReady);
         public ICommand LoadPatientsUnrealisedPrescriptionsCommand => new RelayCommand(GetPatientsUnrealisedPrescriptions, () => true);
 

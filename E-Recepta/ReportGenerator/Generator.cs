@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ReportGenerator
 {
-    public class Generatorz
+    public class Generator
     {
 
         private static BlockchainData blockchainData;

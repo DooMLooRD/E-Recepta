@@ -10,7 +10,7 @@ namespace BlockChain
     interface IBlockChainHandler
     {
 
-        bool AddPrescription(string patientId, string doctorId, ObservableCollection<Medicine> medicines);
+        bool AddPrescription(string patientId, string doctorId, DateTime validSinceDate, ObservableCollection<Medicine> medicines);
         bool RealizePrescription(string prescriptionId, string pharmacistId);
 
         ObservableCollection<Prescription> GetAllPrescriptionsByPatient(string patientId);

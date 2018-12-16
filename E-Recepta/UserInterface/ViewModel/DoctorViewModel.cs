@@ -29,7 +29,8 @@ namespace UserInterface.ViewModel
         public PrescriptionMedicine SelectedPrescriptionMedicine { get; set; }
         public ObservableCollection<DoctorViewModel.Prescription> DoctorsPrescriptions { get; set; } = new ObservableCollection<Prescription>();
         public ObservableCollection<PrescriptionMedicine> NewPrescription { get; set; } = new ObservableCollection<PrescriptionMedicine>();
-
+        public DateTime? PrescriptionValidSince { get; set; } = DateTime.Now;
+    
         private UserDTO _selectedPatient;
         public UserDTO SelectedPatient
         {
@@ -54,10 +55,22 @@ namespace UserInterface.ViewModel
         public ICommand LoadPatientsCommand => new RelayCommand(LoadPatients, () => true);
         public ICommand AddToPrescriptionCommand => new RelayCommand(AddToPrescription, () => true);
         public ICommand RemoveFromPrescriptionCommand => new RelayCommand(RemoveFromPrescription, () => true);
-        public ICommand CreatePrescriptionCommand => new RelayCommand(CreatePrescription, () => NewPrescription.Any() && SelectedPatient != null);
+        public ICommand CreatePrescriptionCommand => new RelayCommand(CreatePrescription, ValidateNewPrescription);
         public ICommand LoadDoctorsPrescriptionsCommand => new RelayCommand(GetDoctorsPrescriptions, () => true);
         public ICommand LoadMedicinesCommand => new RelayCommand(LoadMedicines, () => true);
 
+        private bool ValidateNewPrescription()
+        {
+            if (!NewPrescription.Any())
+                return false;
+            if (SelectedPatient == null)
+                return false;
+            if (PrescriptionValidSince == null)
+                return false;
+            if (PrescriptionValidSince < DateTime.Now.Date)
+                return false;
+            return true;
+        }
 
         private async void LoadPatients()
         {
@@ -105,7 +118,7 @@ namespace UserInterface.ViewModel
 
         private async void CreatePrescription()
         {
-           
+
             IsWorking = true;
             //await Task.Run(() =>
             {
@@ -116,7 +129,7 @@ namespace UserInterface.ViewModel
                         prescriptionMedicine.Amount));
                 }
 
-                if (!blockChainHandler.AddPrescription(_selectedPatient.Id.ToString(), CurrentUserId.ToString(), medicines))
+                if (!blockChainHandler.AddPrescription(_selectedPatient.Id.ToString(), CurrentUserId.ToString(), PrescriptionValidSince.Value, medicines))
                 {
                     MessageBox.Show("Blockchain unavailable, signing out..");
                     MainViewModel.LogOut();
@@ -125,7 +138,7 @@ namespace UserInterface.ViewModel
 
 
             }//);
-            
+
             GetDoctorsPrescriptions();
             IsWorking = false;
         }
