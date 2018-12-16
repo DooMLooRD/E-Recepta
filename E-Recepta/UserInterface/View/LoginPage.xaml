@@ -19,7 +19,7 @@
             <RowDefinition Height="100*"/>
             <RowDefinition Height="349*"/>
         </Grid.RowDefinitions>
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" FontSize="48" Foreground="#FF00B1FF" FontFamily="Impact">E-Recepty</TextBlock>
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" FontSize="48" Foreground="#FF00B1FF" FontFamily="Impact">E-Recepta</TextBlock>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">
             <ComboBox Width="100px" SelectedIndex="0" ItemsSource="{Binding Path=Roles}" SelectedItem="{Binding Role, Mode=OneWayToSource}"></ComboBox>
             <TextBox mah:TextBoxHelper.Watermark="username" Text="{Binding Username, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" >

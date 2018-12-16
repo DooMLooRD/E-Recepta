@@ -73,7 +73,7 @@ namespace UserInterface.ViewModel
         private async void GetDoctorsPrescriptions()
         {
             DoctorsPrescriptions.Clear();
-            var allPrescriptions = blockChainHandler.GetAllPrescriptionsByDoctor("12");
+            var allPrescriptions = blockChainHandler.GetAllPrescriptionsByDoctor(CurrentUserId.ToString());
             if (allPrescriptions == null)
             {
                 MessageBox.Show("Blockchain unavailable, signing out..");
@@ -116,7 +116,7 @@ namespace UserInterface.ViewModel
                         prescriptionMedicine.Amount));
                 }
 
-                if (!blockChainHandler.AddPrescription(_selectedPatient.Id.ToString(), "12", medicines))
+                if (!blockChainHandler.AddPrescription(_selectedPatient.Id.ToString(), CurrentUserId.ToString(), medicines))
                 {
                     MessageBox.Show("Blockchain unavailable, signing out..");
                     MainViewModel.LogOut();

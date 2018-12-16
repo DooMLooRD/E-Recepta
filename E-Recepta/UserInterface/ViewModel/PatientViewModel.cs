@@ -15,8 +15,8 @@ namespace UserInterface.ViewModel
         private async void GetUsersPrescriptions()
         {
             PatientsPrescriptions.Clear();
-            var allPrescriptions = blockChainHandler.GetAllPrescriptionsByPatient("16");
-            var realisedPrescriptions = blockChainHandler.GetAllRealizedPrescriptionsByPatient("16");
+            var allPrescriptions = blockChainHandler.GetAllPrescriptionsByPatient(CurrentUserId.ToString());
+            var realisedPrescriptions = blockChainHandler.GetAllRealizedPrescriptionsByPatient(CurrentUserId.ToString());
             if (allPrescriptions == null || realisedPrescriptions == null)
             {
                 MessageBox.Show("Blockchain unavailable, signing out..");

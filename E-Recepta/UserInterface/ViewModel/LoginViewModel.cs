@@ -50,7 +50,9 @@ namespace UserInterface.ViewModel
                         MessageBox.Show("Blockchain unavailable");
                         return;
                     }
-                    if (userAuthorisation.CreateSession(Username, Password, Role) != String.Empty)
+
+                    CurrentUserId = userAuthorisation.CreateSession(Username, Password, Role);
+                    if (CurrentUserId != 0)
                     {
                         MainViewModel.LoginSuccessful(Username, Role);
                     }

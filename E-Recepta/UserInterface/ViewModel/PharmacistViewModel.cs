@@ -129,6 +129,7 @@ namespace UserInterface.ViewModel
                         var actualMedicine = PharmacyState.SingleOrDefault(x => x.Name == medicines.Last().Medicine.Name);
                         medicines.Last().InStockAmount = actualMedicine == null ? 0 : actualMedicine.Amount;
                     }
+
                     SelectedPatientsUnrealisedPrescriptions.Add(new DoctorViewModel.Prescription
                     {
                         Date = prescription.Date,
@@ -218,14 +219,6 @@ namespace UserInterface.ViewModel
             GetPatientsUnrealisedPrescriptions();
         }
 
-        private async void GetPharmacyState()
-        {
-            IsWorking = true;
-            PharmacyState = new ObservableCollection<MedicineInStock>(await pharmacyDB.SearchMedicineInStock(InStockMedicineFilter.Name, InStockMedicineFilter.Manufacturer));
-            actualPharmacyMedicinesCount = PharmacyState.Count;
-            IsWorking = false;
-        }
-
         private bool CanBeRealised()
         {
             if (SelectedPatientsUnrealisedPrescription == null)
@@ -247,7 +240,7 @@ namespace UserInterface.ViewModel
             await Task.Run(async () =>
             {
 
-                if (!blockChainHandler.RealizePrescription(SelectedPatientsUnrealisedPrescription.Id, "1")) // id_zalogowanego
+                if (!blockChainHandler.RealizePrescription(SelectedPatientsUnrealisedPrescription.Id, CurrentUserId.ToString()))
                 {
                     MessageBox.Show("Blockchain unavailable, signing out..");
                     MainViewModel.LogOut();
@@ -286,8 +279,7 @@ namespace UserInterface.ViewModel
                     MainViewModel.LogOut();
                 }
                 var ext = ReportExt.CSV.ToString().ToLower() == SelectedFileExtension ? ReportExt.CSV : ReportExt.PDF;
-                var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                Generator.Generate(ReportType.PrescriptionsReport, ext, StartDate.Value, EndDate.Value, 1, ref blockChainHandler);
+                Generator.Generate(ReportType.PrescriptionsReport, ext, StartDate.Value, EndDate.Value, SelectedPatient.Id, ref blockChainHandler);
             });
             IsWorking = false;
         }
@@ -302,6 +294,8 @@ namespace UserInterface.ViewModel
                     MessageBox.Show("Blockchain unavailable, signing out..");
                     MainViewModel.LogOut();
                 }
+                var ext = ReportExt.CSV.ToString().ToLower() == SelectedFileExtension ? ReportExt.CSV : ReportExt.PDF;
+                Generator.Generate(ReportType.PrescriptionsReport, ext, StartDate.Value, EndDate.Value, SelectedPatient.Id, ref blockChainHandler);
             });
             IsWorking = false;
         }   

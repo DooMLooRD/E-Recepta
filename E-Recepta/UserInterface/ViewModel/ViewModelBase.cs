@@ -21,7 +21,7 @@ namespace UserInterface.ViewModel
         public static BlockChainHandler blockChainHandler = new BlockChainHandler();
         protected UserService userService = new UserService();
         protected MedicinesDB medicineModule = new MedicinesDB();
-
+        protected static int CurrentUserId;
         private bool isWorking;
         public bool IsWorking
         {

@@ -76,7 +76,6 @@
     <Compile Include="Command\RelayCommandAsync.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="ViewModel\DoctorViewModel.cs" />
-    <Compile Include="ViewModel\EmployeeViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\PatientViewModel.cs" />
