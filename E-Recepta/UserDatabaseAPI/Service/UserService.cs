@@ -20,7 +20,7 @@ namespace UserDatabaseAPI.Service
                 {
                     Id = user.Id,
                     LastName = user.LastName,
-                    Name = user.LastName,
+                    Name = user.Name,
                     Pesel = user.Pesel,
                     Role = user.Role,
                     Username = user.Username
@@ -42,7 +42,7 @@ namespace UserDatabaseAPI.Service
                     {
                         Id = n.Id,
                         LastName = n.LastName,
-                        Name = n.LastName,
+                        Name = n.Name,
                         Pesel = n.Pesel,
                         Role = n.Role,
                         Username = n.Username

@@ -94,6 +94,8 @@ namespace UserInterface.ViewModel
         public ICommand UpdatePharmacyStateCommand => new RelayCommandAsync(UpdatePharmacyState, () => true);
         public ICommand RealizePrescriptionCommand => new RelayCommand(RealizePrescription, CanBeRealised);
         public ICommand GetPharmacistsSalesCommand => new RelayCommand(GetPharmacistsSales, IsSalesDataReady);
+        public ICommand GetPatientsPrescriptionsCommand => new RelayCommand(GetPatientsPrescriptions, IsPrescriptionsDataReady);
+        public ICommand LoadPatientsUnrealisedPrescriptionsCommand => new RelayCommand(GetPatientsUnrealisedPrescriptions, () => true);
 
         private bool IsSalesDataReady()
         {
@@ -101,13 +103,15 @@ namespace UserInterface.ViewModel
                 return false;
             if (SelectedFileExtension == FileExtensions[0])
                 return false;
+            if (EndDate == null)
+                return false;
+            if (StartDate == null)
+                return false;
             if (EndDate < StartDate)
                 return false;
+
             return true;
         }
-
-        public ICommand GetPatientsPrescriptionsCommand => new RelayCommand(GetPatientsPrescriptions, IsPrescriptionsDataReady);
-        public ICommand LoadPatientsUnrealisedPrescriptionsCommand => new RelayCommand(GetPatientsUnrealisedPrescriptions, () => true);
 
         private async void GetPatientsUnrealisedPrescriptions()
         {
@@ -131,7 +135,7 @@ namespace UserInterface.ViewModel
                             unrealizedPrescriptions.Add(prescription);
                     }
 
-                    
+
                     foreach (var prescription in unrealizedPrescriptions)
                     {
                         var medicines = new ObservableCollection<DoctorViewModel.PrescriptionMedicine>();
@@ -162,7 +166,8 @@ namespace UserInterface.ViewModel
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show(e.StackTrace);}
+                    MessageBox.Show(e.StackTrace);
+                }
 
                 OnPropertyChanged("SelectedPatientsUnrealisedPrescriptions");
             });
@@ -209,9 +214,9 @@ namespace UserInterface.ViewModel
             actualPharmacyMedicinesCount = PharmacyState.Count;
             GeneralPharmacyState = new ObservableCollection<Medicine>(await pharmacyDB.SearchMedicine(GeneralMedicineFilter.Name, GeneralMedicineFilter.Manufacturer));
             var temp = (from x in PharmacyState
-                      join y in GeneralPharmacyState
-                          on x.Id equals y.Id
-                      select y).ToList();
+                        join y in GeneralPharmacyState
+                            on x.Id equals y.Id
+                        select y).ToList();
             GeneralPharmacyState = new ObservableCollection<Medicine>(GeneralPharmacyState.Except(temp));
             IsWorking = false;
         }
@@ -234,7 +239,7 @@ namespace UserInterface.ViewModel
             for (int i = actualPharmacyMedicinesCount; i < PharmacyState.Count; i++)
             {
                 var medicine = PharmacyState[i];
-                if(medicine.Amount == 0)
+                if (medicine.Amount == 0)
                     continue;
                 await pharmacyDB.AddMedicineToStock(medicine.Id, medicine.Amount.ToString(), medicine.Cost.ToString("G", CultureInfo.InvariantCulture));
             }
@@ -247,7 +252,7 @@ namespace UserInterface.ViewModel
         {
             if (SelectedPatientsUnrealisedPrescription == null)
                 return false;
-            if (SelectedPatientsUnrealisedPrescription.ValidSince < DateTime.Now.Date)
+            if (SelectedPatientsUnrealisedPrescription.ValidSince > DateTime.Now.Date)
                 return false;
             foreach (var medicine in SelectedPatientsUnrealisedPrescription.Medicines)
             {
@@ -261,7 +266,7 @@ namespace UserInterface.ViewModel
         private async void RealizePrescription()
         {
             IsWorking = true;
-            
+
             await Task.Run(async () =>
             {
 
@@ -271,7 +276,7 @@ namespace UserInterface.ViewModel
                     MainViewModel.LogOut();
                 }
 
-                
+
                 await GetGeneralPharmacyState();
 
                 foreach (var prescriptionMedicine in SelectedPatientsUnrealisedPrescription.Medicines)
@@ -281,10 +286,10 @@ namespace UserInterface.ViewModel
                 }
                 await UpdatePharmacyState();
                 //SelectedPatientsUnrealisedPrescriptions.Remove(SelectedPatientsUnrealisedPrescription);
-                
+
                 //GetPatientsUnrealisedPrescriptions();
             });
-            
+
             IsWorking = false;
         }
 
@@ -343,6 +348,6 @@ namespace UserInterface.ViewModel
                 }
             });
             IsWorking = false;
-        }   
+        }
     }
 }
